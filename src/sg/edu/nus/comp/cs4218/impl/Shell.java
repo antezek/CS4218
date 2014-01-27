@@ -1,8 +1,26 @@
 package sg.edu.nus.comp.cs4218.impl;
 
-import sg.edu.nus.comp.cs4218.ITool;
+import java.io.File;
+import java.util.Scanner;
+
 import sg.edu.nus.comp.cs4218.IShell;
+import sg.edu.nus.comp.cs4218.ITool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.CATTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.CATToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.CDTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.CDToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.COPYTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.COPYToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.DELETETool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.DELETEToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.LSTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.LSToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.MOVETool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.MOVEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.PWDToolRunnable;
 
 /**
  * The Shell is used to interpret and execute user's
@@ -10,13 +28,70 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.PWDTool;
  * shell can be implemented in Java
  */
 public class Shell implements IShell {
+	
+	// List of user input commands
+	private static final String CMD_PWD = "pwd";
+	private static final String CMD_CD = "cd";
+	private static final String CMD_LS = "ls";
+	private static final String CMD_COPY = "copy";
+	private static final String CMD_MOVE = "move";
+	private static final String CMD_DELETE = "delete";
+	private static final String CMD_CAT = "cat";
+	private static final String CMD_ECHO = "echo";
+	private static final String CMD_GREP = "grep";
+	private static final String CMD_PIPE = "pipe";
+	
+	// Regex
+	private static final String REGEX_WHITE_SPACE = "\\s+";
+	
+	// List of commands
+	private enum COMMAND {
+		PWD, CD, LS, COPY, MOVE, DELETE, CAT, ECHO, GREP, PIPE, INVALID
+	}
+	
+	// Scanner
+	static Scanner scanner = new Scanner(System.in);
+	
+	// Others
+	private static String stdin;
 
 	@Override
 	public ITool parse(String commandline) {
-		if(commandline.startsWith("pwd")){
+/*		if(commandline.startsWith("pwd")){
 			return new PWDTool();
 		} else {
 			//TODO Implement all other tools
+			System.err.println("Cannot parse " + commandline);
+			return null;
+		}*/
+		
+		String userCommand = getCommand(commandline);
+		COMMAND command = determineCommandType(userCommand);
+		
+		switch(command) {
+
+		case PWD:
+			return new PWDTool();
+		case CD:
+			return new CDTool();
+		case LS:
+			return new LSTool();
+		case COPY:
+			return new COPYTool();
+		case MOVE:
+			return new MOVETool();
+		case DELETE:
+			return new DELETETool();
+		case CAT:
+			return new CATTool();
+		case ECHO:
+			return new ECHOTool();
+			//TODO glen: uncomment when grep/pipe implemented
+//		case GREP:
+//			return new GREPTool();
+//		case PIPE:
+//			return new PIPETool();
+		default:
 			System.err.println("Cannot parse " + commandline);
 			return null;
 		}
@@ -25,6 +100,40 @@ public class Shell implements IShell {
 	@Override
 	public Runnable execute(ITool tool) {
 		// TODO Implement
+		File workingDir = new File(System.getProperty("user.dir"));
+		
+		if (tool instanceof PWDTool) {
+			return new PWDToolRunnable(workingDir, stdin);
+		}
+		else if (tool instanceof CDTool) {
+			return new CDToolRunnable(workingDir, stdin);
+		}
+		else if (tool instanceof LSTool) {
+			return new LSToolRunnable(workingDir, stdin);
+		}
+		else if (tool instanceof COPYTool) {
+			return new COPYToolRunnable(workingDir, stdin);
+		}
+		else if (tool instanceof MOVETool) {
+			return new MOVEToolRunnable(workingDir, stdin);
+		}
+		else if (tool instanceof DELETETool) {
+			return new DELETEToolRunnable(workingDir, stdin);
+		}
+		else if (tool instanceof CATTool) {
+			return new CATToolRunnable(workingDir, stdin);
+		}
+		else if (tool instanceof ECHOTool) {
+			return new ECHOToolRunnable(workingDir, stdin);
+		}
+		//TODO glen: uncomment when grep/pipe implemented
+//		else if (tool instanceof GREPTool) {
+//			return new GREPToolRunnable(workingDir, stdin);
+//		}
+//		else if (tool instanceof PIPETool) {
+//			return new PIPEToolRunnable(workingDir, stdin);	
+//		}
+		
 		return null;
 	}
 
@@ -42,8 +151,57 @@ public class Shell implements IShell {
      * 5. In the shell, wait for the thread to complete execution
      * 6. Report the exit status of the command to the user
 	 */
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		//TODO Implement
+		try {
+			while (true) {
+				stdin = readUserInput();
+				Shell s = new Shell();
+				ITool tool = s.parse(stdin);
+				Runnable r = s.execute(tool);
+
+				Thread thread = new Thread(r);
+				thread.start();
+				thread.join();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static String readUserInput() {
+		System.out.print("command:");
+		return scanner.nextLine();
+	}
+
+	private static COMMAND determineCommandType(String command) {
+		
+		if (command.equalsIgnoreCase(CMD_PWD)) {
+			return COMMAND.PWD;
+		} else if (command.equalsIgnoreCase(CMD_CD)) {
+			return COMMAND.CD;
+		} else if (command.equalsIgnoreCase(CMD_LS)) {
+			return COMMAND.LS;
+		} else if (command.equalsIgnoreCase(CMD_COPY)) {
+			return COMMAND.COPY;
+		} else if (command.equalsIgnoreCase(CMD_MOVE)) {
+			return COMMAND.MOVE;
+		} else if (command.equalsIgnoreCase(CMD_DELETE)) {
+			return COMMAND.DELETE;
+		} else if (command.equalsIgnoreCase(CMD_CAT)) {
+			return COMMAND.CAT;
+		} else if (command.equalsIgnoreCase(CMD_ECHO)) {
+			return COMMAND.ECHO;
+		} else if (command.equalsIgnoreCase(CMD_GREP)) {
+				return COMMAND.GREP;
+		} else if (command.equalsIgnoreCase(CMD_PIPE)) {
+			return COMMAND.PIPE;
+		} else {
+			return COMMAND.INVALID;
+		}
 	}
 	
+	private static String getCommand(String userInputString) {
+		return userInputString.trim().split(REGEX_WHITE_SPACE)[0];
+	}
 }
