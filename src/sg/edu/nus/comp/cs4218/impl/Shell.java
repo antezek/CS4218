@@ -15,6 +15,7 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.DELETETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.DELETEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.GREPTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.LSTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.LSToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVETool;
@@ -86,9 +87,9 @@ public class Shell implements IShell {
 			return new CATTool();
 		case ECHO:
 			return new ECHOTool();
-			//TODO glen: uncomment when grep/pipe implemented
-//		case GREP:
-//			return new GREPTool();
+		case GREP:
+			return new GREPTool();
+			//TODO glen: uncomment when pipe implemented
 //		case PIPE:
 //			return new PIPETool();
 		default:
