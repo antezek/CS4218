@@ -21,6 +21,29 @@ public class GREPToolTest {
 									"while Fashion means clothing more generally, including the study of it.\n" +
 									"Although aspects of fashion can be feminine or masculine, some trends are androgynous.\n";
 	
+	private final String PASSAGE2 = "Right from haha the start\n"+
+									"You were a thief\n"+
+									"You stole my heart\n"+
+									"And I your haha willing victim\n"+
+									"I let you see the parts of me\n"+
+									"That weren't haha all that pretty\n"+
+									"And with every touch you fixed them\n"+
+									"Now you've been talking in your sleep, oh, oh\n"+
+									"Things you never haha say to me, oh, oh\n"+
+									"Tell me that you've had enough\n"+
+									"Of our love, our love\n"+
+									"Just give me a reason\n"+
+									"Just a little bit's enough\n"+
+									"Just a second we're not haha broken just bent\n"+
+									"And we can learn to love again\n"+
+									"It's in the stars\n"+
+									"It's been written in the haha scars on our hearts\n"+
+									"We're not broken just bent\n"+
+									"And we can learn to love again\n";
+
+
+			
+	
 	private GREPTool grepToolTest; 
 	
 	@Before
@@ -114,9 +137,34 @@ public class GREPToolTest {
 	}
 	
 	@Test
-	public void testExecute() {
+	public void testGetMatchingLinesWithOutputContext() {
 		
-		File wrkDir = new File("C:\\Users\\Avan\\Documents\\NUS\\Yr3_Sem2\\CS4218\\Project");
+		String matchLines = grepToolTest.getMatchingLinesWithOutputContext(1, "haha", PASSAGE2);
+		String expected = "Right from haha the start\n"+
+						  "You were a thief\n"+
+						  "You stole my heart\n"+
+						  "And I your haha willing victim\n"+
+						  "I let you see the parts of me\n"+
+						  "That weren't haha all that pretty\n"+
+						  "And with every touch you fixed them\n"+
+						  "Now you've been talking in your sleep, oh, oh\n"+
+						  "Things you never haha say to me, oh, oh\n"+
+						  "Tell me that you've had enough\n"+
+						  "Just a little bit's enough\n"+
+						  "Just a second we're not haha broken just bent\n"+
+						  "And we can learn to love again\n"+
+						  "It's in the stars\n"+
+						  "It's been written in the haha scars on our hearts\n"+
+						  "We're not broken just bent\n";
+		
+		assertEquals(matchLines, expected);	
+					      
+	}
+	
+	@Test
+	public void testExecuteForFileContents() {
+		
+		File wrkDir = new File("C:\\Users\\Avan\\Shell");
 		String stdin1 = "grep -A 1 Fashion PASSAGE.txt";
 		String stdin2 = "grep -B 1 Fashion C:\\Users\\Avan\\Documents\\PASSAGE.txt";
 		
@@ -143,6 +191,54 @@ public class GREPToolTest {
 		assertEquals(matchLines1, expected1);	
 		assertEquals(matchLines2, expected2);	
 	}
+	
+	@Test
+	public void testExecuteForSTDInput() {
+		File wrkDir = new File("C:\\Users\\Avan\\Shell");
+		String stdin = "grep -C 1 haha -"+
+					   "Right from haha the start\n"+
+					   "You were a thief\n"+
+					   "You stole my heart\n"+
+					   "And I your haha willing victim\n"+
+					   "I let you see the parts of me\n"+
+					   "That weren't haha all that pretty\n"+
+					   "And with every touch you fixed them\n"+
+					   "Now you've been talking in your sleep, oh, oh\n"+
+					   "Things you never haha say to me, oh, oh\n"+
+					   "Tell me that you've had enough\n"+
+					   "Of our love, our love\n"+
+					   "Just give me a reason\n"+
+					   "Just a little bit's enough\n"+
+					   "Just a second we're not haha broken just bent\n"+
+					   "And we can learn to love again\n"+
+					   "It's in the stars\n"+
+					   "It's been written in the haha scars on our hearts\n"+
+					   "We're not broken just bent\n"+
+					   "And we can learn to love again\n";
+					
+		String expected = "Right from haha the start\n"+
+					   	  "You were a thief\n"+
+					   	  "You stole my heart\n"+
+					   	  "And I your haha willing victim\n"+
+					   	  "I let you see the parts of me\n"+
+					   	  "That weren't haha all that pretty\n"+
+					   	  "And with every touch you fixed them\n"+
+					   	  "Now you've been talking in your sleep, oh, oh\n"+
+					   	  "Things you never haha say to me, oh, oh\n"+
+					   	  "Tell me that you've had enough\n"+
+					   	  "Just a little bit's enough\n"+
+					   	  "Just a second we're not haha broken just bent\n"+
+					   	  "And we can learn to love again\n"+
+					   	  "It's in the stars\n"+
+					   	  "It's been written in the haha scars on our hearts\n"+
+					   	  "We're not broken just bent\n";
+		
+		String matchLines = grepToolTest.execute(wrkDir, stdin);
+		assertEquals(matchLines, expected);
+	}
+	
+	
+	
 	
 
 }
