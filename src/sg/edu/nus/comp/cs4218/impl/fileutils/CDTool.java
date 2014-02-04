@@ -7,9 +7,7 @@ import sg.edu.nus.comp.cs4218.impl.ATool;
 
 public class CDTool extends ATool implements ICdTool {
 	private static final String MESSAGE_DIR_CHANGE_SUCCESS = "Working dir changed to: %1$s";
-	private static final String MESSAGE_DIR_CHANGE_FAIL = "Failed to change working dir";
 	private static final String MESSAGE_DIR_NULL = "Error: directory cannot be null";
-	private static final String MESSAGE_DIR_DOES_NOT_EXIST = "Error: directory does not exist";
 	private static final String MESSAGE_DIR_NOT_VALID = "Error: not a directory";
 	
 	// Regex
@@ -25,12 +23,10 @@ public class CDTool extends ATool implements ICdTool {
 
 		if (!f.exists()) {
 			setStatusCode(1);
-			System.err.println(MESSAGE_DIR_DOES_NOT_EXIST);
 			return null;
 		}
 		else if (!f.isDirectory()) {
 			setStatusCode(1);
-			System.err.println(MESSAGE_DIR_NOT_VALID);
 			return null;
 		}
 		else {
@@ -52,7 +48,7 @@ public class CDTool extends ATool implements ICdTool {
 				return String.format(MESSAGE_DIR_CHANGE_SUCCESS, newDir.getAbsolutePath());
 			}
 			else {
-				return MESSAGE_DIR_CHANGE_FAIL;
+				return MESSAGE_DIR_NOT_VALID;
 			}
 		}
 		else {

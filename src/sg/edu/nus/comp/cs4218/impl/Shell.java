@@ -204,7 +204,8 @@ public class Shell implements IShell {
 			System.out.print("Type \"ctrl-z\" to break: ");
 		}
 		try {
-			scanner = new Scanner(System.in);
+			// glen: i uncomment this!!
+			//scanner = new Scanner(System.in);
 			s = scanner.nextLine();
 			if (s.equalsIgnoreCase("ctrl-z")) {
 				thread = (Thread) hm.get("t1");
