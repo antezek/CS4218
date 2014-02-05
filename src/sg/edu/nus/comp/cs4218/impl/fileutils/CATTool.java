@@ -12,9 +12,6 @@ import sg.edu.nus.comp.cs4218.impl.ATool;
 public class CATTool extends ATool implements ICatTool {
 	private static final String MESSAGE_FILE_NAME_NULL = "Error: file name null";
 	private static final String MESSAGE_FILE_NOT_FOUND = "Error: file not found";
-	
-	// Regex
-	private static final String REGEX_WHITE_SPACE = "\\s+";
 
 	public CATTool() {
 		super(null);
@@ -42,7 +39,7 @@ public class CATTool extends ATool implements ICatTool {
 
 	@Override
 	public String execute(File workingDir, String stdin) {
-		String parts[] = stdin.split(REGEX_WHITE_SPACE);
+		String parts[] = stdin.split(Helper.REGEX_WHITE_SPACE);
 		String result = "";
 		
 		if (!isFileNameNull(parts)) {

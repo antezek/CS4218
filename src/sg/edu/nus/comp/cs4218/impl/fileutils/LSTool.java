@@ -9,7 +9,7 @@ import sg.edu.nus.comp.cs4218.impl.ATool;
 
 
 public class LSTool extends ATool implements ILsTool {
-	private static final String MESSAGE_NO_FILES_IN_DIR ="Error: No files in working directory";
+	private static final String MESSAGE_NO_FILES_IN_DIR = "Error: No files in working directory";
 
 	public LSTool() {
 		super(null);
@@ -21,7 +21,7 @@ public class LSTool extends ATool implements ILsTool {
 		List<File> result = new ArrayList<File>();
 		
 		for (File file: files) {
-			if (file.isFile()) {
+			if (file.isFile() || file.isDirectory()) {
 				result.add(file);
 			}
 		}

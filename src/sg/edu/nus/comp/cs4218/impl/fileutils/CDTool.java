@@ -10,9 +10,6 @@ public class CDTool extends ATool implements ICdTool {
 	private static final String MESSAGE_DIR_NULL = "Error: directory cannot be null";
 	private static final String MESSAGE_DIR_NOT_VALID = "Error: not a directory";
 	
-	// Regex
-	private static final String REGEX_WHITE_SPACE = "\\s+";
-	
 	public CDTool() {
 		super(null);
 	}
@@ -20,12 +17,8 @@ public class CDTool extends ATool implements ICdTool {
 	@Override
 	public File changeDirectory(String newDirectory) {
 		File f = new File(newDirectory);
-
-		if (!f.exists()) {
-			setStatusCode(1);
-			return null;
-		}
-		else if (!f.isDirectory()) {
+		
+		if (!f.exists() || !f.isDirectory()) {
 			setStatusCode(1);
 			return null;
 		}
@@ -39,17 +32,25 @@ public class CDTool extends ATool implements ICdTool {
 
 	@Override
 	public String execute(File workingDir, String stdin) {
-		String parts[] = stdin.split(REGEX_WHITE_SPACE);
+		String parts[] = stdin.split(Helper.REGEX_WHITE_SPACE);
 		
 		if (!isDirNull(parts)) {
-			File newDir = changeDirectory(parts[1]);
+			File f = Helper.isValidDirectory(workingDir, parts[1]);
 			
-			if (newDir != null) {
-				return String.format(MESSAGE_DIR_CHANGE_SUCCESS, newDir.getAbsolutePath());
+			if (f != null) {
+				File newDir = changeDirectory(f.getAbsolutePath());
+				
+				if (newDir != null) {
+					return String.format(MESSAGE_DIR_CHANGE_SUCCESS, newDir.getAbsolutePath());
+				}
+				else {
+					return MESSAGE_DIR_NOT_VALID;
+				}
 			}
 			else {
 				return MESSAGE_DIR_NOT_VALID;
 			}
+			
 		}
 		else {
 			return MESSAGE_DIR_NULL;

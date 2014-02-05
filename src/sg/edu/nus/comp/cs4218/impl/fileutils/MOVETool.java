@@ -11,9 +11,6 @@ public class MOVETool extends ATool implements IMoveTool {
 	private static final String MESSAGE_MOVE_ERROR ="Error: failed to move file";
 	private static final String MESSAGE_FILE_NAME_NULL = "Error: file name null";
 	private static final String MESSAGE_FILE_DIR_NOT_FOUND = "Error: file or dir not found";
-	
-	// Regex
-	private static final String REGEX_WHITE_SPACE = "\\s+";
 
 	public MOVETool() {
 		super(null);
@@ -25,18 +22,24 @@ public class MOVETool extends ATool implements IMoveTool {
 		try {
 			if (!f.exists()) {
 				// moving file
-				if(f.createNewFile()) {
+				if (f.createNewFile()) {
 					// deleting file after move
 					if (from.delete()) {
 						return true;
 					}
 					else {
+						setStatusCode(1);
 						return false;
 					}
 				}
 				else {
+					setStatusCode(1);
 					return false;
 				}
+			}
+			else {
+				setStatusCode(1);
+				return false;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -46,12 +49,12 @@ public class MOVETool extends ATool implements IMoveTool {
 
 	@Override
 	public String execute(File workingDir, String stdin) {
-		String parts[] = stdin.split(REGEX_WHITE_SPACE);
+		String parts[] = stdin.split(Helper.REGEX_WHITE_SPACE);
 		
 		if (!isFileNameNull(parts)) {
-			File from = isValidFile(workingDir, parts[1]);
+			File from = Helper.isValidFile(workingDir, parts[1]);
 			File to = new File(parts[2]);
-			if (from != null && isValidDirectory(to)) {
+			if (from != null && Helper.isValidDirectory(to)) {
 				// moving file
 				if (move(from, to)) {
 					return String.format(MESSAGE_MOVE_SUCCESS, from.getName(), to.getAbsolutePath());
@@ -69,31 +72,6 @@ public class MOVETool extends ATool implements IMoveTool {
 		else {
 			setStatusCode(1);
 			return MESSAGE_FILE_NAME_NULL;
-		}
-	}
-	
-	private static File isValidFile(File workingDir, String fileName) {
-		File f = new File(fileName);
-		
-		if (f.exists()) {
-			return f;
-		}
-		else {
-			f = new File(workingDir.getAbsolutePath() +"\\" +fileName);
-			
-			if (f.exists()) {
-				return f;
-			}
-		}
-		return null;
-	}
-	
-	private boolean isValidDirectory(File f) {
-		if (f.isDirectory()) {
-			return true;
-		}
-		else {
-			return false;
 		}
 	}
 

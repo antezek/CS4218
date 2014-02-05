@@ -16,7 +16,7 @@ public class PWDTool extends ATool implements IPwdTool{
 	@Override
 	public String getStringForDirectory(File directory) {
 		//Error Handling
-		if(directory == null || !directory.exists() || !directory.isDirectory()) {
+		if (directory == null || !directory.exists() || !directory.isDirectory()) {
 			setStatusCode(1);
 			return "Error: Cannot find working directory";
 		}

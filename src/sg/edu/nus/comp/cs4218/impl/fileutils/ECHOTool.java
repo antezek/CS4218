@@ -8,9 +8,6 @@ import sg.edu.nus.comp.cs4218.impl.ATool;
 public class ECHOTool extends ATool implements IEchoTool {
 	private static final String MESSAGE_ARGS_NULL = "Error: args null";
 	private static final String CMD_ECHO = "echo";
-	
-	// Regex
-	private static final String REGEX_WHITE_SPACE = "\\s+";
 
 	public ECHOTool() {
 		super(null);
@@ -32,7 +29,7 @@ public class ECHOTool extends ATool implements IEchoTool {
 
 	@Override
 	public String execute(File workingDir, String stdin) {
-		String parts[] = stdin.split(REGEX_WHITE_SPACE);
+		String parts[] = stdin.split(Helper.REGEX_WHITE_SPACE);
 		if (!isFileNameNull(parts)) {
 			return echo(stdin);
 		}

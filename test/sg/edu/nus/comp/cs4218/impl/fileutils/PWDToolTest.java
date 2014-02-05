@@ -1,6 +1,7 @@
 package sg.edu.nus.comp.cs4218.impl.fileutils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +28,8 @@ public class PWDToolTest {
 	
 	@Test
 	public void getStringForDirectoryTest() throws IOException {
-		//Test expected behavior
-		//Create a tmp-file and get (existing) parent directory
+		// Test expected behavior
+		// Create a tmp-file and get (existing) parent directory
 		String existsDirString = File.createTempFile("exists", "tmp").getParent();
 		File existsDir = new File(existsDirString);
 		String dirString = pwdtool.getStringForDirectory(existsDir);
@@ -43,7 +44,7 @@ public class PWDToolTest {
 		//Reference non-existing file
 		File notExistsDir = new File("notexists");
         pwdtool.getStringForDirectory(notExistsDir);
-		assertTrue(pwdtool.getStatusCode()!= 0);
+		assertTrue(pwdtool.getStatusCode() != 0);
     }
 		
 
@@ -51,7 +52,7 @@ public class PWDToolTest {
 	public void getStringForNullDirectoryTest() throws IOException { 
 		//Test error-handling 2
 		pwdtool.getStringForDirectory(null);
-		assertTrue(pwdtool.getStatusCode()!= 0);
+		assertTrue(pwdtool.getStatusCode() != 0);
 		
 	}
 

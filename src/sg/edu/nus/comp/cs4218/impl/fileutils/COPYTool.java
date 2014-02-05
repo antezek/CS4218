@@ -43,9 +43,9 @@ public class COPYTool extends ATool implements ICopyTool {
 		String parts[] = stdin.split(REGEX_WHITE_SPACE);
 		
 		if (!isFileNameNull(parts)) {
-			File from = isValidFile(workingDir, parts[1]);
+			File from = Helper.isValidFile(workingDir, parts[1]);
 			File to = new File(parts[2]);
-			if (from != null && isValidDirectory(to)) {
+			if (from != null && Helper.isValidDirectory(to)) {
 				// copying file
 				if (copy(from, to)) {
 					return String.format(MESSAGE_COPY_SUCCESS, from.getName(), to.getAbsolutePath());
@@ -63,31 +63,6 @@ public class COPYTool extends ATool implements ICopyTool {
 		else {
 			setStatusCode(1);
 			return MESSAGE_FILE_NAME_NULL;
-		}
-	}
-
-	private static File isValidFile(File workingDir, String fileName) {
-		File f = new File(fileName);
-		
-		if (f.exists()) {
-			return f;
-		}
-		else {
-			f = new File(workingDir.getAbsolutePath() +"\\" +fileName);
-			
-			if (f.exists()) {
-				return f;
-			}
-		}
-		return null;
-	}
-	
-	private boolean isValidDirectory(File f) {
-		if (f.isDirectory()) {
-			return true;
-		}
-		else {
-			return false;
 		}
 	}
 

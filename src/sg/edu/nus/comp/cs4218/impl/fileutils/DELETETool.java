@@ -10,9 +10,6 @@ public class DELETETool extends ATool implements IDeleteTool {
 	private static final String MESSAGE_DELETE_ERROR ="Error: failed to delete file";
 	private static final String MESSAGE_FILE_NAME_NULL = "Error: file name null";
 	private static final String MESSAGE_FILE_NOT_FOUND = "Error: file not found";
-	
-	// Regex
-	private static final String REGEX_WHITE_SPACE = "\\s+";
 
 	public DELETETool() {
 		super(null);
@@ -27,13 +24,13 @@ public class DELETETool extends ATool implements IDeleteTool {
 			return false;
 		}
 	}
-
+	
 	@Override
 	public String execute(File workingDir, String stdin) {
-		String parts[] = stdin.split(REGEX_WHITE_SPACE);
+		String parts[] = stdin.split(Helper.REGEX_WHITE_SPACE);
 		
 		if (!isFileNameNull(parts)) {
-			File f = isValidFile(workingDir, parts[1]);
+			File f = Helper.isValidFile(workingDir, parts[1]);
 			
 			if (f != null) {
 				// deleting file
@@ -55,22 +52,6 @@ public class DELETETool extends ATool implements IDeleteTool {
 			return MESSAGE_FILE_NAME_NULL;
 		}
 		
-	}
-	
-	private static File isValidFile(File workingDir, String fileName) {
-		File f = new File(fileName);
-		
-		if (f.exists()) {
-			return f;
-		}
-		else {
-			f = new File(workingDir.getAbsolutePath() +"\\" +fileName);
-			
-			if (f.exists()) {
-				return f;
-			}
-		}
-		return null;
 	}
 	
 	private static boolean isFileNameNull(String[] fileName) {

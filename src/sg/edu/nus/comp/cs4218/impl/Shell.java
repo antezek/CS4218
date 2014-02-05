@@ -61,12 +61,6 @@ public class Shell implements IShell {
 
 	@Override
 	public ITool parse(String commandline) {
-		/*
-		 * if(commandline.startsWith("pwd")){ return new PWDTool(); } else {
-		 * //TODO Implement all other tools System.err.println("Cannot parse " +
-		 * commandline); return null; }
-		 */
-
 		String userCommand = getCommand(commandline);
 		COMMAND command = determineCommandType(userCommand);
 
@@ -175,10 +169,10 @@ public class Shell implements IShell {
 		Runnable listener = new Runnable() {
 			@Override
 			public void run() {
-				//Scanner s = new Scanner(System.in);
+				Scanner s = new Scanner(System.in);
 				while (mainThread.isAlive()) {
 					System.out.print("Type \"ctrl-z\" to break: ");
-					String input = scanner.nextLine();
+					String input = s.nextLine();
 					
 					if (input.equalsIgnoreCase("ctrl-z")) {
 						mainThread = (Thread) hm.get("t1");
@@ -189,7 +183,7 @@ public class Shell implements IShell {
 						System.out.println("invalid command");
 					}
 				}
-				//s.close();
+				s.close();
 			}
 		};
 		
