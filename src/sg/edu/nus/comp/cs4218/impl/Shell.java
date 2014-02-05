@@ -55,9 +55,9 @@ public class Shell implements IShell {
 
 	// Others
 	private static String stdin;
-	private static Thread thread = null;
-	private static Thread thread2 = null;
-	private static HashMap hm = null;
+	private static Thread mainThread = null;
+	private static Thread listenerThread = null;
+	private static HashMap<String, Thread> hm = null;
 
 	@Override
 	public ITool parse(String commandline) {
@@ -145,80 +145,147 @@ public class Shell implements IShell {
 	 * command to the user
 	 */
 	public static void main(String[] args) {
+		hm = new HashMap<String, Thread>();
 		startRun();
 	}
-
+	
 	public static void startRun() {
-		Runnable r = null;
-		Runnable r2 = null;
-		hm = new HashMap();
-		try {
-			do {
-				stdin = readUserInput(0);
-				if (!stdin.equals("")) {
-					Shell s = new Shell();
-					ITool tool = s.parse(stdin);
-					r = s.execute(tool);
-					thread = new Thread(r); // Spawn a thread to execute the
-											// command
-					hm.put("t1", thread);
-					thread.start();
-					r2 = new Runnable() {
-						Scanner eofScan;
-
-						public void run() {
-							if (thread.isAlive()) { // Check if thread is still
-													// processing. if yes, give
-													// option to break.
-								readUserInput(1);
-							}
-						}
-					};
-					thread2 = new Thread(r2); // Spawn a thread to listen for
-												// break command.
-					thread2.sleep(500); // Delay for result to show first before
-										// cmd prompt
-					thread2.start();
-					while (true) {
-						Thread.currentThread().sleep(500);
-						if (thread.isAlive() == false) {
-							thread2.stop();
-							startRun();
-							break;
-						}
+		while (true) {
+			stdin = readUserInput();
+			
+			Shell s = new Shell();
+			ITool tool = s.parse(stdin);
+			Runnable run = s.execute(tool);
+			
+			startMainThread(run);
+		}
+	}
+	
+	public static void startMainThread(Runnable run) {
+		mainThread = new Thread(run);
+		hm.put("t1", mainThread);
+		mainThread.start();
+		
+		if (!Thread.currentThread().isInterrupted() && mainThread.isAlive()) {
+			startInterruptListener();
+		}
+	}
+	
+	public static void startInterruptListener() {
+		Runnable listener = new Runnable() {
+			@Override
+			public void run() {
+				//Scanner s = new Scanner(System.in);
+				while (mainThread.isAlive()) {
+					System.out.print("Type \"ctrl-z\" to break: ");
+					String input = scanner.nextLine();
+					
+					if (input.equalsIgnoreCase("ctrl-z")) {
+						mainThread = (Thread) hm.get("t1");
+						mainThread.stop();
+						break;
 					}
-				} else {
-					break; // stdin is EMPTY!
+					else {
+						System.out.println("invalid command");
+					}
 				}
-			} while (stdin.equalsIgnoreCase("exit"));
+				//s.close();
+			}
+		};
+		
+		try {
+			listenerThread = new Thread(listener);
+			listenerThread.sleep(500);
+			listenerThread.start();
+			
+			while (true) {
+				if (!mainThread.isAlive()) {
+					listenerThread.stop();
+					startRun();
+					break;
+				}
+			}
 		} catch (InterruptedException e) {
-			System.out.println("Thread interrupted"); // Interrupted
+			e.printStackTrace();
 		}
 	}
 
-	public static String readUserInput(int type) {
-		String s = "";
-		if (type == 0) {
-			System.out.print("command:");
-		} else {
-			System.out.print("Type \"ctrl-z\" to break: ");
-		}
-		try {
-			// glen: i uncomment this!!
-			//scanner = new Scanner(System.in);
-			s = scanner.nextLine();
-			if (s.equalsIgnoreCase("ctrl-z")) {
-				thread = (Thread) hm.get("t1");
-				thread.stop();
-			} else if (type == 1 && !(s.equalsIgnoreCase("ctrl-z"))) {
-				System.out.println("Invalid command");
-				readUserInput(1);
-			}
-		} catch (NullPointerException e) {
-			System.out.println("System Exit");
-			System.exit(0);
-		}
-		return s;
+//	public static void startRun() {
+//		Runnable r = null;
+//		Runnable r2 = null;
+//		hm = new HashMap();
+//		try {
+//			do {
+//				stdin = readUserInput(0);
+//				if (!stdin.equals("")) {
+//					Shell s = new Shell();
+//					ITool tool = s.parse(stdin);
+//					r = s.execute(tool);
+//					thread = new Thread(r); // Spawn a thread to execute the
+//											// command
+//					hm.put("t1", thread);
+//					thread.start();
+//					r2 = new Runnable() {
+//						Scanner eofScan;
+//
+//						public void run() {
+//							if (thread.isAlive()) { // Check if thread is still
+//													// processing. if yes, give
+//													// option to break.
+//								readUserInput(1);
+//							}
+//						}
+//					};
+//					thread2 = new Thread(r2); // Spawn a thread to listen for
+//												// break command.
+//					thread2.sleep(500); // Delay for result to show first before
+//										// cmd prompt
+//					thread2.start();
+//					while (true) {
+//						Thread.currentThread().sleep(500);
+//						if (thread.isAlive() == false) {
+//							thread2.stop();
+//							startRun();
+//							break;
+//						}
+//					}
+//				} else {
+//					break; // stdin is EMPTY!
+//				}
+//			} while (stdin.equalsIgnoreCase("exit"));
+//		} catch (InterruptedException e) {
+//			System.out.println("Thread interrupted"); // Interrupted
+//		}
+//	}
+
+//	public static String readUserInput(int type) {
+//		String s = "";
+//		if (type == 0) {
+//			System.out.print("command:");
+//		} else {
+//			System.out.print("Type \"ctrl-z\" to break: ");
+//		}
+//		try {
+//			// glen: i uncomment this!!
+//			//scanner = new Scanner(System.in);
+//			s = scanner.nextLine();
+//			if (s.equalsIgnoreCase("ctrl-z")) {
+//				thread = (Thread) hm.get("t1");
+//				thread.stop();
+//			} else if (type == 1 && !(s.equalsIgnoreCase("ctrl-z"))) {
+//				System.out.println("Invalid command");
+//				readUserInput(1);
+//			}
+//		} catch (NullPointerException e) {
+//			System.out.println("System Exit");
+//			System.exit(0);
+//		}
+//		return s;
+//	}
+	
+	public static String readUserInput() {
+		System.out.print("command:");
+		return scanner.nextLine();
 	}
 
 	private static COMMAND determineCommandType(String command) {
