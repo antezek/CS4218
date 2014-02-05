@@ -3,6 +3,8 @@ package sg.edu.nus.comp.cs4218.impl.fileutils;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.After;
 import org.junit.Before;
@@ -41,9 +43,6 @@ public class GREPToolTest {
 									"We're not broken just bent\n"+
 									"And we can learn to love again\n";
 
-
-			
-	
 	private GREPTool grepToolTest; 
 	
 	@Before
@@ -164,7 +163,10 @@ public class GREPToolTest {
 	@Test
 	public void testExecuteForFileContents() {
 		
-		File wrkDir = new File("C:\\Users\\Avan\\Shell");
+		Path currentRelativePath = Paths.get("");
+		String curDir = currentRelativePath.toAbsolutePath().toString();
+				
+		File wrkDir = new File(curDir);
 		String stdin1 = "grep -A 1 Fashion PASSAGE.txt";
 		String stdin2 = "grep -B 1 Fashion C:\\Users\\Avan\\Documents\\PASSAGE.txt";
 		
@@ -193,8 +195,51 @@ public class GREPToolTest {
 	}
 	
 	@Test
+	public void testForExecuteForMultipleFiles() {
+		
+		Path currentRelativePath = Paths.get("");
+		String curDir = currentRelativePath.toAbsolutePath().toString();
+				
+		File wrkDir = new File(curDir);
+		String stdin = "grep -C 2 haha PASSAGE2.txt PASSAGE3.txt";
+		String expected = "Right from haha the start\n"+
+						  "You were a thief you stole my heart\n"+
+						  "And I your willing victim\n"+
+						  "And with every touch you fixed them\n"+
+						  "Now you've been talking in your sleep\n"+
+						  "Things you never haha say to me\n"+
+						  "Tell me that you've had enough\n"+
+						  "Of our love, our love\n"+
+						  "Just a little bit's enough\n"+
+						  "Just a second we're not broken just bent\n"+
+						  "And we can haha learn to love again\n"+
+						  "It's in the stars\n"+
+						  "It's been written in the scars on our hearts\n"+
+						  "Im sorry I don't understand where all of this is coming from\n"+
+						  "I thought that we were fine\n"+
+						  "Oh we had everything haha\n"+
+						  "Your head is running wild again\n"+
+						  "My dear we still have everything\n"+
+						  "Oh oh\n"+
+						  "There's nothing more than empty sheets\n"+
+						  "Between haha our love, our love, oh our love, our love\n"+
+						  "that the use of the former has been relegated to special senses like fancy dress or masquerade wear,\n"+
+						  "while Fashion means clothing more generally, including the study of it.\n"+
+						  "Although aspects of fashion haha can be feminine or masculine, some trends are androgynous.\n";
+				
+		String matchLine = grepToolTest.execute(wrkDir, stdin);
+		assertEquals(expected, matchLine);
+
+	}
+	
+	@Test
 	public void testExecuteForSTDInput() {
-		File wrkDir = new File("C:\\Users\\Avan\\Shell");
+		
+		Path currentRelativePath = Paths.get("");
+		String curDir = currentRelativePath.toAbsolutePath().toString();
+				
+		File wrkDir = new File(curDir);
+				
 		String stdin = "grep -C 1 haha -"+
 					   "Right from haha the start\n"+
 					   "You were a thief\n"+

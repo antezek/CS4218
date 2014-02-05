@@ -13,23 +13,27 @@ public class GREPTool implements IGrepTool {
 	private final String SPACE = " ";
 	private final String EOL = "\n";
 	private final String EMPTY = "";
+	private final String DASH = "-";
 	
 	private final int STDINPUT = 1;
 	private final int FILEINPUT = 2;
 	
 	private String[] command;
 	private int commandSize;
-	private String content;
+	private String stdContent;
+	private String[] fileContent;
 	private int numOfMatch;
-	private String output;
+	private String result;
 	private String errorMsg;
 	private int inputType;
 	private int contentStartIndex;
+	private int fileNameStartIndex;
 
 	
 	@Override
 	public String execute(File workingDir, String stdin) {
 		
+		int i, j=0;
 		Scanner myScan = new Scanner(System.in);
 		command = stdin.split(SPACE);
 				
@@ -38,17 +42,25 @@ public class GREPTool implements IGrepTool {
 		
 		commandSize = command.length;
 		inputType = checkForInputType(command);
+		stdContent = EMPTY;
+		result = EMPTY;
+		
 		
 		try {
 			if(inputType==FILEINPUT)
 			{
 				inputType = FILEINPUT;
-				content = getFileContents(workingDir, command[command.length - 1]);
+				fileNameStartIndex = getFileNameStartIndex(command);
+				fileContent = new String[commandSize - fileNameStartIndex];
+				for(i = fileNameStartIndex; i<commandSize; i++) {
+					fileContent[j] = getFileContents(workingDir, command[i]);
+					j++;
+				}
 			}
 			else
 			{
 				inputType = STDINPUT;
-				content = getStdInputContents();
+				stdContent = getStdInputContents();
 			}
 		} catch (IOException e) {
 			
@@ -56,22 +68,27 @@ public class GREPTool implements IGrepTool {
 			return errorMsg;
 		}
 		
-		processContents();
-		
 		if(inputType == FILEINPUT )
-			return output;
+		{
+			for(i = 0; i<fileContent.length; i++) {
+				result = result + processContents(fileContent[i]);
+			}
+			
+			return result;
+		}
 		else
 		{
 			//testing for junit!! 
 			//remove this line and comment the while loop when doing thread testing.
-			return output;
+			result = processContents(stdContent);
+			return result;
 			/*
 			while(true)
 			{
 				
 				System.out.print(output);
 				content = myScan.next();
-				processContents();
+				result = processContents(stdContent);
 			}
 			*/
 		}
@@ -79,9 +96,29 @@ public class GREPTool implements IGrepTool {
 			
 	}
 
+	private int getFileNameStartIndex(String[] command) {
+		
+		int fileIndex = -1; 
+	
+		if(isOption(command[1]))
+		{
+			if(command[1].equals("-A")||command[1].equals("-B")||command[1].equals("-C"))
+				fileIndex = 4;
+			else
+				fileIndex = 3;
+		}
+		else
+			fileIndex = 2;
+			
+		return fileIndex;
+	}
+
+	private boolean isOption(String command) {
+		return command.equals("-A")| command.equals("-B") | command.equals("-C") |
+				command.equals("-v")| command.equals("-o") | command.equals("-c");
+	}
 	@Override
 	public int getStatusCode() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -245,23 +282,23 @@ public class GREPTool implements IGrepTool {
 
 	@Override
 	public String getHelp() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 	
 	private int checkForInputType(String[] command2) {
 		
-		if(command2[1].startsWith("-"))
+		if(isOption(command2[1]))
 		{
 			if(command2[1].equals("-A")||command2[1].equals("-B")||command2[1].equals("-C"))
 			{
-				if(command2[4].startsWith("-"))
+				if(command2[4].startsWith(DASH))
 				{
 					contentStartIndex = 4;
 					return STDINPUT;
 				}
 			
-				if(command2[3].startsWith("-"))
+				if(command2[3].startsWith(DASH))
 				{
 					contentStartIndex = 3;
 					return STDINPUT;
@@ -270,7 +307,7 @@ public class GREPTool implements IGrepTool {
 		}
 		else
 		{
-			if(command2[2].startsWith("-"))
+			if(command2[2].startsWith(DASH))
 			{
 				contentStartIndex = 2;
 				return STDINPUT;
@@ -307,8 +344,9 @@ public class GREPTool implements IGrepTool {
 		return stdContent;
 	}
 
-	private void processContents() {
+	private String processContents(String content) {
 		
+		String output = EMPTY;
 		if(command[1].equals("-A")) 
 			output = getMatchingLinesWithTrailingContext(Integer.parseInt(command[2]), command[3], content);
 		else if(command[1].equals("-B"))
@@ -327,6 +365,8 @@ public class GREPTool implements IGrepTool {
 		
 		else
 			output = getOnlyMatchingLines(command[1], content);
+		
+		return output;
 	}
 	
 	
