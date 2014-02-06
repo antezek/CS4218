@@ -14,9 +14,11 @@ public class GREPTool implements IGrepTool {
 	private final String EOL = "\n";
 	private final String EMPTY = "";
 	private final String DASH = "-";
+	private final String COLON = ":";
 	
 	private final int STDINPUT = 1;
 	private final int FILEINPUT = 2;
+	
 	
 	private String[] command;
 	private int commandSize;
@@ -28,74 +30,135 @@ public class GREPTool implements IGrepTool {
 	private int inputType;
 	private int contentStartIndex;
 	private int fileNameStartIndex;
+	private int statusCode;
 
 	
+	/*
+	 * Execute: 
+	 * Main method to process Grep Command
+	 * Return: Error Msg is any or the corresponding Grep output
+	 */
 	@Override
 	public String execute(File workingDir, String stdin) {
 		
 		int i, j=0;
 		Scanner myScan = new Scanner(System.in);
 		command = stdin.split(SPACE);
-				
-		//check for invalid command
-		//Skip for now
 		
-		commandSize = command.length;
-		inputType = checkForInputType(command);
-		stdContent = EMPTY;
-		result = EMPTY;
+		if(isHelpCommand(command))
+			return getHelp();
 		
-		
-		try {
-			if(inputType==FILEINPUT)
-			{
-				inputType = FILEINPUT;
-				fileNameStartIndex = getFileNameStartIndex(command);
-				fileContent = new String[commandSize - fileNameStartIndex];
-				for(i = fileNameStartIndex; i<commandSize; i++) {
-					fileContent[j] = getFileContents(workingDir, command[i]);
-					j++;
-				}
-			}
-			else
-			{
-				inputType = STDINPUT;
-				stdContent = getStdInputContents();
-			}
-		} catch (IOException e) {
-			
-			errorMsg = "Invalid File Name or Path";
+		if(!isInvalidGrepCommand(command))
+		{
+			errorMsg = "Invalid Grep Command: Use grep -help to for command format\n";
+			statusCode = 1;
 			return errorMsg;
+		}
+				
+		initialiseGrepVariables();
+		
+		if(inputType==FILEINPUT)
+		{
+			fileNameStartIndex = getFileNameStartIndex(command);
+			fileContent = new String[commandSize - fileNameStartIndex];
+			for(i = fileNameStartIndex; i<commandSize; i++) {
+				try {
+					fileContent[j] = getFileContents(workingDir, command[i]);
+				} catch (IOException e) {
+					errorMsg = command[i]+COLON+SPACE+"No such files or directory\n";
+					statusCode = 2;
+					fileContent[j] = errorMsg;
+				}
+				j++;
+			}
+		}
+		else
+		{
+			stdContent = getStdInputContents();
 		}
 		
 		if(inputType == FILEINPUT )
 		{
 			for(i = 0; i<fileContent.length; i++) {
-				result = result + processContents(fileContent[i]);
+				if(!fileContent[i].contains("No such files or directory"))
+					result = result + processContents(fileContent[i]);
+				else
+					result = result + fileContent[i];
 			}
 			
 			return result;
 		}
 		else
 		{
-			//testing for junit!! 
-			//remove this line and comment the while loop when doing thread testing.
-			result = processContents(stdContent);
-			return result;
-			/*
+			/*testing for junit!! 
+			*result = processContents(stdContent);
+			*return result;
+			*/
 			while(true)
 			{
 				
-				System.out.print(output);
-				content = myScan.next();
+				System.out.print(result);
+				stdContent = myScan.nextLine();
 				result = processContents(stdContent);
 			}
-			*/
-		}
-		
 			
+		}
 	}
 
+	//Check if the Command is a help command
+	private boolean isHelpCommand(String[] command2) {
+		
+		if(command2.length == 2 && command2[1].equals("-help"))
+			return true;
+		else
+			return false;
+	}
+
+	//Check if the Grep Command is valid
+	private boolean isInvalidGrepCommand(String[] command2) {
+		
+		if(isOption(command2[1]))
+		{
+			if(command2.length < 3)
+				return false;
+			if(!isOptionNumValid(command2))
+				return false;
+		}
+		
+		return true;
+	}
+
+	//Check if the Option NUM is valid
+	private boolean isOptionNumValid(String[] command2) {
+		
+		
+		if(command2[1].equals("-A")||command2[1].equals("-B")||command2[1].equals("-C"))
+		{
+			if(command2.length < 4)
+				return false;
+			
+			try {
+				Integer.parseInt(command2[2]);
+			} catch (Exception e)
+			{
+				return false;
+			}
+		}
+	
+		return true;
+	}
+
+	//Initialising the Grep Variables
+	private void initialiseGrepVariables() {
+		
+		commandSize = command.length;
+		inputType = checkForInputType(command);
+		stdContent = EMPTY;
+		result = EMPTY;
+		statusCode = 0;
+	}
+
+	//Get the start index of input files
 	private int getFileNameStartIndex(String[] command) {
 		
 		int fileIndex = -1; 
@@ -113,15 +176,19 @@ public class GREPTool implements IGrepTool {
 		return fileIndex;
 	}
 
+	//Check if the grep command has any option
 	private boolean isOption(String command) {
 		return command.equals("-A")| command.equals("-B") | command.equals("-C") |
 				command.equals("-v")| command.equals("-o") | command.equals("-c");
 	}
+	
+	//Get the Status code of grep
 	@Override
 	public int getStatusCode() {
-		return 0;
+		return statusCode;
 	}
 
+	//Get the number of matching Lines
 	@Override
 	public int getCountOfMatchingLines(String pattern, String input) {
 		
@@ -141,6 +208,7 @@ public class GREPTool implements IGrepTool {
 		return matchCount;
 	}
 
+	//Get the matchingLines
 	@Override
 	public String getOnlyMatchingLines(String pattern, String input) {
 		
@@ -160,6 +228,7 @@ public class GREPTool implements IGrepTool {
 		return matchLine;
 	}
 
+	//Get the matchingLines with Trailing context
 	@Override
 	public String getMatchingLinesWithTrailingContext(int option_A,
 			String pattern, String input) {
@@ -187,6 +256,7 @@ public class GREPTool implements IGrepTool {
 		
 	}
 
+	//Get the matching Lines with Leading Context
 	@Override
 	public String getMatchingLinesWithLeadingContext(int option_B,
 			String pattern, String input) {
@@ -214,6 +284,7 @@ public class GREPTool implements IGrepTool {
 				
 	}
 
+	//Get the matchingLines with output context
 	@Override
 	public String getMatchingLinesWithOutputContext(int option_C,
 			String pattern, String input) {
@@ -242,6 +313,7 @@ public class GREPTool implements IGrepTool {
 
 	}
 
+	//Get only the matching part
 	@Override
 	public String getMatchingLinesOnlyMatchingPart(String pattern, String input) {
 		
@@ -261,6 +333,7 @@ public class GREPTool implements IGrepTool {
 		return matchLine;
 	}
 
+	//Get the non matching Lines
 	@Override
 	public String getNonMatchingLines(String pattern, String input) {
 		
@@ -280,12 +353,29 @@ public class GREPTool implements IGrepTool {
 		return matchLine;
 	}
 
+	//Get the help message
 	@Override
 	public String getHelp() {
 		
-		return null;
+		String helpMsg = "Command Format - grep [OPTIONS] PATTERN [FILE] PATTERN\n"+
+						 "This specifies a regular expression pattern that describes a set of strings\n"+
+						 "FILE - Name of the file, when no file is present (denoted by -) use standard input\n"+
+						 "OPTIONS\n"+
+						 "-A NUM : Print NUM lines of trailing context after matching lines\n"+
+						 "-B NUM : Print NUM lines of leading context before matching lines " +
+						 "-C NUM : Print NUM lines of output context\n" +
+						 "-c : Suppress normal output. Instead print a count of matching lines for each input file\n" +
+						 "-o : Show only the part of a matching line that matches PATTERN\n" +
+						 "-v : Select non-matching (instead of matching) lines\n" +
+						 "-help : Brief information about supported options\n"+
+						 "Examples:\n"+ 
+						 "grep -A 3 haha hahaha.txt\n"+
+						 "grep -o hoho Pokemon.txt\n";
+		
+		return helpMsg;
 	}
 	
+	//Check if the input is STD input or file input
 	private int checkForInputType(String[] command2) {
 		
 		if(isOption(command2[1]))
@@ -297,7 +387,9 @@ public class GREPTool implements IGrepTool {
 					contentStartIndex = 4;
 					return STDINPUT;
 				}
-			
+			}
+			else
+			{	
 				if(command2[3].startsWith(DASH))
 				{
 					contentStartIndex = 3;
@@ -319,6 +411,7 @@ public class GREPTool implements IGrepTool {
 		return FILEINPUT;
 	}
 
+	//Get the contents from STD
 	private String getStdInputContents() {
 		
 		String stdContent = mergeContent();
@@ -330,6 +423,7 @@ public class GREPTool implements IGrepTool {
 		return stdContent;
 	}
 
+	//merge all the contents from STD as we have split the command for all SPACES
 	private String mergeContent() {
 		
 		int i;
@@ -344,6 +438,7 @@ public class GREPTool implements IGrepTool {
 		return stdContent;
 	}
 
+	//Using the pattern, options and content, process the relevant output  
 	private String processContents(String content) {
 		
 		String output = EMPTY;
@@ -369,7 +464,7 @@ public class GREPTool implements IGrepTool {
 		return output;
 	}
 	
-	
+	//Get the contents inside the files
 	private String getFileContents (File workdir, String fileName) throws IOException {
 		
 		String path; 
@@ -385,6 +480,7 @@ public class GREPTool implements IGrepTool {
 		return readFile(file);
 	}
 	
+	//Read from a file
 	private String readFile(File file) throws IOException {
 		
 	    BufferedReader br = new BufferedReader(new FileReader(file));
@@ -406,31 +502,5 @@ public class GREPTool implements IGrepTool {
 	    }
 	}
 	
-	/*
-	//Helper Methods
-	private String[] splitCommand(String command) {
-		return command.split(SPACE);
-	}
 	
-	private boolean isCommandValid(String[] command) {
-		if(checkCommandLength(command) 
-		
-		return true;
-	}
-
-	private boolean checkCommandLength(String[] command) {
-		if(command.length!=4) {
-			errorMsg = "Command Length is Invalid";
-			return false;
-		}
-		
-		return true;
-	}
-	
-	private boolean checkCommandOption(String commandOption) {
-		
-	
-		
-	}
-	*/
 }
