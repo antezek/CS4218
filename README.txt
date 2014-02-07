@@ -1,0 +1,17 @@
+README
+
+Important Note for GREP:
+As the requirements stated, the "ctrl-z" is said to be parse as standard input to stop any ongoing process, 
+instead of having a listener to detect ctrl-z.
+
+Thus it clashes with the Grep Standard input logic, which means if the user type in
+"ctrl-z" during the input prompt for Grep, Grep will interpret it as a standard input and 
+tries to match it with the pattern given while at the same time, the thread will see the "ctrl-z"
+as a sign to stop the Grep process. 
+
+As a result, "ctrl-z" of the THREAD is disabled for Grep and it is implemented locally at the GREPTool class,
+thus for single/multiple files input instead of standard input, "ctrl-z" of the thread will NOT be able to 
+stop the process.
+
+
+
