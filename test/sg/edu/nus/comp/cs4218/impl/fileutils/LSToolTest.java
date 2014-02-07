@@ -14,17 +14,38 @@ import org.junit.Test;
  */
 public class LSToolTest {
 	private LSTool lsTool;
-	private String workingDir;
+	private String validDir;
+	private String emptyDir;
+	private File a;
+	private File b;
+	private File valid;
+	private File empty;
 
 	@Before
 	public void setUp() throws Exception {
 		lsTool = new LSTool();
+		validDir = "./misc/LSToolTestValid";
+		emptyDir = "./misc/LSToolTestEmpty";
+		valid = new File(validDir);
+		empty = new File(emptyDir);
+		a = new File(valid, "aaa.txt");
+		b = new File(valid, "bbb.txt");
+		
+		valid.mkdir();
+		empty.mkdir();
+		a.createNewFile();
+		b.createNewFile();
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		lsTool = null;
-		workingDir = null;
+		validDir = null;
+		emptyDir = null;
+		a.delete();
+		b.delete();
+		valid.delete();
+		empty.delete();
 	}
 
 	/**
@@ -32,8 +53,7 @@ public class LSToolTest {
 	 */
 	@Test
 	public void getValidDirectoryListingTest() {
-		workingDir = "./misc/LSToolTest/lstoolvalid";
-		File f = new File(workingDir);
+		File f = new File(validDir);
 		String expected = "aaa.txt" +"\n"
 							+ "bbb.txt";
 		String result = lsTool.getStringForFiles(lsTool.getFiles(f));
@@ -46,8 +66,7 @@ public class LSToolTest {
 	 */
 	@Test
 	public void getEmptyDirectoryListingTest() {
-		workingDir = "./misc/LSToolTest/lstoolempty";
-		File f = new File(workingDir);
+		File f = new File(emptyDir);
 		String expected = "Error: No files in working directory";
 		String result = lsTool.getStringForFiles(lsTool.getFiles(f));
 		assertEquals(result, expected);

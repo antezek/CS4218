@@ -167,6 +167,9 @@ public class Shell implements IShell {
 		startRun();
 	}
 	
+	/**
+	 * Starts the main program
+	 */
 	public static void startRun() {
 		Runnable run=null;
 		ITool tool=null;
@@ -183,6 +186,10 @@ public class Shell implements IShell {
 		}
 	}
 	
+	/**
+	 * Start main thread to execute instruction
+	 * @param run
+	 */
 	public static void startMainThread(Runnable run) {
 		mainThread = new Thread(run);
 		hm.put("t1", mainThread);
@@ -192,6 +199,9 @@ public class Shell implements IShell {
 		}
 	}
 	
+	/**
+	 * Starts interrupt listener to listen for ctrl-z interrupt
+	 */
 	public static void startInterruptListener() {
 		Runnable listener = new Runnable() {
 			@Override
@@ -233,11 +243,20 @@ public class Shell implements IShell {
 		}
 	}
 	
+	/**
+	 * Read user input
+	 * @return
+	 */
 	public static String readUserInput() {
 		System.out.print("command:");
 		return scanner.nextLine();
 	}
 
+	/**
+	 * Determines the type of command user entered
+	 * @param command
+	 * @return
+	 */
 	private static COMMAND determineCommandType(String command) {
 
 		if (command.equalsIgnoreCase(CMD_PWD)) {
@@ -265,6 +284,11 @@ public class Shell implements IShell {
 		}
 	}
 
+	/**
+	 * Gets the command the user entered
+	 * @param userInputString
+	 * @return
+	 */
 	private static String getCommand(String userInputString) {
 		return userInputString.trim().split(REGEX_WHITE_SPACE)[0];
 	}
