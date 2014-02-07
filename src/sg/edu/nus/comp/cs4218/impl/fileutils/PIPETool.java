@@ -1,6 +1,9 @@
 package sg.edu.nus.comp.cs4218.impl.fileutils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import sg.edu.nus.comp.cs4218.ITool;
 import sg.edu.nus.comp.cs4218.extended1.IPipingTool;
@@ -17,6 +20,7 @@ public class PIPETool extends ATool implements IPipingTool {
 	
 	private Shell s;
 	private File workDir;
+	private File tempFile;
 
 	public PIPETool() {
 		super(null);
@@ -25,10 +29,7 @@ public class PIPETool extends ATool implements IPipingTool {
 
 	@Override
 	public String pipe(ITool from, ITool to) {
-		ITool startTool, endTool;
 
-		startTool = determineTool(from);
-		endTool = determineTool(to);
 		return null;
 	}
 
@@ -51,6 +52,17 @@ public class PIPETool extends ATool implements IPipingTool {
 		pipeCommand = strInputCmdPipe.split("[|]+");
 		pipeCmdCount = pipeCommand.length;
 		
+		// formatting commands
+		for (int i = 0; i < pipeCmdCount; i++) {
+			pipeCommand[i] = ltrim(pipeCommand[i]);
+			StringBuilder sb = new StringBuilder(pipeCommand[i]);
+			
+			if (pipeCommand[i].charAt(pipeCommand[i].length() -1) == ' ') {
+				sb = sb.deleteCharAt(pipeCommand[i].length() -1);
+				pipeCommand[i] = sb.toString();
+			}
+		}
+		
 		// Check for valid commands
 		for (int i = 0; i < pipeCmdCount; i++) {
 			isValid = checkValidCommandTypeForPipe(Helper.getCommand(pipeCommand[i]), isFirst);
@@ -65,19 +77,30 @@ public class PIPETool extends ATool implements IPipingTool {
 			// parsing first command
 			tool = s.parse(pipeCommand[0]);
 			result = tool.execute(workingDir, pipeCommand[0]);
+			createPIPEFile(result);
 			
 			// parsing subsequent commands
 			for (int i = 1; i < pipeCmdCount; i++) {
 				tool = s.parse(pipeCommand[i]);
-				result = pipe(pipeCommand[i] + result, tool);
+				result = pipe(pipeCommand[i] +" " + tempFile.getAbsolutePath(), tool);
+				createPIPEFile(result);
 			}
 		}
 		else {
 			// invalid command; stop execution
 			return "invalid input";
 		}
-
+		
+		tempFile.delete();
 		return result;
+	}
+	
+	public static String ltrim(String s) {
+		int i = 0;
+		while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
+			i++;
+		}
+		return s.substring(i);
 	}
 
 	/**
@@ -114,24 +137,26 @@ public class PIPETool extends ATool implements IPipingTool {
 
 	}
 	
-	/**
-	 * Determine the tool for PIPE command processing
-	 * @param tool
-	 * @return
-	 */
-	public ITool determineTool(ITool tool) {
-		if (tool instanceof PWDTool) {
-			return new PWDTool();
-		} else if (tool instanceof CDTool) {
-			return new CDTool();
-		} else if (tool instanceof LSTool) {
-			return new LSTool();
-		} else if (tool instanceof CATTool) {
-			return new CATTool();
-		} else if (tool instanceof ECHOTool) {
-			return new ECHOTool();
+	private void createPIPEFile(String result) {
+		try {
+			tempFile = new File("./misc/temppipefile.txt");
+			
+			if (tempFile.exists()) {
+				tempFile.delete();
+			}
+			else {
+				tempFile.createNewFile();
+			}
+			
+			// Adding contents
+			FileWriter fstream = new FileWriter(tempFile);
+			BufferedWriter out = new BufferedWriter(fstream);
+			out.write(result);
+			out.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return null;
 	}
 
 }

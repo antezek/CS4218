@@ -24,6 +24,7 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.LSToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PIPETool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.PIPEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDToolRunnable;
 
@@ -44,9 +45,6 @@ public class Shell implements IShell {
 	private static final String CMD_ECHO = "echo";
 	private static final String CMD_GREP = "grep";
 	private static final String CMD_PIPE = "pipe";
-
-	// Regex
-	private static final String REGEX_WHITE_SPACE = "\\s+";
 
 	// List of commands
 	private enum COMMAND {
@@ -143,10 +141,9 @@ public class Shell implements IShell {
 			return new ECHOToolRunnable(workingDir, stdin);
 		} else if (tool instanceof GREPTool) {
 			return new GREPToolRunnable(workingDir, stdin);
-	    }
-		// else if (tool instanceof PIPETool) {
-		// return new PIPEToolRunnable(workingDir, stdin);
-		// }
+		} else if (tool instanceof PIPETool) {
+			return new PIPEToolRunnable(workingDir, stdin);
+		}
 		return null;
 	}
 
