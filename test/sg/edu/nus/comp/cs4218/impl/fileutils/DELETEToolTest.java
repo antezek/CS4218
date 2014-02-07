@@ -8,10 +8,11 @@ import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-;
-;
-;
 
+/**
+ * DELETEToolTest class to test the functionality of DELETETool
+ *
+ */
 public class DELETEToolTest {
 	private DELETETool delTool;
 	private File toDelete;
@@ -29,9 +30,11 @@ public class DELETEToolTest {
 		toDelete = null;
 	}
 
+	/**
+	 * Test expected behaviour of deleting a file
+	 */
 	@Test
 	public void deleteFileTest() {
-		// Test expected behaviour
 		assertTrue(delTool.delete(toDelete));
 		assertFalse(toDelete.exists());
 	}

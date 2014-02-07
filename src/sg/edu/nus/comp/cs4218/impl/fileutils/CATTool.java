@@ -4,14 +4,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
 
 import sg.edu.nus.comp.cs4218.fileutils.ICatTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
 
+/**
+ * CATTool to provide basic functionality of CAT command
+ *
+ */
 public class CATTool extends ATool implements ICatTool {
 	private static final String MESSAGE_FILE_NAME_NULL = "Error: file name null";
 	private static final String MESSAGE_FILE_NOT_FOUND = "Error: file not found";
+	private static final String MESSAGE_FILE_CONTENTS_EMPTY = "File is empty";
 
 	public CATTool() {
 		super(null);
@@ -29,12 +33,16 @@ public class CATTool extends ATool implements ICatTool {
 				displayString += nextLine +"\n";
 			}
 			br.close();
+			
+			if (displayString.equalsIgnoreCase("")) {
+				displayString = MESSAGE_FILE_CONTENTS_EMPTY;
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		return displayString;
+		return displayString.trim();
 	}
 
 	@Override
@@ -45,7 +53,7 @@ public class CATTool extends ATool implements ICatTool {
 		if (!isFileNameNull(parts)) {
 			for (int i = 1; i < parts.length; i++) {
 				if (!parts[i].equalsIgnoreCase("-")) {
-					File toRead = isValidFile(workingDir, parts[i]);
+					File toRead = Helper.isValidFile(workingDir, parts[i]);
 					if (toRead != null) {
 						result += getStringForFile(toRead);
 					}
@@ -55,10 +63,7 @@ public class CATTool extends ATool implements ICatTool {
 					}
 				}
 				else {
-					System.out.print("enter text:");
-					Scanner sc = new Scanner(System.in);
-					String input = sc.nextLine();
-					result += input +"\n";
+					// do nothing
 				}
 			}
 		}
@@ -67,22 +72,6 @@ public class CATTool extends ATool implements ICatTool {
 			return MESSAGE_FILE_NAME_NULL;
 		}
 		return result.trim();
-	}
-	
-	private static File isValidFile(File workingDir, String fileName) {
-		File f = new File(fileName);
-		
-		if (f.exists()) {
-			return f;
-		}
-		else {
-			f = new File(workingDir.getAbsolutePath() +"\\" +fileName);
-			
-			if (f.exists()) {
-				return f;
-			}
-		}
-		return null;
 	}
 	
 	private static boolean isFileNameNull(String[] fileName) {

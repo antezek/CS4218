@@ -5,6 +5,10 @@ import java.io.File;
 import sg.edu.nus.comp.cs4218.fileutils.IDeleteTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
 
+/**
+ * DELETETool to provide basic functionality of DELETE command
+ *
+ */
 public class DELETETool extends ATool implements IDeleteTool {
 	private static final String MESSAGE_DELETE_SUCCESS = "Deleted file %1$s";
 	private static final String MESSAGE_DELETE_ERROR ="Error: failed to delete file";

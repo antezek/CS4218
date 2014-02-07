@@ -8,6 +8,10 @@ import sg.edu.nus.comp.cs4218.fileutils.ILsTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
 
 
+/**
+ * LSTool to provide basic functionality of LS command
+ *
+ */
 public class LSTool extends ATool implements ILsTool {
 	private static final String MESSAGE_NO_FILES_IN_DIR = "Error: No files in working directory";
 

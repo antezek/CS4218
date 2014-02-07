@@ -6,6 +6,10 @@ import java.io.IOException;
 import sg.edu.nus.comp.cs4218.fileutils.ICopyTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
 
+/**
+ * COPYTool to provide basic functionality of copying a file
+ *
+ */
 public class COPYTool extends ATool implements ICopyTool {
 	private static final String MESSAGE_COPY_SUCCESS ="Copied file %1$s to %2$s";
 	private static final String MESSAGE_COPY_ERROR ="Error: failed to copy file";

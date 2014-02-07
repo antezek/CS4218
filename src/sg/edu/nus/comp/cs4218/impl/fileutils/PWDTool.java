@@ -6,6 +6,10 @@ import sg.edu.nus.comp.cs4218.fileutils.IPwdTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
 
 
+/**
+ * PWDTool to provide basic functionality of PWD command
+ *
+ */
 public class PWDTool extends ATool implements IPwdTool{
 	String result = "";
 	

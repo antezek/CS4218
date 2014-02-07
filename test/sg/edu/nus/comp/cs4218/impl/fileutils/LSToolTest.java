@@ -8,6 +8,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * LSToolTest class to test the functionality of LSTool
+ *
+ */
 public class LSToolTest {
 	private LSTool lsTool;
 	private String workingDir;
@@ -23,6 +27,9 @@ public class LSToolTest {
 		workingDir = null;
 	}
 
+	/**
+	 * Test expected behaviour of listing valid directory
+	 */
 	@Test
 	public void getValidDirectoryListingTest() {
 		workingDir = "./misc/LSToolTest/lstoolvalid";
@@ -34,6 +41,9 @@ public class LSToolTest {
 		assertEquals(lsTool.getStatusCode(), 0);
 	}
 	
+	/**
+	 * Test error handling of listing empty directory
+	 */
 	@Test
 	public void getEmptyDirectoryListingTest() {
 		workingDir = "./misc/LSToolTest/lstoolempty";

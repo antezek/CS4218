@@ -6,6 +6,10 @@ import java.io.IOException;
 import sg.edu.nus.comp.cs4218.fileutils.IMoveTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
 
+/**
+ * MOVETool to provide basic functionality of MOVE command
+ *
+ */
 public class MOVETool extends ATool implements IMoveTool {
 	private static final String MESSAGE_MOVE_SUCCESS ="Moved file %1$s to %2$s";
 	private static final String MESSAGE_MOVE_ERROR ="Error: failed to move file";
