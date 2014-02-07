@@ -222,7 +222,8 @@ public class GREPToolTest {
 		String matchLines1 = grepToolTest.execute(wrkDir, stdin1);
 		String matchLines2 = grepToolTest.execute(wrkDir, stdin2);
 		
-		String expected1 = "Fashion is a general term for a popular style or practice, especially in clothing, footwear,\n" +
+		String expected1 = "PASSAGE.txt:\n"+
+						   "Fashion is a general term for a popular style or practice, especially in clothing, footwear,\n" +
 				  		   "accessories, makeup, body piercing, or furniture.\n" +
 		                   "Fashion refers to a distinctive and often habitual trend in the style\n" +
 		                   "in which a person dresses or to prevailing styles in behaviour.\n" +
@@ -231,7 +232,8 @@ public class GREPToolTest {
 		                   "while Fashion means clothing more generally, including the study of it.\n" +
 		                   "Although aspects of fashion can be feminine or masculine, some trends are androgynous.\n";
 		
-		String expected2 = "LOST.txt: No such files or directory\n";
+		String expected2 = "LOST.txt:\n"+
+						   "No such files or directory\n";
 		
 		assertEquals(matchLines1, expected1);	
 		assertEquals(matchLines2, expected2);	
@@ -245,7 +247,8 @@ public class GREPToolTest {
 				
 		File wrkDir = new File(curDir);
 		String stdin = "grep -C 2 haha PASSAGE2.txt PASSAGE3.txt";
-		String expected = "Right from haha the start\n"+
+		String expected = "PASSAGE2.txt:\n"+
+						  "Right from haha the start\n"+
 						  "You were a thief you stole my heart\n"+
 						  "And I your willing victim\n"+
 						  "And with every touch you fixed them\n"+
@@ -266,6 +269,7 @@ public class GREPToolTest {
 						  "Oh oh\n"+
 						  "There's nothing more than empty sheets\n"+
 						  "Between haha our love, our love, oh our love, our love\n"+
+						  "PASSAGE3.txt:\n"+
 						  "that the use of the former has been relegated to special senses like fancy dress or masquerade wear,\n"+
 						  "while Fashion means clothing more generally, including the study of it.\n"+
 						  "Although aspects of fashion haha can be feminine or masculine, some trends are androgynous.\n";
@@ -274,7 +278,8 @@ public class GREPToolTest {
 		assertEquals(matchLine,expected);
 		
 		String stdin2 = "grep -C 2 haha PASSAGE2.txt LOST.txt";
-		String expected2 = "Right from haha the start\n"+
+		String expected2 = "PASSAGE2.txt:\n"+
+						   "Right from haha the start\n"+
 				  		   "You were a thief you stole my heart\n"+
 				  		   "And I your willing victim\n"+
 				  		   "And with every touch you fixed them\n"+
@@ -295,7 +300,8 @@ public class GREPToolTest {
 				  		   "Oh oh\n"+
 				  		   "There's nothing more than empty sheets\n"+
 				  		   "Between haha our love, our love, oh our love, our love\n"+
-				  		   "LOST.txt: No such files or directory\n";
+				  		   "LOST.txt:\n"+
+				  		   "No such files or directory\n";
 		
 		String matchLine2 = grepToolTest.execute(wrkDir, stdin2);
 		assertEquals(matchLine2,expected2);

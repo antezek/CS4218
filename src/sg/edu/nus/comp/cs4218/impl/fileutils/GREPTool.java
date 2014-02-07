@@ -75,7 +75,7 @@ public class GREPTool extends ATool implements IGrepTool {
 				try {
 					fileContent[j] = getFileContents(workingDir, command[i]);
 				} catch (IOException e) {
-					errorMsg = command[i]+COLON+SPACE+"No such files or directory\n";
+					errorMsg = command[i]+COLON+EOL+"No such files or directory\n";
 					statusCode = 2;
 					fileContent[j] = errorMsg;
 				}
@@ -91,7 +91,7 @@ public class GREPTool extends ATool implements IGrepTool {
 		{
 			for(i = 0; i<fileContent.length; i++) {
 				if(!fileContent[i].contains("No such files or directory"))
-					result = result + processContents(fileContent[i]);
+					result = result + command[fileNameStartIndex+i]+COLON+EOL+processContents(fileContent[i]);
 				else
 					result = result + fileContent[i];
 			}
