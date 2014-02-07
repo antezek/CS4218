@@ -17,6 +17,7 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.DELETEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.GREPTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.GREPToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.LSTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.LSToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVETool;
@@ -138,11 +139,9 @@ public class Shell implements IShell {
 			return new CATToolRunnable(workingDir, stdin);
 		} else if (tool instanceof ECHOTool) {
 			return new ECHOToolRunnable(workingDir, stdin);
-		}
-		// TODO glen: uncomment when grep/pipe implemented
-		// else if (tool instanceof GREPTool) {
-		// return new GREPToolRunnable(workingDir, stdin);
-		// }
+		} else if (tool instanceof GREPTool) {
+		 return new GREPToolRunnable(workingDir, stdin);
+	    }
 		// else if (tool instanceof PIPETool) {
 		// return new PIPEToolRunnable(workingDir, stdin);
 		// }
@@ -168,13 +167,17 @@ public class Shell implements IShell {
 	}
 	
 	public static void startRun() {
+		Runnable run=null;
+		ITool tool=null;
 		while (true) {
 			stdin = readUserInput();
 			
 			Shell s = new Shell();
-			ITool tool = s.parse(stdin);
-			Runnable run = s.execute(tool);
-			
+			//for(int i=0;i<2;i++){
+				//System.out.println("here: "+i);
+				tool = s.parse(stdin);
+				run = s.execute(tool); 
+			//}
 			startMainThread(run);
 		}
 	}
