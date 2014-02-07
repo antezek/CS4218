@@ -68,4 +68,13 @@ public class Helper {
 			return false;
 		}
 	}
+	
+	/**
+	 * Gets the command the user entered
+	 * @param userInputString
+	 * @return
+	 */
+	public static String getCommand(String userInputString) {
+		return userInputString.trim().split(REGEX_WHITE_SPACE)[0];
+	}
 }

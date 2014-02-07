@@ -18,10 +18,12 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.GREPTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.GREPToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.Helper;
 import sg.edu.nus.comp.cs4218.impl.fileutils.LSTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.LSToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVEToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.PIPETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDToolRunnable;
 
@@ -85,36 +87,36 @@ public class Shell implements IShell {
 		}
 		
 	@Override
-	public ITool parse(String commandline) {
-		String userCommand = getCommand(commandline);
-		COMMAND command = determineCommandType(userCommand);
+	public ITool parse(String input) {
+		if (input.indexOf("|") != -1) {
+			return new PIPETool();
+		} else {
+			String userCommand = Helper.getCommand(input);
+			COMMAND command = determineCommandType(userCommand);
 
-		switch (command) {
-
-		case PWD:
-			return new PWDTool();
-		case CD:
-			return new CDTool();
-		case LS:
-			return new LSTool();
-		case COPY:
-			return new COPYTool();
-		case MOVE:
-			return new MOVETool();
-		case DELETE:
-			return new DELETETool();
-		case CAT:
-			return new CATTool();
-		case ECHO:
-			return new ECHOTool();
-		case GREP:
-			return new GREPTool();
-			// TODO glen: uncomment when pipe implemented
-			// case PIPE:
-			// return new PIPETool();
-		default:
-			System.err.println("Cannot parse " + commandline);
-			return null;
+			switch (command) {
+			case PWD:
+				return new PWDTool();
+			case CD:
+				return new CDTool();
+			case LS:
+				return new LSTool();
+			case COPY:
+				return new COPYTool();
+			case MOVE:
+				return new MOVETool();
+			case DELETE:
+				return new DELETETool();
+			case CAT:
+				return new CATTool();
+			case ECHO:
+				return new ECHOTool();
+			case GREP:
+				return new GREPTool();
+			default:
+				System.err.println("Cannot parse " + input);
+				return null;
+			}
 		}
 	}
 
@@ -280,14 +282,5 @@ public class Shell implements IShell {
 		} else {
 			return COMMAND.INVALID;
 		}
-	}
-
-	/**
-	 * Gets the command the user entered
-	 * @param userInputString
-	 * @return
-	 */
-	private static String getCommand(String userInputString) {
-		return userInputString.trim().split(REGEX_WHITE_SPACE)[0];
 	}
 }
