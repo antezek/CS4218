@@ -8,7 +8,12 @@ import java.util.Scanner;
 
 import sg.edu.nus.comp.cs4218.extended1.IGrepTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
+import sg.edu.nus.comp.cs4218.impl.Shell;
 
+/**
+ * GREPToolTest class to test the functionality of GREPTool
+ *
+ */
 public class GREPTool extends ATool implements IGrepTool {
 
 	private final String SPACE = " ";
@@ -80,6 +85,7 @@ public class GREPTool extends ATool implements IGrepTool {
 			}
 		} else {
 			stdContent = getStdInputContents();
+			Shell.setStdInput(false);
 		}
 
 		if (inputType == FILEINPUT) {

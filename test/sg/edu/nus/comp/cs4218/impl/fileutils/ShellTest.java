@@ -2,8 +2,6 @@ package sg.edu.nus.comp.cs4218.impl.fileutils;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Scanner;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,10 +9,12 @@ import org.junit.Test;
 import sg.edu.nus.comp.cs4218.ITool;
 import sg.edu.nus.comp.cs4218.impl.Shell;
 
+/**
+ * ShellTest class to test the basic functionality of Shell class
+ *
+ */
 public class ShellTest {
-
-	Shell shell;
-	Scanner scanner;
+	private Shell shell;
 
 	@Before
 	public void setUp() throws Exception {
@@ -24,10 +24,10 @@ public class ShellTest {
 
 	@After
 	public void tearDown() throws Exception {
-
+		shell = null;
 	}
 
-	/*
+	/**
 	 * testToolInstance() Test the input parse is working correctly and retrieve
 	 * the appropriate ITool
 	 */

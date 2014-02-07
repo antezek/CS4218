@@ -10,7 +10,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ HelperTest.class, GREPToolTest.class, CDToolTest.class,
 		DELETEToolTest.class, LSToolTest.class, MOVEToolTest.class,
 		PWDToolTest.class, ECHOToolTest.class, CATToolTest.class,
-		COPYToolTest.class, ShellTest.class })
+		COPYToolTest.class, PIPEToolTest.class, ShellTest.class })
 public class JUnitTestSuite {
 
 	@Test

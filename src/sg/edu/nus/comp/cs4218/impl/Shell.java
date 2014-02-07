@@ -33,7 +33,6 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.PWDToolRunnable;
  * sequence explains how a basic shell can be implemented in Java
  */
 public class Shell implements IShell {
-	// Tests
 	// List of user input commands
 	private static final String CMD_PWD = "pwd";
 	private static final String CMD_CD = "cd";
@@ -59,31 +58,40 @@ public class Shell implements IShell {
 	private static Thread mainThread = null;
 	private static Thread listenerThread = null;
 	private static HashMap<String, Thread> hm = null;
-	private static int timeFrame = 500;					//default value 500ms
+	private static int timeFrame = 500; // default value 500ms
 	private static boolean breakCmd = false;
-		
-	//Getter & Setter Methods
-		public static HashMap<String, Thread> getHm() {
-			return hm;
-		}
+	private static boolean isStdInput = true;
 
-		public static void setUHm(String tName,Thread thread) {
-			Shell.hm = new HashMap<String, Thread>();
-			Shell.hm.put(tName, thread);
-		}
+	// Getter & Setter Methods
+	public static HashMap<String, Thread> getHm() {
+		return hm;
+	}
 
-		public static void setupHm(){
-			Shell.hm = new HashMap<String, Thread>();
-		}
+	public static void setUHm(String tName, Thread thread) {
+		Shell.hm = new HashMap<String, Thread>();
+		Shell.hm.put(tName, thread);
+	}
 
-		public static void setTimeFrame(int timeFrame) {
-			Shell.timeFrame = timeFrame;
-		}
-		
-		public static boolean isBreakCmd() {
-			return breakCmd;
-		}
-		
+	public static void setupHm() {
+		Shell.hm = new HashMap<String, Thread>();
+	}
+
+	public static void setTimeFrame(int timeFrame) {
+		Shell.timeFrame = timeFrame;
+	}
+
+	public static boolean isBreakCmd() {
+		return breakCmd;
+	}
+	
+	public static boolean isStdInput() {
+		return isStdInput;
+	}
+
+	public static void setStdInput(boolean isStdInput) {
+		Shell.isStdInput = isStdInput;
+	}
+
 	@Override
 	public ITool parse(String input) {
 		if (input.indexOf("|") != -1) {
@@ -163,28 +171,26 @@ public class Shell implements IShell {
 		hm = new HashMap<String, Thread>();
 		startRun();
 	}
-	
+
 	/**
 	 * Starts the main program
 	 */
 	public static void startRun() {
-		Runnable run=null;
-		ITool tool=null;
+		Runnable run = null;
+		ITool tool = null;
 		while (true) {
 			stdin = readUserInput();
-			
+
 			Shell s = new Shell();
-			//for(int i=0;i<2;i++){
-				//System.out.println("here: "+i);
-				tool = s.parse(stdin);
-				run = s.execute(tool); 
-			//}
+			tool = s.parse(stdin);
+			run = s.execute(tool);
 			startMainThread(run);
 		}
 	}
-	
+
 	/**
 	 * Start main thread to execute instruction
+	 * 
 	 * @param run
 	 */
 	public static void startMainThread(Runnable run) {
@@ -195,7 +201,7 @@ public class Shell implements IShell {
 			startInterruptListener();
 		}
 	}
-	
+
 	/**
 	 * Starts interrupt listener to listen for ctrl-z interrupt
 	 */
@@ -204,29 +210,30 @@ public class Shell implements IShell {
 			@Override
 			public void run() {
 				Scanner s = new Scanner(System.in);
-				while (mainThread.isAlive()) {
+				while (mainThread.isAlive() && isStdInput) {
 					breakCmd = true;
 					System.out.print("Type \"ctrl-z\" to break: ");
 					String input = s.nextLine();
-					
+
 					if (input.equalsIgnoreCase("ctrl-z")) {
 						mainThread = (Thread) hm.get("t1");
 						mainThread.stop();
 						break;
-					}
-					else {
+					} else {
 						System.out.println("invalid command");
 					}
 				}
 				s.close();
 			}
 		};
-		
+
 		try {
+			
 			listenerThread = new Thread(listener);
 			listenerThread.sleep(timeFrame);
-			listenerThread.start();
-			
+			if(isStdInput){
+				listenerThread.start();
+			}
 			while (true) {
 				if (!mainThread.isAlive()) {
 					listenerThread.stop();
@@ -238,9 +245,10 @@ public class Shell implements IShell {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Read user input
+	 * 
 	 * @return
 	 */
 	public static String readUserInput() {
@@ -250,6 +258,7 @@ public class Shell implements IShell {
 
 	/**
 	 * Determines the type of command user entered
+	 * 
 	 * @param command
 	 * @return
 	 */

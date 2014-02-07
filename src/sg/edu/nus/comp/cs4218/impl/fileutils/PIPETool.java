@@ -111,7 +111,7 @@ public class PIPETool extends ATool implements IPipingTool {
 	 * @param isFirst
 	 * @return true if valid, false if otherwise
 	 */
-	private boolean checkValidCommandTypeForPipe(String command, boolean isFirst) {
+	public boolean checkValidCommandTypeForPipe(String command, boolean isFirst) {
 		boolean valid = false;
 		if (isFirst) {
 			// Processing first command
