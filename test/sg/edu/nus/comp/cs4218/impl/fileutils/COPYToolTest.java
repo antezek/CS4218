@@ -31,9 +31,9 @@ public class COPYToolTest {
 	@After
 	public void tearDown() throws Exception {
 		copyTool = null;
+		newFile.delete();
 		from.delete();
 		to.delete();
-		newFile.delete();
 	}
 
 	/**

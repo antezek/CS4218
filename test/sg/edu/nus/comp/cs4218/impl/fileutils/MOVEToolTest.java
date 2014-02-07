@@ -28,9 +28,9 @@ public class MOVEToolTest {
 	@After
 	public void tearDown() throws Exception {
 		moveTool = null;
+		newFile.delete();
 		from.delete();
 		to.delete();
-		newFile.delete();
 	}
 
 	/**
