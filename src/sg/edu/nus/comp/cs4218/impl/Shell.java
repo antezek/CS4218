@@ -120,7 +120,6 @@ public class Shell implements IShell {
 
 	@Override
 	public Runnable execute(ITool tool) {
-		// TODO Implement
 		File workingDir = new File(System.getProperty("user.dir"));
 
 		if (tool instanceof PWDTool) {

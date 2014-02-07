@@ -154,7 +154,6 @@ public class PIPETool extends ATool implements IPipingTool {
 			out.write(result);
 			out.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
