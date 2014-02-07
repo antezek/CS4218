@@ -5,6 +5,10 @@ import java.io.File;
 import sg.edu.nus.comp.cs4218.fileutils.IEchoTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
 
+/**
+ * ECHOTool to provide basic functionality of ECHO command
+ *
+ */
 public class ECHOTool extends ATool implements IEchoTool {
 	private static final String MESSAGE_ARGS_NULL = "Error: args null";
 	private static final String CMD_ECHO = "echo";

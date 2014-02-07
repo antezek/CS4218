@@ -9,12 +9,11 @@ import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-;
-;
-;
-;
-;
 
+/**
+ * CDToolTest class to test the functionality of CDTool
+ *
+ */
 public class CDToolTest {
 	private CDTool cdTool;
 	File tempcdfile;
@@ -31,6 +30,9 @@ public class CDToolTest {
 		tempcdfile.delete();
 	}
 
+	/**
+	 * Test expected behaviour of changing to valid directory
+	 */
 	@Test
 	public void changeValidDirectoryTest() {
 		String dir = "./misc";
@@ -39,6 +41,11 @@ public class CDToolTest {
 		assertEquals(f.getAbsolutePath(), newDir.getAbsolutePath());
 	}
 	
+	
+	/**
+	 * Test error handling of changing to invalid file directory
+	 * File is not a directory
+	 */
 	@Test
 	public void changeInvalidFileDirectoryTest() {
 		String dir = tempcdfile.getAbsolutePath();
@@ -47,6 +54,10 @@ public class CDToolTest {
 		assertTrue(cdTool.getStatusCode() != 0);
 	}
 	
+	/**
+	 * Test error handling of changing to invalid file directory
+	 * Directory does not exist
+	 */
 	@Test
 	public void changeNonexistentDirectoryTest() {
 		String dir = "./invalid";

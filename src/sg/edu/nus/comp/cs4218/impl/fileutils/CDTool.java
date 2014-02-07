@@ -5,6 +5,10 @@ import java.io.File;
 import sg.edu.nus.comp.cs4218.fileutils.ICdTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
 
+/**
+ * CDTool to provide basic functionality of CD command
+ *
+ */
 public class CDTool extends ATool implements ICdTool {
 	private static final String MESSAGE_DIR_CHANGE_SUCCESS = "Working dir changed to: %1$s";
 	private static final String MESSAGE_DIR_NULL = "Error: directory cannot be null";
@@ -23,7 +27,6 @@ public class CDTool extends ATool implements ICdTool {
 			return null;
 		}
 		else {
-			//TODO glen: check if this is safe to use
 			System.setProperty("user.dir", f.getAbsolutePath());
 			return f;
 		}

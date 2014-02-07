@@ -11,59 +11,111 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * HelperTest class to test the functionality of Helper
+ *
+ */
 public class HelperTest {
-	String dir;
-	String folderName;
-	String expected;
-	File result;
-	File f;
-	File workDir;
+	private String dirName;
+	private String fileName;
+	private String expected;
+	private String workingDir;
+	private File validFile;
+	private File result;
+	private File validDir;;
+	private File workDir;
 
 	@Before
 	public void setUp() throws Exception {
+		workingDir = "./misc";
+		dirName = "HelperTest";
+		validDir = new File("./misc/" +dirName);
+		validDir.mkdir();
 		
+		workDir = new File(workingDir);
+		fileName = "valid.txt";
+		validFile = new File("./misc/" +fileName);
+		validFile.createNewFile();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		dir = null;
-		folderName = null;
+		dirName = null;
+		fileName = null;
 		expected = null;
+		workingDir = null;
 		result = null;
-		f = null;
 		workDir = null;
+		validFile.delete();
+		validDir.delete();
 	}
 
+	/**
+	 * Test expected behaviour of checking for valid file directory
+	 */
 	@Test
 	public void validFileDirectoryTest() {
 		// Test valid file directory
-		dir = "./misc/HelperTest";
-		f = new File(dir);
+		File f = new File(workingDir);
 		assertTrue(Helper.isValidDirectory(f));
 		
 		// Test valid file directory 2
-		String workingDir = "./misc";
 		workDir = new File(workingDir);
-		String folderName = "HelperTest";
-		f = new File(folderName);
+		expected = workDir.getAbsolutePath() + "\\" +dirName;
+		result = Helper.isValidDirectory(workDir, dirName);
 		
-		expected = workDir.getAbsolutePath() + "\\" +folderName;
-		result = Helper.isValidDirectory(workDir, folderName);
-		assertEquals(result.getAbsolutePath(), expected);
+		assertEquals(expected, result.getAbsolutePath());
 		
 	}
 	
+	/**
+	 * Test error handling of checking invalid file directory
+	 */
 	@Test
 	public void invalidFileDirectoryTest() {
 		// Test error handling: invalid file directory
-		dir = "./misc/InvalidHelper";
-		f = new File(dir);
+		workingDir = "./misc/InvalidHelper";
+		File f = new File(workingDir);
 		assertFalse(Helper.isValidDirectory(f));
 		
 		// Test error handling: invalid file directory
-		folderName = "InvalidTest";
-		workDir = new File(dir);
-		result = Helper.isValidDirectory(workDir, folderName);
+		dirName = "InvalidTest";
+		workDir = new File(workingDir);
+		result = Helper.isValidDirectory(workDir, dirName);
+		assertNull(result);
+	}
+	
+	/**
+	 * Test expected behaviour of checking valid file
+	 */
+	@Test
+	public void validFileTest() {
+		// Test valid file with full file path
+		workDir = new File(workingDir);
+		expected = validFile.getAbsolutePath();
+		result = Helper.isValidFile(workDir, validFile.getAbsolutePath());
+		assertEquals(expected, result.getAbsolutePath());
+		
+		// Test valid file with only file name
+		expected = workDir.getAbsolutePath() +"\\" +fileName;
+		result = Helper.isValidFile(workDir, fileName);
+		assertEquals(expected, result.getAbsolutePath());
+		
+	}
+	
+	/**
+	 * Test error handling checking of checking invalid file
+	 */
+	@Test
+	public void invalidFileTest() {
+		// Test error handling: invalid file
+		fileName = "invalid.txt";
+		result = Helper.isValidFile(workDir, fileName);
+		assertNull(result);
+		
+		// Test error handling: invalid file
+		fileName = "./misc/secondinvalid.txt";
+		result = Helper.isValidFile(workDir, fileName);
 		assertNull(result);
 	}
 
