@@ -364,7 +364,7 @@ public class GREPToolTest {
 				
 		File wrkDir = new File(curDir);
 		String stdin = "grep -C yoyo haha";
-		String expected = "Invalid Grep Command: Use grep -help to for command format\n";
+		String expected = "Invalid Grep Command: Use grep -help for command format\n";
 		
 		String matchLines = grepToolTest.execute(wrkDir, stdin);
 		

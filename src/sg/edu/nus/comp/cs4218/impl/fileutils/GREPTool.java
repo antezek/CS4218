@@ -66,7 +66,7 @@ public class GREPTool extends ATool implements IGrepTool {
 		}
 				
 		initialiseGrepVariables();
-		
+				
 		if(inputType==FILEINPUT)
 		{
 			fileNameStartIndex = getFileNameStartIndex(command);
@@ -119,6 +119,7 @@ public class GREPTool extends ATool implements IGrepTool {
 		}
 	}
 
+	//Check if command is Empty
 	private boolean isEmptyCommand(String[] command2) {
 		if(command2.length<2)
 			return true;
@@ -179,12 +180,6 @@ public class GREPTool extends ATool implements IGrepTool {
 		statusCode = 0;
 	}
 
-	public boolean isFileInput() {
-		if(inputType == FILEINPUT)
-			return true;
-		else
-			return false;
-	}
 	//Get the start index of input files
 	private int getFileNameStartIndex(String[] command) {
 		

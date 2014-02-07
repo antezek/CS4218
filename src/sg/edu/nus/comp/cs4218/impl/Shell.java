@@ -61,8 +61,7 @@ public class Shell implements IShell {
 	private static HashMap<String, Thread> hm = null;
 	private static int timeFrame = 500;					//default value 500ms
 	private static boolean breakCmd = false;
-	private static boolean isStdInput = true;
-	
+		
 	//Getter & Setter Methods
 		public static HashMap<String, Thread> getHm() {
 			return hm;
@@ -141,7 +140,7 @@ public class Shell implements IShell {
 		} else if (tool instanceof ECHOTool) {
 			return new ECHOToolRunnable(workingDir, stdin);
 		} else if (tool instanceof GREPTool) {
-		 return new GREPToolRunnable(workingDir, stdin);
+			return new GREPToolRunnable(workingDir, stdin);
 	    }
 		// else if (tool instanceof PIPETool) {
 		// return new PIPEToolRunnable(workingDir, stdin);
@@ -207,7 +206,7 @@ public class Shell implements IShell {
 			@Override
 			public void run() {
 				Scanner s = new Scanner(System.in);
-				while (mainThread.isAlive() && isStdInput) {
+				while (mainThread.isAlive()) {
 					breakCmd = true;
 					System.out.print("Type \"ctrl-z\" to break: ");
 					String input = s.nextLine();
@@ -232,7 +231,6 @@ public class Shell implements IShell {
 			
 			while (true) {
 				if (!mainThread.isAlive()) {
-					isStdInput = true;
 					listenerThread.stop();
 					startRun();
 					break;
