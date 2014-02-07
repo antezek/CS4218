@@ -7,8 +7,9 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import sg.edu.nus.comp.cs4218.extended1.IGrepTool;
+import sg.edu.nus.comp.cs4218.impl.ATool;
 
-public class GREPTool implements IGrepTool {
+public class GREPTool extends ATool implements IGrepTool {
 	
 	private final String SPACE = " ";
 	private final String EOL = "\n";
@@ -31,8 +32,10 @@ public class GREPTool implements IGrepTool {
 	private int contentStartIndex;
 	private int fileNameStartIndex;
 	private int statusCode;
-
 	
+	public GREPTool() {
+		super(null);
+	}
 	/*
 	 * Execute: 
 	 * Main method to process Grep Command
@@ -45,12 +48,19 @@ public class GREPTool implements IGrepTool {
 		Scanner myScan = new Scanner(System.in);
 		command = stdin.split(SPACE);
 		
+		if(isEmptyCommand(command))
+		{
+			errorMsg = "Invalid Grep Command: Use grep -help for command format\n";
+			statusCode = 1;
+			return errorMsg;
+		}
+		
 		if(isHelpCommand(command))
 			return getHelp();
 		
 		if(!isInvalidGrepCommand(command))
 		{
-			errorMsg = "Invalid Grep Command: Use grep -help to for command format\n";
+			errorMsg = "Invalid Grep Command: Use grep -help for command format\n";
 			statusCode = 1;
 			return errorMsg;
 		}
@@ -96,13 +106,24 @@ public class GREPTool implements IGrepTool {
 			*/
 			while(true)
 			{
-				
+				result = processContents(stdContent);
 				System.out.print(result);
 				stdContent = myScan.nextLine();
-				result = processContents(stdContent);
+				if(!stdContent.equals("ctrl-z"))
+					result = processContents(stdContent);
+				else
+					break;
 			}
-			
+			result = EMPTY;
+			return result;
 		}
+	}
+
+	private boolean isEmptyCommand(String[] command2) {
+		if(command2.length<2)
+			return true;
+		
+		return false;
 	}
 
 	//Check if the Command is a help command
@@ -158,6 +179,12 @@ public class GREPTool implements IGrepTool {
 		statusCode = 0;
 	}
 
+	public boolean isFileInput() {
+		if(inputType == FILEINPUT)
+			return true;
+		else
+			return false;
+	}
 	//Get the start index of input files
 	private int getFileNameStartIndex(String[] command) {
 		
