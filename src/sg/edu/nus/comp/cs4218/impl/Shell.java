@@ -10,6 +10,8 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.CATTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.CATToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.CDTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.CDToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.COMMTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.COMMToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.COPYTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.COPYToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.DELETETool;
@@ -27,6 +29,8 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.PIPETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PIPEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.SORTTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.SORTToolRunnable;
 
 /**
  * The Shell is used to interpret and execute user's commands. Following
@@ -44,10 +48,12 @@ public class Shell implements IShell {
 	private static final String CMD_ECHO = "echo";
 	private static final String CMD_GREP = "grep";
 	private static final String CMD_PIPE = "pipe";
+	private static final String CMD_COMM = "comm";
+	private static final String CMD_SORT = "sort";
 
 	// List of commands
 	private enum COMMAND {
-		PWD, CD, LS, COPY, MOVE, DELETE, CAT, ECHO, GREP, PIPE, INVALID
+		PWD, CD, LS, COPY, MOVE, DELETE, CAT, ECHO, GREP, PIPE, COMM, SORT, INVALID
 	}
 
 	// Scanner
@@ -119,6 +125,10 @@ public class Shell implements IShell {
 				return new ECHOTool();
 			case GREP:
 				return new GREPTool();
+			case COMM:
+				return new COMMTool();
+			case SORT:
+				return new SORTTool();
 			default:
 				System.err.println("Cannot parse " + input);
 				return null;
@@ -150,6 +160,10 @@ public class Shell implements IShell {
 			return new GREPToolRunnable(workingDir, stdin);
 		} else if (tool instanceof PIPETool) {
 			return new PIPEToolRunnable(workingDir, stdin);
+		} else if (tool instanceof COMMTool) {
+			return new COMMToolRunnable(workingDir, stdin);
+		} else if (tool instanceof SORTTool) {
+			return new SORTToolRunnable(workingDir, stdin);
 		}
 		return null;
 	}
@@ -284,6 +298,10 @@ public class Shell implements IShell {
 			return COMMAND.GREP;
 		} else if (command.equalsIgnoreCase(CMD_PIPE)) {
 			return COMMAND.PIPE;
+		} else if (command.equalsIgnoreCase(CMD_COMM)) {
+			return COMMAND.COMM;
+		} else if (command.equalsIgnoreCase(CMD_SORT)) {
+			return COMMAND.SORT;
 		} else {
 			return COMMAND.INVALID;
 		}

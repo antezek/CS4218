@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.extended2.ICommTool;
 import sg.edu.nus.comp.cs4218.extended2.IPasteTool;
-import sg.edu.nus.comp.cs4218.impl.COMMTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.COMMTool;
 
 public class COMMToolTest {
 	
@@ -104,10 +104,11 @@ public class COMMToolTest {
 	@Test
 	//Test if overall control flow is correct
 	public void overallTest() {
-		String[] arguments = new String[]{"a.txt","b.txt"};
+		//String[] arguments = new String[]{"a.txt","b.txt"};
 
-		commTool = new COMMTool(arguments);
-		actualOutput = commTool.execute(workingDirectory, null);
+		//commTool = new COMMTool(arguments);
+		commTool = new COMMTool();
+		actualOutput = commTool.execute(workingDirectory, "comm a.txt b.txt");
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash + testNewLine +
 				testDash + testTab + "Banana" + testTab +testDash + testNewLine +
 				testDash + testTab + testDash + testTab + "Melon" + testNewLine +
@@ -131,7 +132,7 @@ public class COMMToolTest {
 		String fileName2 = "./b.txt";
 		String[] arguments = new String[]{"C:\\Users\\Dale\\a.txt","./b.txt"};
 		commTool = new COMMTool(arguments);		
-		actualOutput = commTool.execute(workingDirectory, null);
+		actualOutput = commTool.execute(workingDirectory, "comm C:\\Users\\Dale\\a.txt ./b.txt");
 
 		expectedOutput = "File 1 doesn't exist!";
 		assertEquals(expectedOutput, actualOutput);	
@@ -143,7 +144,7 @@ public class COMMToolTest {
 	public void compareFilesGiveHelpPriorityTest(){
 		String[] arguments = new String[]{"-c","-help","file1","file2"};
 		commTool = new COMMTool(arguments);
-		actualOutput = commTool.execute(workingDirectory, null);
+		actualOutput = commTool.execute(workingDirectory, "comm -c -help file1 file2");
 		expectedOutput = helpOutput;
 
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
@@ -158,8 +159,9 @@ public class COMMToolTest {
 		String input1 = "em1.txt";
 		String input2 = "em2.txt";
 		commTool = new COMMTool(arguments);
+		//Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory, "comm em1.txt em2.txt");	
 		//actualOutput = commTool.compareFiles(input1, input2);
-		actualOutput = commTool.execute(workingDirectory, null);	//Changes: use execute instead of compareFiles
 		expectedOutput = "";
 		
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
@@ -187,8 +189,9 @@ public class COMMToolTest {
 		String input1 = "a.txt";
 		String input2 = "c.txt";
 		commTool = new COMMTool(arguments);
+		//Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory, "comm a.txt c.txt");	
 		//actualOutput = commTool.compareFiles(input1, input2);
-		actualOutput = commTool.execute(workingDirectory, null);	//Changes: use execute instead of compareFiles
 		
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash + testNewLine +
 				testDash + testTab + "Batman" + testTab +testDash + testNewLine +
@@ -209,7 +212,8 @@ public class COMMToolTest {
 		String input1 = "a.txt";
 		String input2 = "b.txt";
 		commTool = new COMMTool(arguments);
-		actualOutput = commTool.execute(workingDirectory, null);	//Changes: use execute instead of compareFiles
+		//Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory, "comm a.txt b.txt");	
 		//actualOutput = commTool.compareFiles(input1, input2);
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash + testNewLine +
 				testDash + testTab + "Banana" + testTab +testDash + testNewLine +
@@ -227,7 +231,7 @@ public class COMMToolTest {
 		String input1 = "a.txt";
 		String input2 = "a.txt";
 		commTool = new COMMTool(arguments);
-		actualOutput = commTool.execute(workingDirectory, null);	//Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory, "comm a.txt a.txt");	//Changes: use execute instead of compareFiles
 		//actualOutput = commTool.compareFiles(input1, input2);
 		expectedOutput = 
 				 testDash + testTab + testDash + testTab + "Apple" + testNewLine +
@@ -244,7 +248,7 @@ public class COMMToolTest {
 		public void invalidCommand(){
 			String[] arguments = new String[]{"-e","a.txt","b.txt"};
 			commTool = new COMMTool(arguments);
-			actualOutput = commTool.execute(workingDirectory, null);
+			actualOutput = commTool.execute(workingDirectory, "comm -e a.txt b.txt");
 			expectedOutput = "Error: Invalid command";
 			/*
 			System.out.println("actualOutput:\n"+actualOutput);
@@ -263,7 +267,8 @@ public class COMMToolTest {
 		String input1 = "a.txt";
 		String input2 = "b.txt";
 		commTool = new COMMTool(arguments);
-		actualOutput = commTool.execute(workingDirectory, null);	//Changes: use execute instead of compareFiles
+		//Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory, "comm -c a.txt b.txt");	
 		//actualOutput = commTool.compareFilesCheckSortStatus(input1, input2);
 		
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash + testNewLine +
@@ -276,16 +281,20 @@ public class COMMToolTest {
 	}
 	
 
-	@Test		//TODO Waiting for Sort func to be finished
+	@Test		
 	//Negative case: File 2 not sorted
 	public void compareFilesCheckSortStatusTest2(){
-		String[] arguments = new String[]{"-c","a.txt","d.txt"};
+		String[] arguments = new String[]{"-c","a.txt","unsort.txt"};
 		String input1 = "a.txt";
 		String input2 = "d.txt";
 		commTool = new COMMTool(arguments);
-		actualOutput = commTool.execute(workingDirectory, null);	//Changes: use execute instead of compareFiles
+		//Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory, "comm -c a.txt unsort.txt"); 
+		expectedOutput = "File 2 not sorted!";	
 		//actualOutput = commTool.compareFilesCheckSortStatus(input1, input2);
-		expectedOutput = "File 2 not sorted!\n";
+
+		//Changes: modify the result from "File 2 not sorted!\n" to "File 2 not sorted!" to be more concise
+		//expectedOutput = "File 2 not sorted!\n";				
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 0);	
 	}
