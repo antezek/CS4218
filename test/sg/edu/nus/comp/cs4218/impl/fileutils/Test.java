@@ -20,8 +20,8 @@ public class Test {
 		actualOutput = st.execute(workingDirectory, stdin1);
 		System.out.println("actualOutput: "+actualOutput);
 		*/
-		COMMToolTest ctt = new COMMToolTest();
-		ctt.overallTest();
+		CUTToolTest ctt = new CUTToolTest();
+		ctt.dOptionRepeatedTest();
 	}
 
 }

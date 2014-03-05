@@ -16,6 +16,7 @@ public class WCTool extends ATool implements IWcTool {
 	private static final String MESSAGE_COMMAND_EMPTY = "Invalid WC Command: Use wc -help for command format\n";
 
 	private String[] parts;
+	
 	public WCTool() {
 		super(null);
 	}

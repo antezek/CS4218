@@ -14,6 +14,8 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.COMMTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.COMMToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.COPYTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.COPYToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.CUTTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.CUTToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.DELETETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.DELETEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOTool;
@@ -25,12 +27,16 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.LSTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.LSToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVEToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.PASTETool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.PASTEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PIPETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PIPEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.SORTTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.SORTToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.WCTool;
+import sg.edu.nus.comp.cs4218.impl.fileutils.WCToolRunnable;
 
 /**
  * The Shell is used to interpret and execute user's commands. Following
@@ -50,10 +56,13 @@ public class Shell implements IShell {
 	private static final String CMD_PIPE = "pipe";
 	private static final String CMD_COMM = "comm";
 	private static final String CMD_SORT = "sort";
+	private static final String CMD_CUT = "cut";
+	private static final String CMD_PASTE = "paste";
+	private static final String CMD_WC = "wc";
 
 	// List of commands
 	private enum COMMAND {
-		PWD, CD, LS, COPY, MOVE, DELETE, CAT, ECHO, GREP, PIPE, COMM, SORT, INVALID
+		PWD, CD, LS, COPY, MOVE, DELETE, CAT, ECHO, GREP, PIPE, COMM, SORT, CUT, PASTE, WC, INVALID
 	}
 
 	// Scanner
@@ -129,6 +138,12 @@ public class Shell implements IShell {
 				return new COMMTool();
 			case SORT:
 				return new SORTTool();
+			case CUT:
+				return new CUTTool();
+			case PASTE:
+				return new PASTETool();
+			case WC:
+				return new WCTool();
 			default:
 				System.err.println("Cannot parse " + input);
 				return null;
@@ -164,6 +179,12 @@ public class Shell implements IShell {
 			return new COMMToolRunnable(workingDir, stdin);
 		} else if (tool instanceof SORTTool) {
 			return new SORTToolRunnable(workingDir, stdin);
+		} else if (tool instanceof CUTTool) {
+			return new CUTToolRunnable(workingDir, stdin);
+		} else if (tool instanceof PASTETool) {
+			return new PASTEToolRunnable(workingDir, stdin);
+		} else if (tool instanceof WCTool) {
+			return new WCToolRunnable(workingDir, stdin);
 		}
 		return null;
 	}
@@ -302,6 +323,12 @@ public class Shell implements IShell {
 			return COMMAND.COMM;
 		} else if (command.equalsIgnoreCase(CMD_SORT)) {
 			return COMMAND.SORT;
+		} else if (command.equalsIgnoreCase(CMD_CUT)) {
+			return COMMAND.CUT;
+		} else if (command.equalsIgnoreCase(CMD_PASTE)) {
+			return COMMAND.PASTE;
+		} else if (command.equalsIgnoreCase(CMD_WC)) {
+			return COMMAND.WC;
 		} else {
 			return COMMAND.INVALID;
 		}
