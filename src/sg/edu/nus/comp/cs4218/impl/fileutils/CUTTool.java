@@ -75,16 +75,26 @@ public class CUTTool extends ATool implements ICutTool {
 	public String execute(File workingDir, String stdin) {
 		String[] temp;
 		int count = 0;
+		boolean isRepeat = false;
+
+		if (stdin.indexOf("   ") > 0) {
+			isRepeat = true;
+		}
 		temp = getCmd(stdin);
-		// arg = new String[temp.length-1];
 		if (temp.length > 3) {
 			if (temp[temp.length - 2].equals("-")) {
-				arg = new String[temp.length - 2];
+				if(isRepeat){
+					//To cater for empty space
+					arg = new String[temp.length - 1];
+				}else{
+					arg = new String[temp.length - 2];
+				}
+				
 			} else {
 				arg = new String[temp.length - 1];
 			}
-		}else{
-			arg = new String[temp.length-1];
+		} else {
+			arg = new String[temp.length - 1];
 		}
 		for (int i = 1; i < temp.length; i++) {
 			if (temp[i].equals("-") && i == (temp.length - 2)) {
@@ -92,11 +102,15 @@ public class CUTTool extends ATool implements ICutTool {
 				stditem = temp[temp.length - 1];
 				break;
 			} else {
-				arg[count] = temp[i];
+				if(isRepeat && count==1){
+					arg[count] = " ";
+					i--;
+				}else{
+					arg[count] = temp[i];
+				}
 			}
 			count++;
 		}
-		// stditem = stdin;
 		output = EMPTY;
 		if (!checkFirstInput())
 			output = ERROR1;

@@ -92,23 +92,23 @@ public class PASTEToolTest {
 	//If only "-help", print help message
 	public void pasteGetHelpAsOnlyArgumentTest() {
 		String[] arguments = new String[]{"-help"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.execute(workingDirectory, null);
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory, "paste -help");
 		expectedOutput = helpOutput;
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(pasteTool.getStatusCode(), 0);		
+		assertEquals(pasteTool.getStatusCode(), 0);	
 	}
 
 	@Test
 	//Test -help is given priority
 	public void pasteGetHelpWithOtherArgumentsTest() {
-		String[] arguments = new String[]{"-s","-help","-d",":"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.execute(workingDirectory, null);
+		//Changes: command stdin is shifted to execute method to cater to our project
+		//String[] arguments = new String[]{"-s","-help","-d",":"};
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory, "paste -s -help -d :");
 		expectedOutput = helpOutput;
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);			
-
 	}
 	
 	@Test

@@ -93,7 +93,6 @@ public class CUTToolTest {
     {	
     	//Changes: command stdin is shifted to execute method to cater to our project
     	//String[] arguments = new String[]{"-c", "1-2","-", "abcde"} ;
-		//cuttool = new CUTTool(arguments);
     	cuttool = new CUTTool();
 		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 - abcde");
 		expectedOutput = "ab";
@@ -109,7 +108,6 @@ public class CUTToolTest {
 	{
 		//Changes: command stdin is shifted to execute method to cater to our project
 		//String[] arguments = new String[]{"-c", "1-2","test1.txt","-"} ;
-		//cuttool = new CUTTool(arguments);
 		cuttool = new CUTTool();
 		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 test1.txt - abcde");
 		expectedOutput = "ab\nap\nba\nca\ndo\n";
