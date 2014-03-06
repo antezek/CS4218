@@ -4,8 +4,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import sg.edu.nus.comp.cs4218.impl.extended2.COMMToolTest;
-
 public class Test {
 
 	public static void main(String[] args) {
@@ -20,8 +18,8 @@ public class Test {
 		actualOutput = st.execute(workingDirectory, stdin1);
 		System.out.println("actualOutput: "+actualOutput);
 		*/
-		CUTToolTest ctt = new CUTToolTest();
-		ctt.dOptionRepeatedTest();
+		IntegrateTest ctt = new IntegrateTest();
+		ctt.before();
+		ctt.componentIntegrateTest();
 	}
-
 }

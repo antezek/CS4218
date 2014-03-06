@@ -59,7 +59,11 @@ public class Shell implements IShell {
 	private static final String CMD_CUT = "cut";
 	private static final String CMD_PASTE = "paste";
 	private static final String CMD_WC = "wc";
-
+	
+	public Shell(){
+		hm = new HashMap<String, Thread>();
+	}
+	
 	// List of commands
 	private enum COMMAND {
 		PWD, CD, LS, COPY, MOVE, DELETE, CAT, ECHO, GREP, PIPE, COMM, SORT, CUT, PASTE, WC, INVALID
@@ -203,7 +207,7 @@ public class Shell implements IShell {
 	 * command to the user
 	 */
 	public static void main(String[] args) {
-		hm = new HashMap<String, Thread>();
+		//hm = new HashMap<String, Thread>();
 		startRun();
 	}
 
@@ -221,6 +225,24 @@ public class Shell implements IShell {
 			run = s.execute(tool);
 			startMainThread(run);
 		}
+	}
+	
+	/*
+	 * Parse input command directly
+	 */
+	public String runCmd(String input){
+		String result = "";
+		ITool itool =null;
+		Runnable run = null;
+		Thread aThread = null;
+		
+		stdin = input;
+		itool = parse(input);
+		run = execute(itool);
+		aThread = new Thread(run);
+		aThread.start();
+	
+		return "";
 	}
 
 	/**

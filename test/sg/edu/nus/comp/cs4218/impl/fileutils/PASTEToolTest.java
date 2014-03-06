@@ -1,5 +1,7 @@
 package sg.edu.nus.comp.cs4218.impl.fileutils;
 
+
+
 import static org.junit.Assert.*;
 
 import java.io.BufferedWriter;
@@ -13,6 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.extended2.IPasteTool;
+
+
 
 public class PASTEToolTest {
 
@@ -91,37 +95,39 @@ public class PASTEToolTest {
 	@Test
 	//If only "-help", print help message
 	public void pasteGetHelpAsOnlyArgumentTest() {
-		String[] arguments = new String[]{"-help"};
+		//String[] arguments = new String[]{"-help"};
+		//Changes: command stdin is shifted to execute method to cater to our project
 		pasteTool = new PASTETool();
 		actualOutput = pasteTool.execute(workingDirectory, "paste -help");
 		expectedOutput = helpOutput;
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(pasteTool.getStatusCode(), 0);	
+		assertEquals(pasteTool.getStatusCode(), 0);		
 	}
 
 	@Test
 	//Test -help is given priority
 	public void pasteGetHelpWithOtherArgumentsTest() {
-		//Changes: command stdin is shifted to execute method to cater to our project
 		//String[] arguments = new String[]{"-s","-help","-d",":"};
+		//Changes: command stdin is shifted to execute method to cater to our project
 		pasteTool = new PASTETool();
 		actualOutput = pasteTool.execute(workingDirectory, "paste -s -help -d :");
 		expectedOutput = helpOutput;
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);			
+
 	}
 	
 	@Test
 	//Check for invalid files
 	public void pasteNoOptionsInvalidFilesTest(){
-		String[] arguments = new String[]{"C:\\Users\\Dale\\a.txt","./b.txt"};
+		//String[] arguments = new String[]{"C:\\Users\\Dale\\a.txt","./b.txt"};
 		String fileName1 = "C:\\Users\\Dale\\a.txt";
 		String fileName2 = "./b.txt";
 		ArrayList<String> fNames = new ArrayList<String>();
 		fNames.add(fileName1);fNames.add(fileName2);
-		
-		pasteTool = new PASTETool(arguments);		
-		actualOutput = pasteTool.execute(workingDirectory, null);
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();		
+		actualOutput = pasteTool.execute(workingDirectory, "paste C:\\Users\\Dale\\a.txt ./b.txt");
 
 		expectedOutput = "a.txt: No such file or directory!";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));	
@@ -131,10 +137,16 @@ public class PASTEToolTest {
 	@Test
 	//Check for empty file
 	public void pasteNoOptionsCheckWithOneEmptyFileTest(){
-		String[] arguments = new String[]{"em1.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter("\t", arguments);
 		
+		//String[] arguments = new String[]{"em1.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter("\t", arguments);
+		//			pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//			this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+			
+		actualOutput = pasteTool.execute(workingDirectory, "paste em1.txt");
 		expectedOutput = "";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
@@ -144,12 +156,18 @@ public class PASTEToolTest {
 	@Test
 	//Check for empty file when between multiple non empty files
 	public void pasteUseDelimWithOneEmptyInManyFilesTest(){
-		String[] arguments = new String[]{"b.txt","em1.txt","d.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter("*", arguments);
 		
+		//@Changed: add in the -d options in command
+		//String[] arguments = new String[]{"-d","*", "b.txt","em1.txt","d.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter("*", arguments); 
+		// 			pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//			this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		
+		actualOutput = pasteTool.execute(workingDirectory, "paste -d * b.txt em1.txt d.txt");
 		expectedOutput = "Wall**Cat" + "\n" + "Floor**";
-		assertEquals(expectedOutput,actualOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
 	}
@@ -157,11 +175,19 @@ public class PASTEToolTest {
 	@Test
 	//Serial output using empty files
 	public void pasteUseSerialWithManyEmptyFilesTest(){
-		String[] arguments = new String[]{"em1.txt","em2.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteSerial(arguments);
 		
+		//@Changed: add in the -s options in command
+		//String[] arguments = new String[]{"-s","em1.txt","em2.txt"};
+		pasteTool = new PASTETool();
+		
+		
+		//@Changed: actualOutput = pasteTool.pasteSerial(arguments);
+		//			pasteSerial should take in the contents of the file and not filenames as argument
+		//			this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		
+		actualOutput = pasteTool.execute(workingDirectory, "paste -s em1.txt em2.txt");
 		expectedOutput = "\n";
+		
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
 	}
@@ -169,9 +195,15 @@ public class PASTEToolTest {
 	@Test
 	//Check paste o/p with 1 file, no options
 	public void pasteNoOptionsOneFileTest(){
-		String[] arguments = new String[]{"b.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter("\t", arguments);
+		//String[] arguments = new String[]{"b.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter("\t", arguments);
+		//		pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//		this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		
+		actualOutput = pasteTool.execute(workingDirectory,"paste b.txt");
 		expectedOutput = fileContentB;
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
@@ -180,10 +212,11 @@ public class PASTEToolTest {
 	@Test
 	//Testing paste with Stdin
 	public void pasteNoOptionsStdinTest(){
-		String[] arguments = new String[]{"-"};
+		//String[] arguments = new String[]{"-"};
 		String stdin = "stdin input";
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.execute(workingDirectory, stdin);
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory, "paste -");
 		expectedOutput = "stdin input";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
@@ -192,9 +225,15 @@ public class PASTEToolTest {
 	@Test
 	//Paste: no options, many files
 	public void pasteNoOptionsManyFilesTest(){
-		String[] arguments = new String[]{"a.txt","b.txt","c.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter("\t", arguments);
+		//String[] arguments = new String[]{"a.txt","b.txt","c.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter("\t", arguments);
+		//		pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//		this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		
+		actualOutput = pasteTool.execute(workingDirectory,"paste a.txt b.txt c.txt");
 		String empty = "";
 		expectedOutput = "Table\tWall\tSuperman" + "\n" + "Chair\tFloor\tSpiderman" + "\n" + "Man\t"+empty+"\tBatman";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
@@ -205,10 +244,19 @@ public class PASTEToolTest {
 	@Test
 	//case where numDelim = 1 for 1 file
 	public void pasteUseDelimiterOneFileTest1(){
-		String[] arguments = new String[]{"a.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter(":", arguments);
+		
+		//@Changed: add in the -d and : options in command
+		//String[] arguments = new String[]{"-d",":","a.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter(":", arguments);
+		//			pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//			this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		
+		actualOutput = pasteTool.execute(workingDirectory, "paste -d : a.txt");
 		expectedOutput = "Table" + "\n" + "Chair" + "\n" + "Man";
+		
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
 	}
@@ -216,9 +264,17 @@ public class PASTEToolTest {
 	@Test
 	//case where numDelim > 1 for 1 file
 	public void pasteUseDelimiterOneFileTest2(){
-		String[] arguments = new String[]{"a.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter(":&", arguments);
+		
+		//@Changed: add in the -d and :& options in command
+		//String[] arguments = new String[]{"-d",":&","a.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter(":&", arguments);
+		//			pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//			this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		
+		actualOutput = pasteTool.execute(workingDirectory, "paste -d :& a.txt");
 		expectedOutput = "Table" + "\n" + "Chair" + "\n" + "Man";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
@@ -227,10 +283,11 @@ public class PASTEToolTest {
 	@Test
 	//Delimiter Test with Stdin
 	public void pasteUseDelimiterStdinTest(){
-		String[] arguments = new String[]{"-d",":","-"};
+		//String[] arguments = new String[]{"-d",":","-"};
+		//Changes: command stdin is shifted to execute method to cater to our project
 		String stdin = "Stdin input";
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.execute(workingDirectory, stdin);
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory, "paste -d : -");
 		expectedOutput = stdin;
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
@@ -239,9 +296,18 @@ public class PASTEToolTest {
 	@Test
 	//case where numDelim = n - 1 for n files
 	public void pasteUseDelimiterManyFilesTest1(){
-		String[] arguments = new String[]{"a.txt","b.txt","c.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter(":&", arguments);
+		
+		//@Changed: add in the -d and :& options in command
+		//String[] arguments = new String[]{"-d",":&","a.txt","b.txt","c.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter(":&", arguments);
+		//		pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//		this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		
+		actualOutput = pasteTool.execute(workingDirectory, "paste -d :& a.txt b.txt c.txt");
+		
 		String empty = "";
 		expectedOutput = "Table:Wall&Superman" + "\n" + "Chair:Floor&Spiderman" + "\n" + "Man:"+empty+"&Batman";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
@@ -251,9 +317,17 @@ public class PASTEToolTest {
 	@Test
 	//case where 1 delim - many files
 	public void pasteUseDelimiterManyFilesTest2(){
-		String[] arguments = new String[]{"a.txt","b.txt","c.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter(":", arguments);
+		
+		//@Changed: add in the -d and : options in command
+		//String[] arguments = new String[]{"-d",":","a.txt","b.txt","c.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter(":", arguments);
+		//		pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//		this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		
+		actualOutput = pasteTool.execute(workingDirectory, "paste -d : a.txt b.txt c.txt");
 		String empty = "";
 		expectedOutput = "Table:Wall:Superman" + "\n" + "Chair:Floor:Spiderman" + "\n" + "Man:"+empty+":Batman";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
@@ -263,9 +337,16 @@ public class PASTEToolTest {
 	@Test
 	//case where numDelim < n - 1 and many files
 	public void pasteUseDelimiterManyFilesTest2_1(){
-		String[] arguments = new String[]{"a.txt","b.txt","c.txt","d.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter(":&", arguments);
+		
+		//@Changed:  add in the -d and :& options in command
+		//String[] arguments = new String[]{"-d",":&","a.txt","b.txt","c.txt","d.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter(":&", arguments);
+		//		pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//		this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		actualOutput = pasteTool.execute(workingDirectory, "paste -d :& a.txt b.txt c.txt d.txt");
 		String empty = "";
 		expectedOutput = "Table:Wall&Superman:Cat" + "\n" + ("Chair:Floor&Spiderman:" + empty) 
 				+ "\n" + "Man:"+empty+"&Batman:"+empty;
@@ -276,9 +357,16 @@ public class PASTEToolTest {
 	@Test
 	//case where numDelim > n - 1
 	public void pasteUseDelimiterManyFilesTest3(){
-		String[] arguments = new String[]{"a.txt","b.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteUseDelimiter(":&", arguments);
+		
+		//@Changed:  add in the -d and :& options in command
+		//String[] arguments = new String[]{"-d",":&","a.txt","b.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteUseDelimiter(":&", arguments);
+		//		pasteUseDelimiter should take in the contents of the file and not filenames as argument
+		//		this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		actualOutput = pasteTool.execute(workingDirectory, "paste -d :& a.txt b.txt");
 		String empty = "";
 		expectedOutput = "Table:Wall" + "\n" + "Chair:Floor" + "\n" + "Man:"+empty;
 
@@ -289,9 +377,17 @@ public class PASTEToolTest {
 	@Test
 	//Paste: Serial with 1 file
 	public void pasteSerialOneFileTest(){
-		String[] arguments = new String[]{"a.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteSerial(arguments);
+		
+		//@Changed:  add in the -s options in command
+		//String[] arguments = new String[]{"-s","a.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteSerial(arguments);
+		//		pasteSerial should take in the contents of the file and not filenames as argument
+		//		this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		
+		actualOutput = pasteTool.execute(workingDirectory,"paste -s a.txt");
 		expectedOutput = "Table\tChair\tMan";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
@@ -302,8 +398,9 @@ public class PASTEToolTest {
 	public void pasteSerialStdinTest(){
 		String[] arguments = new String[]{"-s","-"};
 		String stdin = "Stdin input";
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.execute(workingDirectory, stdin);
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory, "paste -s -");
 		expectedOutput = stdin;
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
@@ -312,9 +409,16 @@ public class PASTEToolTest {
 	@Test
 	//Serial many files
 	public void pasteSerialManyFilesTest(){
-		String[] arguments = new String[]{"a.txt","b.txt","d.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.pasteSerial(arguments);
+		
+		//@Changed:  add in the -s options in command
+		//String[] arguments = new String[]{"-s","a.txt","b.txt","d.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		
+		//@Changed: actualOutput = pasteTool.pasteSerial(arguments);
+		//		pasteSerial should take in the contents of the file and not filenames as argument
+		//		this will force every implementation(like opening a file,reading,etc) in the method rather than execute().
+		actualOutput = pasteTool.execute(workingDirectory,"paste -s a.txt b.txt d.txt");
 		expectedOutput = "Table\tChair\tMan" + "\n" + "Wall\tFloor" + "\n" + "Cat";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
@@ -323,10 +427,15 @@ public class PASTEToolTest {
 	@Test
 	//if multiple delim, choose last option and args
 	public void pasteUseDelimMultipleDelimsTest(){
-		String[] arguments = new String[]{"-d",":","-d","*","a.txt","b.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.execute(workingDirectory, null);
-		expectedOutput = "Table*Wall" + "\n" + "Chair*Floor" + "\n" + "Man*" + "";
+		//String[] arguments = new String[]{"-d",":","-d","*","a.txt","b.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory, "paste -d : -d * a.txt b.txt");
+		
+		//@Changed: expectedOutput = "Table*Wall" + "\n" + "Chair*Floor" + "\n" + "Man*" + "";
+		//	We are not sure if there is anymore inputs so a \n at the end is necessary
+		expectedOutput = "Table*Wall" + "\n" + "Chair*Floor" + "\n" + "Man*";
+		assertEquals(expectedOutput,actualOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
 	}
@@ -334,9 +443,10 @@ public class PASTEToolTest {
 	@Test
 	//should choose -s over -d
 	public void pasteOptionsPriorityCheckTest(){
-		String[] arguments = new String[]{"-s","-d",":","a.txt"};
-		pasteTool = new PASTETool(arguments);
-		actualOutput = pasteTool.execute(workingDirectory, null);
+		//String[] arguments = new String[]{"-s","-d",":","a.txt"};
+		//Changes: command stdin is shifted to execute method to cater to our project
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory, "paste -s -d : a.txt");
 		expectedOutput = "Table\tChair\tMan";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
