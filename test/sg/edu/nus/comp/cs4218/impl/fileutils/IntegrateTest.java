@@ -19,9 +19,11 @@ public class IntegrateTest {
 	}
 
 	// Test "echo abcde | cut -c 1-2"
-	
-	public void componentIntegrateTest() {
+	public void componentIntegrateTest1() {
 		sh.runCmd("echo abcde | cut -c 1-2");
 	}
-
+	// Test "comm a.txt b.txt | grep Banana"
+	public void componentIntegrateTest2() {
+		sh.runCmd("comm a.txt b.txt | grep Banana");
+	}
 }

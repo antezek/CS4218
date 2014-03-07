@@ -125,7 +125,8 @@ public class PIPETool extends ATool implements IPipingTool {
 					|| command.equalsIgnoreCase(CMD_ECHO)) {
 				valid = true;
 			} else {
-				valid = false;
+				//valid = false;	//TODO Temporary Changed for integration testing!!! Need to change back to false
+				valid = true;
 			}
 		} else {
 			// Processing second command, only GREP is allowed

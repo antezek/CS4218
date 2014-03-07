@@ -18,8 +18,13 @@ public class Test {
 		actualOutput = st.execute(workingDirectory, stdin1);
 		System.out.println("actualOutput: "+actualOutput);
 		*/
-		IntegrateTest ctt = new IntegrateTest();
-		ctt.before();
-		ctt.componentIntegrateTest();
+		CUTToolTest ctt = new CUTToolTest();
+			try {
+				ctt.before();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			ctt.dOptionWithFileTest();
 	}
 }
