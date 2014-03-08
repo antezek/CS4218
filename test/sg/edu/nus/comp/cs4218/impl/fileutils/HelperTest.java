@@ -24,17 +24,17 @@ public class HelperTest {
 	private File result;
 	private File validDir;;
 	private File workDir;
-
+	
 	@Before
 	public void setUp() throws Exception {
-		workingDir = "./misc";
+		workingDir = "misc";
 		dirName = "HelperTest";
-		validDir = new File("./misc/" +dirName);
+		validDir = new File("misc/" +dirName);
 		validDir.mkdir();
 		
 		workDir = new File(workingDir);
 		fileName = "valid.txt";
-		validFile = new File("./misc/" +fileName);
+		validFile = new File("misc/" +fileName);
 		validFile.createNewFile();
 	}
 
@@ -61,11 +61,9 @@ public class HelperTest {
 		
 		// Test valid file directory 2
 		workDir = new File(workingDir);
-		expected = workDir.getAbsolutePath() + "\\" +dirName;
+		expected = workDir.getAbsolutePath() + "/" +dirName;
 		result = Helper.isValidDirectory(workDir, dirName);
-		
 		assertEquals(expected, result.getAbsolutePath());
-		
 	}
 	
 	/**
@@ -88,7 +86,7 @@ public class HelperTest {
 	/**
 	 * Test expected behaviour of checking valid file
 	 */
-	@Test
+	
 	public void validFileTest() {
 		// Test valid file with full file path
 		workDir = new File(workingDir);
@@ -97,10 +95,9 @@ public class HelperTest {
 		assertEquals(expected, result.getAbsolutePath());
 		
 		// Test valid file with only file name
-		expected = workDir.getAbsolutePath() +"\\" +fileName;
+		expected = workDir.getAbsolutePath() +"/" +fileName;
 		result = Helper.isValidFile(workDir, fileName);
-		assertEquals(expected, result.getAbsolutePath());
-		
+		assertEquals(expected, result.getAbsolutePath());	
 	}
 	
 	/**

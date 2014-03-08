@@ -24,7 +24,7 @@ public class Helper {
 			return f;
 		}
 		else {
-			f = new File(workingDir.getAbsolutePath() +"\\" +fileName);
+			f = new File(workingDir.getAbsolutePath() +"/" +fileName);
 			
 			if (f.exists()) {
 				return f;
@@ -46,7 +46,7 @@ public class Helper {
 			return f;
 		}
 		else {
-			f = new File(workingDir.getAbsolutePath() +"\\" +folderName);
+			f = new File(workingDir.getAbsolutePath() +"/" +folderName);
 			
 			if (f.isDirectory()) {
 				return f;

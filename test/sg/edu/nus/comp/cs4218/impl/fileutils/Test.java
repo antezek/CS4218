@@ -18,13 +18,13 @@ public class Test {
 		actualOutput = st.execute(workingDirectory, stdin1);
 		System.out.println("actualOutput: "+actualOutput);
 		*/
-		CUTToolTest ctt = new CUTToolTest();
-			try {
-				ctt.before();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			ctt.dOptionWithFileTest();
+		try {
+			HelperTest ctt = new HelperTest();
+			ctt.validFileTest();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
 	}
 }
