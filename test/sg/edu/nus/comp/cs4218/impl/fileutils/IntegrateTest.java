@@ -89,11 +89,19 @@ public class IntegrateTest {
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
 
-	// Test " cut | paste | grep "
+	/*
+	//Test " cut -c 1-2 w.txt | paste -d : | grep Ap "
+	public void componentIntegrateTest3() {
+		String expectedOutput = "";
+		String actualOutput = "";
+		
+		actualOutput = sh.runCmd("cut -c 1-2 w.txt | paste -d :");		//TODO Something wrong with Grep
+		System.out.println("actualOutput: "+actualOutput);
+		//System.out.println("result: "+expectedOutput);
+		//System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
+		//assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
 	
-	" cut -c 2-1 - abcde | 
-	
-	
-	
+	*/
 	
 }

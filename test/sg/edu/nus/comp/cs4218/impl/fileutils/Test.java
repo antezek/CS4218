@@ -20,7 +20,7 @@ public class Test {
 		*/
 		try {
 			IntegrateTest ctt = new IntegrateTest();
-			ctt.componentIntegrateTest2();
+			//ctt.componentIntegrateTest3();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
