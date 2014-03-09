@@ -463,10 +463,10 @@ public class GREPTool extends ATool implements IGrepTool {
 
 		String path;
 
-		if (!fileName.contains("\\"))
+		if (!fileName.contains("/"))
 			// it is a fileName, thus it means the file resides in the same
 			// directory as the working directory
-			path = workdir.getAbsolutePath() + "\\" + fileName;
+			path = workdir.getAbsolutePath() + "/" + fileName;
 		else
 			path = fileName;
 

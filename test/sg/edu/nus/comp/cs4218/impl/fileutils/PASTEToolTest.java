@@ -81,11 +81,8 @@ public class PASTEToolTest {
 
 	@After
 	public void after() throws Exception {
-		/*
-		 * pasteTool = null;
-		 * 
-		 * fileA.delete(); fileB.delete(); fileC.delete(); fileD.delete();
-		 */
+		 pasteTool = null;
+		 fileA.delete(); fileB.delete(); fileC.delete(); fileD.delete(); 
 	}
 
 	@Test
@@ -525,7 +522,6 @@ public class PASTEToolTest {
 		actualOutput = pasteTool.execute(workingDirectory,
 				"paste -s -d : a.txt");
 		expectedOutput = "Table\tChair\tMan";
-
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);
 	}

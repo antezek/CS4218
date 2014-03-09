@@ -7,10 +7,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ HelperTest.class, GREPToolTest.class, CDToolTest.class,
-		DELETEToolTest.class, LSToolTest.class, MOVEToolTest.class,
-		PWDToolTest.class, ECHOToolTest.class, CATToolTest.class,
-		COPYToolTest.class, PIPEToolTest.class, ShellTest.class })
+@Suite.SuiteClasses({ COMMToolTest.class, CUTToolTest.class,
+		PASTEToolTest.class, SORTToolTest.class, HelperTest.class,
+		GREPToolTest.class, CDToolTest.class, DELETEToolTest.class,
+		LSToolTest.class, MOVEToolTest.class, PWDToolTest.class,
+		ECHOToolTest.class, CATToolTest.class, COPYToolTest.class,
+		PIPEToolTest.class, WCToolTest.class, ShellTest.class })
 public class JUnitTestSuite {
 
 	@Test

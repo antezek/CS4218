@@ -19,8 +19,8 @@ public class Test {
 		System.out.println("actualOutput: "+actualOutput);
 		*/
 		try {
-			HelperTest ctt = new HelperTest();
-			ctt.validFileTest();
+			PASTEToolTest ctt = new PASTEToolTest();
+			ctt.pasteOptionsPriorityCheckTest();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
