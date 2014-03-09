@@ -82,7 +82,6 @@ public class PIPETool extends ATool implements IPipingTool {
 			// parsing subsequent commands
 			for (int i = 1; i < pipeCmdCount; i++) {
 				tool = s.parse(pipeCommand[i]);
-				System.out.println("tempFile.getAbsolutePath(): "+tempFile.getPath());
 				result = pipe(pipeCommand[i] +" " + tempFile.getPath(), tool);
 				//result = pipe(pipeCommand[i] +" " + tempFile.getAbsolutePath(), tool);
 				createPIPEFile(result);

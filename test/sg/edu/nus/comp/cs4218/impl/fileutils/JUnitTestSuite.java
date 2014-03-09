@@ -15,9 +15,4 @@ import org.junit.runners.Suite;
 		PIPEToolTest.class, WCToolTest.class, ShellTest.class })
 public class JUnitTestSuite {
 
-	@Test
-	public void test() {
-		fail("Not yet implemented");
-	}
-
 }

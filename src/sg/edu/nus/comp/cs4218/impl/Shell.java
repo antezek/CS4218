@@ -33,6 +33,7 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.PIPETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PIPEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.fileutils.Result;
 import sg.edu.nus.comp.cs4218.impl.fileutils.SORTTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.SORTToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.WCTool;
@@ -241,8 +242,15 @@ public class Shell implements IShell {
 		run = execute(itool);
 		aThread = new Thread(run);
 		aThread.start();
-	
-		return "";
+		try {
+			aThread.join();
+			result=Result.result;
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return result;
 	}
 
 	/**

@@ -46,10 +46,10 @@ public class COMMToolTest {
 				"\n*      -help : Brief information about supported options" +
 				"\n*/";
 
-		fileA = new File("a.txt");
-		fileB = new File("b.txt");
-		fileC = new File("c.txt");
-		fileD = new File("d.txt");
+		fileA = new File("w.txt");
+		fileB = new File("x.txt");
+		fileC = new File("y.txt");
+		fileD = new File("z.txt");
 		fileEM1 = new File("em1.txt");
 		fileEM2 = new File("em2.txt");
 		fileEM1.createNewFile();
@@ -104,11 +104,11 @@ public class COMMToolTest {
 	@Test
 	//Test if overall control flow is correct
 	public void overallTest() {
-		//String[] arguments = new String[]{"a.txt","b.txt"};
+		//String[] arguments = new String[]{"w.txt","x.txt"};
 
 		//commTool = new COMMTool(arguments);
 		commTool = new COMMTool();
-		actualOutput = commTool.execute(workingDirectory, "comm a.txt b.txt");
+		actualOutput = commTool.execute(workingDirectory, "comm w.txt x.txt");
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash + testNewLine +
 				testDash + testTab + "Banana" + testTab +testDash + testNewLine +
 				testDash + testTab + testDash + testTab + "Melon" + testNewLine +
@@ -128,11 +128,11 @@ public class COMMToolTest {
 	@Test
 	//File doesn't exist
 	public void compareFilesInvalidFileArgsTest(){
-		String fileName1 = "C:\\Users\\Dale\\a.txt";
-		String fileName2 = "./b.txt";
-		String[] arguments = new String[]{"C:\\Users\\Dale\\a.txt","./b.txt"};
+		String fileName1 = "C:\\Users\\Dale\\w.txt";
+		String fileName2 = "./x.txt";
+		String[] arguments = new String[]{"C:\\Users\\Dale\\w.txt","./x.txt"};
 		commTool = new COMMTool(arguments);		
-		actualOutput = commTool.execute(workingDirectory, "comm C:\\Users\\Dale\\a.txt ./b.txt");
+		actualOutput = commTool.execute(workingDirectory, "comm C:\\Users\\Dale\\w.txt ./x.txt");
 
 		expectedOutput = "File 1 doesn't exist!";
 		assertEquals(expectedOutput, actualOutput);	
@@ -185,12 +185,12 @@ public class COMMToolTest {
 		testTab = "\t";
 		testNewLine = "\n";
 		testDash = " ";
-		String[] arguments = new String[]{"a.txt","c.txt"};
-		String input1 = "a.txt";
-		String input2 = "c.txt";
+		String[] arguments = new String[]{"w.txt","y.txt"};
+		String input1 = "w.txt";
+		String input2 = "y.txt";
 		commTool = new COMMTool(arguments);
 		//Changes: use execute instead of compareFiles
-		actualOutput = commTool.execute(workingDirectory, "comm a.txt c.txt");	
+		actualOutput = commTool.execute(workingDirectory, "comm w.txt y.txt");	
 		//actualOutput = commTool.compareFiles(input1, input2);
 		
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash + testNewLine +
@@ -208,12 +208,12 @@ public class COMMToolTest {
 	@Test
 	//Some common lines. All three columns have items
 	public void compareFilesNoOptionsSomeUniqueTest(){
-		String[] arguments = new String[]{"a.txt","b.txt"};
-		String input1 = "a.txt";
-		String input2 = "b.txt";
+		String[] arguments = new String[]{"w.txt","x.txt"};
+		String input1 = "w.txt";
+		String input2 = "x.txt";
 		commTool = new COMMTool(arguments);
 		//Changes: use execute instead of compareFiles
-		actualOutput = commTool.execute(workingDirectory, "comm a.txt b.txt");	
+		actualOutput = commTool.execute(workingDirectory, "comm w.txt x.txt");	
 		//actualOutput = commTool.compareFiles(input1, input2);
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash + testNewLine +
 				testDash + testTab + "Banana" + testTab +testDash + testNewLine +
@@ -227,11 +227,11 @@ public class COMMToolTest {
 	@Test
 	//No unique lines at all. Col1 and Col2 are empty
 	public void compareFilesNoOptionsNoneUniqueTest(){
-		String[] arguments = new String[]{"a.txt","a.txt"};
-		String input1 = "a.txt";
-		String input2 = "a.txt";
+		String[] arguments = new String[]{"w.txt","w.txt"};
+		String input1 = "w.txt";
+		String input2 = "w.txt";
 		commTool = new COMMTool(arguments);
-		actualOutput = commTool.execute(workingDirectory, "comm a.txt a.txt");	//Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory, "comm w.txt w.txt");	//Changes: use execute instead of compareFiles
 		//actualOutput = commTool.compareFiles(input1, input2);
 		expectedOutput = 
 				 testDash + testTab + testDash + testTab + "Apple" + testNewLine +
@@ -246,9 +246,9 @@ public class COMMToolTest {
 	@Test
 		//Test for invalid command input
 		public void invalidCommand(){
-			String[] arguments = new String[]{"-e","a.txt","b.txt"};
+			String[] arguments = new String[]{"-e","w.txt","x.txt"};
 			commTool = new COMMTool(arguments);
-			actualOutput = commTool.execute(workingDirectory, "comm -e a.txt b.txt");
+			actualOutput = commTool.execute(workingDirectory, "comm -e w.txt x.txt");
 			expectedOutput = "Error: Invalid command";
 			/*
 			System.out.println("actualOutput:\n"+actualOutput);
@@ -263,12 +263,12 @@ public class COMMToolTest {
 	@Test
 	//Positive case: Files are sorted
 	public void compareFilesCheckSortStatusTest1(){
-		String[] arguments = new String[]{"-c","a.txt","b.txt"};
-		String input1 = "a.txt";
-		String input2 = "b.txt";
+		String[] arguments = new String[]{"-c","w.txt","x.txt"};
+		String input1 = "w.txt";
+		String input2 = "x.txt";
 		commTool = new COMMTool(arguments);
 		//Changes: use execute instead of compareFiles
-		actualOutput = commTool.execute(workingDirectory, "comm -c a.txt b.txt");	
+		actualOutput = commTool.execute(workingDirectory, "comm -c w.txt x.txt");	
 		//actualOutput = commTool.compareFilesCheckSortStatus(input1, input2);
 		
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash + testNewLine +
@@ -284,12 +284,12 @@ public class COMMToolTest {
 	@Test		
 	//Negative case: File 2 not sorted
 	public void compareFilesCheckSortStatusTest2(){
-		String[] arguments = new String[]{"-c","a.txt","unsort.txt"};
-		String input1 = "a.txt";
-		String input2 = "d.txt";
+		String[] arguments = new String[]{"-c","w.txt","unsort.txt"};
+		String input1 = "w.txt";
+		String input2 = "z.txt";
 		commTool = new COMMTool(arguments);
 		//Changes: use execute instead of compareFiles
-		actualOutput = commTool.execute(workingDirectory, "comm -c a.txt unsort.txt"); 
+		actualOutput = commTool.execute(workingDirectory, "comm -c w.txt unsort.txt"); 
 		expectedOutput = "File 2 not sorted!";	
 		//actualOutput = commTool.compareFilesCheckSortStatus(input1, input2);
 

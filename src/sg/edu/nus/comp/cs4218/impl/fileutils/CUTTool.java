@@ -212,7 +212,7 @@ public class CUTTool extends ATool implements ICutTool {
 
 		String path;
 
-		if (!fileName.contains("\\"))
+		if (!fileName.contains("/"))
 			// it is a fileName, thus it means the file resides in the same
 			// directory as the working directory
 			path = workdir.getAbsolutePath() + "/" + fileName;
@@ -236,7 +236,7 @@ public class CUTTool extends ATool implements ICutTool {
 
 			while (line != null) {
 				fileContents.append(line);
-				fileContents.append("\n");
+				fileContents.append("\n");	//CHANGED. BUGS!!
 				line = br.readLine();
 			}
 
@@ -378,7 +378,7 @@ public class CUTTool extends ATool implements ICutTool {
 					}
 				}
 
-				results = results + EOL;
+				// results = results + EOL;	//CHANGED!!!
 			}
 
 		} catch (Exception e) {
