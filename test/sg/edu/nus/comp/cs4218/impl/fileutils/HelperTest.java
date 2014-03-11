@@ -101,7 +101,7 @@ public class HelperTest {
 	/**
 	 * Test expected behaviour of checking valid file
 	 */
-	
+	@Test
 	public void validFileTest() {
 		// Test valid file with full file path
 		workDir = new File(workingDir);
@@ -110,7 +110,7 @@ public class HelperTest {
 		assertEquals(expected, result.getAbsolutePath());
 		
 		// Test valid file with only file name
-		expected = workDir.getAbsolutePath() +"/" +fileName;
+		expected = workDir.getAbsolutePath() +"\\" +fileName;
 		result = Helper.isValidFile(workDir, fileName);
 		assertEquals(expected, result.getAbsolutePath());
 	}
