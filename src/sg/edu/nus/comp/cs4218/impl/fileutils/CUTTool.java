@@ -83,13 +83,13 @@ public class CUTTool extends ATool implements ICutTool {
 		temp = getCmd(stdin);
 		if (temp.length > 3) {
 			if (temp[temp.length - 2].equals("-")) {
-				if(isRepeat){
-					//To cater for empty space
+				if (isRepeat) {
+					// To cater for empty space
 					arg = new String[temp.length - 1];
-				}else{
+				} else {
 					arg = new String[temp.length - 2];
 				}
-				
+
 			} else {
 				arg = new String[temp.length - 1];
 			}
@@ -102,10 +102,10 @@ public class CUTTool extends ATool implements ICutTool {
 				stditem = temp[temp.length - 1];
 				break;
 			} else {
-				if(isRepeat && count==1){
+				if (isRepeat && count == 1) {
 					arg[count] = " ";
 					i--;
-				}else{
+				} else {
 					arg[count] = temp[i];
 				}
 			}
@@ -226,7 +226,7 @@ public class CUTTool extends ATool implements ICutTool {
 
 	// Read from a file
 	private String readFile(File file) throws IOException {
-
+		String results = "";
 		BufferedReader br = new BufferedReader(new FileReader(file));
 
 		try {
@@ -235,11 +235,17 @@ public class CUTTool extends ATool implements ICutTool {
 			String line = br.readLine();
 
 			while (line != null) {
-				fileContents.append(line);
-				fileContents.append("\n");	//CHANGED. BUGS!!
+				results += line;
+				results += "\n";
+				//fileContents.append(line);
+				//fileContents.append("\n"); // CHANGED. BUGS!!
 				line = br.readLine();
 			}
-
+			if (results.substring(results.length() - 1, results.length())
+					.equals("\n")) {
+				results = results.substring(0, results.length() - 1);
+			}
+			fileContents.append(results);
 			return fileContents.toString();
 		} finally {
 			br.close();
@@ -277,7 +283,6 @@ public class CUTTool extends ATool implements ICutTool {
 					fileCounter++;
 				}
 
-				
 			}
 		}
 
@@ -378,11 +383,16 @@ public class CUTTool extends ATool implements ICutTool {
 					}
 				}
 
-				// results = results + EOL;	//CHANGED!!!
+				results = results + EOL; // CHANGED!!!
 			}
 
 		} catch (Exception e) {
 			results = ERROR4;
+		}
+		// Remove trailing \n
+		if (results.substring(results.length() - 1, results.length()).equals(
+				"\n")) {
+			results = results.substring(0, results.length() - 1);
 		}
 		return results;
 	}

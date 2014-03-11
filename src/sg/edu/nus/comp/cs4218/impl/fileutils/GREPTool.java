@@ -234,6 +234,8 @@ public class GREPTool extends ATool implements IGrepTool {
 		for (i = 0; i < size; i++) {
 			if (inputLine[i].contains(pattern)) {
 				matchLine = matchLine + inputLine[i] + EOL;
+			}else{
+				matchLine = matchLine + EOL;			//Bugs: Add EOL behind those output even detect only 1 result
 			}
 		}
 

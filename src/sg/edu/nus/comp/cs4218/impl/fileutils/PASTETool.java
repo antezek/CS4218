@@ -198,7 +198,7 @@ public class PASTETool extends ATool implements IPasteTool {
 						parallelLines = parallelLines + SPACE + EOL;
 					else
 						parallelLines = parallelLines + split[lineCounter]
-								+ EOL;
+								+ EOL;											//Bugs: addition /n behind the end string TODO
 
 				}
 

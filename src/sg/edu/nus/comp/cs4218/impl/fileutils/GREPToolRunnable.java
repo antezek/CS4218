@@ -17,7 +17,6 @@ public class GREPToolRunnable implements Runnable {
 		GREPTool grepTool = new GREPTool();
 		result = grepTool.execute(workingDir, stdin);
 		//System.out.println(grepTool.execute(workingDir, stdin));
-		System.out.println("result: "+result.length());
 		Result.result = result;
 	}
 

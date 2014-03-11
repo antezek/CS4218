@@ -17,6 +17,8 @@ public class PIPETool extends ATool implements IPipingTool {
 	private static final String CMD_CAT = "cat";
 	private static final String CMD_ECHO = "echo";
 	private static final String CMD_GREP = "grep";
+	private static final String CMD_WC = "wc";
+	private static final String CMD_SORT = "sort";
 	
 	private Shell s;
 	private File workDir;
@@ -28,7 +30,7 @@ public class PIPETool extends ATool implements IPipingTool {
 	}
 
 	@Override
-	public String pipe(ITool from, ITool to) {
+	public String pipe(ITool from, ITool to) {	
 
 		return null;
 	}
@@ -82,8 +84,7 @@ public class PIPETool extends ATool implements IPipingTool {
 			// parsing subsequent commands
 			for (int i = 1; i < pipeCmdCount; i++) {
 				tool = s.parse(pipeCommand[i]);
-				result = pipe(pipeCommand[i] +" " + tempFile.getPath(), tool);
-				//result = pipe(pipeCommand[i] +" " + tempFile.getAbsolutePath(), tool);
+				result = pipe(pipeCommand[i] +" " +"temppipefile.txt", tool);
 				createPIPEFile(result);
 			}
 		}
@@ -92,7 +93,7 @@ public class PIPETool extends ATool implements IPipingTool {
 			return "invalid input";
 		}
 		
-		tempFile.delete();
+		//tempFile.delete();
 		return result;
 	}
 	
@@ -121,18 +122,21 @@ public class PIPETool extends ATool implements IPipingTool {
 					|| command.equalsIgnoreCase(CMD_CD)
 					|| command.equalsIgnoreCase(CMD_LS)
 					|| command.equalsIgnoreCase(CMD_CAT)
-					|| command.equalsIgnoreCase(CMD_ECHO)) {
+					|| command.equalsIgnoreCase(CMD_ECHO)
+					|| command.equalsIgnoreCase(CMD_SORT)){
 				valid = true;
 			} else {
-				//valid = false;	//TODO Temporary Changed for integration testing!!! Need to change back to false
+				//valid = false;				//TODO Change back to false
 				valid = true;
-			}
+			}	
 		} else {
 			// Processing second command, only GREP is allowed
-			if (command.equalsIgnoreCase(CMD_GREP)) {
+			if (command.equalsIgnoreCase(CMD_GREP)|| command.equalsIgnoreCase(CMD_CAT)
+					|| command.equalsIgnoreCase(CMD_WC)
+					|| command.equalsIgnoreCase(CMD_SORT)) {
 				valid = true;
 			} else {
-				//valid = false;	//TODO Temporary Changed for integration testing!!! Need to change back to false
+				//valid = false;				//TODO Change back to false
 				valid = true;
 			}
 		}
@@ -142,7 +146,7 @@ public class PIPETool extends ATool implements IPipingTool {
 	
 	private void createPIPEFile(String result) {
 		try {
-			tempFile = new File("./misc/temppipefile.txt");
+			tempFile = new File("temppipefile.txt");
 			
 			if (tempFile.exists()) {
 				tempFile.delete();
