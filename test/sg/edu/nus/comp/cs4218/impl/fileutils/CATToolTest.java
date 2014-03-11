@@ -18,11 +18,14 @@ public class CATToolTest {
 	private CATTool catTool;
 	private File toRead;
 	private File emptyFile;
+	private File workingDir;
 	private String contents = "Hello World \n"
 								+ "This is a CATToolTest";
 	
 	@Before
 	public void setUp() throws Exception {
+		workingDir = new File(System.getProperty("user.dir"));
+		
 		catTool = new CATTool();
 		toRead = new File("./misc/tempreadfile.txt");
 		toRead.createNewFile();
@@ -51,6 +54,19 @@ public class CATToolTest {
 	public void getStringForNonEmptyFileTest() {
 		String result = catTool.getStringForFile(toRead);
 		assertEquals(contents, result);
+		assertEquals(catTool.getStatusCode(), 0);
+	}
+	
+	/**
+	 * Test expected behaviour of reading from valid file
+	 */
+	@Test
+	public void executeCatForValidFileTest() {
+		File workingDir = new File(System.getProperty("user.dir"));
+		String stdin = "cat " + workingDir + "/misc/tempreadfile.txt";
+		String result = catTool.execute(workingDir, stdin);
+		assertEquals(contents, result);
+		assertEquals(catTool.getStatusCode(), 0);
 	}
 	
 	/**
@@ -61,6 +77,32 @@ public class CATToolTest {
 		String expected = "File is empty";
 		String result = catTool.getStringForFile(emptyFile);
 		assertEquals(expected, result);
+		assertEquals(catTool.getStatusCode(), 0);
+	}
+	
+	/**
+	 * Test expected behaviour of reading from valid file
+	 */
+	@Test
+	public void executeCatForEmptyFileTest() {
+		String expected = "File is empty";
+		String stdin = "cat " + workingDir + "/misc/tempemptyfile.txt";
+		String result = catTool.execute(workingDir, stdin);
+		assertEquals(expected, result);
+		assertEquals(catTool.getStatusCode(), 0);
+	}
+	
+	/**
+	 * Test error handling of reading from invalid file.
+	 */
+	@Test
+	public void executeCatForInvalidFileTest() {
+		String expected = "Error: file not found";
+		File workingDir = new File(System.getProperty("user.dir"));
+		String stdin = "cat " + workingDir + "/misc/invalidFile.txt";
+		String result = catTool.execute(workingDir, stdin);
+		assertEquals(expected, result);
+		assertEquals(catTool.getStatusCode(), 1);
 	}
 
 }

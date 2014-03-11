@@ -18,6 +18,10 @@ public class Helper {
 	 * @return File if file exists, null otherwise
 	 */
 	public static File isValidFile(File workingDir, String fileName) {
+		if (fileName.equalsIgnoreCase(REGEX_WHITE_SPACE) || fileName == null || fileName.equalsIgnoreCase("")) {
+			return null;
+		}
+		
 		File f = new File(fileName);
 		
 		if (f.exists()) {
@@ -40,13 +44,17 @@ public class Helper {
 	 * @return File if directory exists, null otherwise
 	 */
 	public static File isValidDirectory(File workingDir, String folderName) {
+		if (folderName.equalsIgnoreCase(REGEX_WHITE_SPACE) || folderName == null || folderName.equalsIgnoreCase("")) {
+			return null;
+		}
+		
 		File f = new File(folderName);
 		
 		if (f.isDirectory()) {
 			return f;
 		}
 		else {
-			f = new File(workingDir.getAbsolutePath() +"/" +folderName);
+			f = new File(workingDir.getAbsolutePath() +"\\" +folderName);
 			
 			if (f.isDirectory()) {
 				return f;

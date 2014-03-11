@@ -2,7 +2,6 @@ package sg.edu.nus.comp.cs4218.impl.fileutils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -16,11 +15,13 @@ import org.junit.Test;
  */
 public class CDToolTest {
 	private CDTool cdTool;
+	private File workingDir;
 	File tempcdfile;
 
 	@Before
 	public void setUp() throws Exception {
 		cdTool = new CDTool();
+		workingDir = new File(System.getProperty("user.dir"));
 		tempcdfile = new File("./misc/tempcdfile.txt");
 	}
 
@@ -39,6 +40,19 @@ public class CDToolTest {
 		File f = new File(dir);
 		File newDir = cdTool.changeDirectory(dir);
 		assertEquals(f.getAbsolutePath(), newDir.getAbsolutePath());
+		assertEquals(cdTool.getStatusCode(), 0);
+	}
+	
+	/**
+	 * Test expected behaviour of changing to valid directory
+	 */
+	@Test
+	public void executeChangeValidDirectoryTest() {
+		String stdin = "cd misc";
+		String expected = "Working dir changed to: " +workingDir +"\\misc";
+		String newDir = cdTool.execute(workingDir, stdin);
+		assertEquals(expected, newDir);
+		assertEquals(cdTool.getStatusCode(), 0);
 	}
 	
 	
@@ -51,7 +65,20 @@ public class CDToolTest {
 		String dir = tempcdfile.getAbsolutePath();
 		File newDir = cdTool.changeDirectory(dir);
 		assertNull(newDir);
-		assertTrue(cdTool.getStatusCode() != 0);
+		assertEquals(cdTool.getStatusCode(), 1);
+	}
+	
+	/**
+	 * Test error handling of changing to invalid file directory
+	 * File is not a directory
+	 */
+	@Test
+	public void executeChangeInvalidDirectoryTest() {
+		String stdin = "cd " +tempcdfile.getName();
+		String expected = "Error: not a directory";
+		String newDir = cdTool.execute(workingDir, stdin);
+		assertEquals(expected, newDir);
+		assertEquals(cdTool.getStatusCode(), 1);
 	}
 	
 	/**
@@ -59,11 +86,24 @@ public class CDToolTest {
 	 * Directory does not exist
 	 */
 	@Test
-	public void changeNonexistentDirectoryTest() {
+	public void changeNonExistentDirectoryTest() {
 		String dir = "./invalid";
 		File newDir = cdTool.changeDirectory(dir);
 		assertNull(newDir);
-		assertTrue(cdTool.getStatusCode() != 0);
+		assertEquals(cdTool.getStatusCode(), 1);
+	}
+	
+	/**
+	 * Test error handling of changing to invalid file directory
+	 * Directory does not exist
+	 */
+	@Test
+	public void executeChangeNonExistentDirectoryTest() {
+		String stdin = "cd invalid";
+		String expected = "Error: not a directory";
+		String newDir = cdTool.execute(workingDir, stdin);
+		assertEquals(expected, newDir);
+		assertEquals(cdTool.getStatusCode(), 1);
 	}
 
 }

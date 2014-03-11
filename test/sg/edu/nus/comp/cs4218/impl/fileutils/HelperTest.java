@@ -61,7 +61,7 @@ public class HelperTest {
 		
 		// Test valid file directory 2
 		workDir = new File(workingDir);
-		expected = workDir.getAbsolutePath() + "/" +dirName;
+		expected = workDir.getAbsolutePath() + "\\" +dirName;
 		result = Helper.isValidDirectory(workDir, dirName);
 		assertEquals(expected, result.getAbsolutePath());
 	}
@@ -81,6 +81,21 @@ public class HelperTest {
 		workDir = new File(workingDir);
 		result = Helper.isValidDirectory(workDir, dirName);
 		assertNull(result);
+		
+		// Test error handling: invalid directory name with numbers
+		dirName = "54321";
+		result = Helper.isValidDirectory(workDir, dirName);
+		assertNull(result);
+		
+		// Test error handling: invalid directory name with spaces
+		dirName = "not a directory";
+		result = Helper.isValidDirectory(workDir, dirName);
+		assertNull(result);
+		
+		// Test error handling: blank directory
+		dirName = "";
+		result = Helper.isValidDirectory(workDir, dirName);
+		assertNull(result);
 	}
 	
 	/**
@@ -97,7 +112,7 @@ public class HelperTest {
 		// Test valid file with only file name
 		expected = workDir.getAbsolutePath() +"/" +fileName;
 		result = Helper.isValidFile(workDir, fileName);
-		assertEquals(expected, result.getAbsolutePath());	
+		assertEquals(expected, result.getAbsolutePath());
 	}
 	
 	/**
@@ -114,6 +129,22 @@ public class HelperTest {
 		fileName = "./misc/secondinvalid.txt";
 		result = Helper.isValidFile(workDir, fileName);
 		assertNull(result);
+		
+		// Test error handling: invalid file name with numbers
+		fileName = "12345";
+		result = Helper.isValidFile(workDir, fileName);
+		assertNull(result);
+		
+		// Test error handling: invalid file name with spaces
+		fileName = "not a file";
+		result = Helper.isValidFile(workDir, fileName);
+		assertNull(result);
+		
+		// Test error handling: blank file
+		fileName = "";
+		result = Helper.isValidFile(workDir, fileName);
+		assertNull(result);
+		
 	}
 
 }

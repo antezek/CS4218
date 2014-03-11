@@ -62,14 +62,29 @@ public class LSToolTest {
 	}
 	
 	/**
+	 * Test expected behaviour of listing valid directory
+	 */
+	@Test
+	public void executeGetValidDirectoryListingTest() {
+		File f = new File(validDir);
+		String stdin = "ls";
+		String expected = "aaa.txt" +"\n"
+							+ "bbb.txt";
+		String result = lsTool.execute(f, stdin);
+		assertEquals(expected, result);
+		assertEquals(lsTool.getStatusCode(), 0);
+	}
+	
+	/**
 	 * Test error handling of listing empty directory
 	 */
 	@Test
 	public void getEmptyDirectoryListingTest() {
 		File f = new File(emptyDir);
+		String stdin = "ls";
 		String expected = "Error: No files in working directory";
-		String result = lsTool.getStringForFiles(lsTool.getFiles(f));
-		assertEquals(result, expected);
+		String result = lsTool.execute(f, stdin);
+		assertEquals(expected, result);
 		assertEquals(lsTool.getStatusCode(), 0);
 	}
 

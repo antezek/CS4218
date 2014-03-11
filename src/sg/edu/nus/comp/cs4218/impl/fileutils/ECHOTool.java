@@ -19,7 +19,17 @@ public class ECHOTool extends ATool implements IEchoTool {
 
 	@Override
 	public String echo(String toEcho) {
-		String echoString = toEcho.replace(CMD_ECHO, "").trim();
+		String echoString;
+		
+		// doing some processing on input string
+		String[] tempString = toEcho.split(Helper.REGEX_WHITE_SPACE, 2);
+		
+		if (tempString[0].equalsIgnoreCase(CMD_ECHO)) {
+			echoString = tempString[1];
+		}
+		else {
+			echoString = toEcho;
+		}
 		
 		// getting variable if exists
 		String value = System.getenv(echoString);

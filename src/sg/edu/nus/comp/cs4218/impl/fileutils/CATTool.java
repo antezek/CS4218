@@ -20,7 +20,8 @@ public class CATTool extends ATool implements ICatTool {
 	public CATTool() {
 		super(null);
 	}
-
+	
+	// getStringForFile method is guaranteed to read a valid file as full checking is done by the execute method
 	@Override
 	public String getStringForFile(File toRead) {
 		String displayString = "";

@@ -47,15 +47,18 @@ public class CDTool extends ATool implements ICdTool {
 					return String.format(MESSAGE_DIR_CHANGE_SUCCESS, newDir.getAbsolutePath());
 				}
 				else {
+					setStatusCode(1);
 					return MESSAGE_DIR_NOT_VALID;
 				}
 			}
 			else {
+				setStatusCode(1);
 				return MESSAGE_DIR_NOT_VALID;
 			}
 			
 		}
 		else {
+			setStatusCode(1);
 			return MESSAGE_DIR_NULL;
 		}
 	}
