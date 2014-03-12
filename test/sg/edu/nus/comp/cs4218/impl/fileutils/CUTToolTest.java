@@ -214,6 +214,8 @@ public class CUTToolTest {
 		expectedOutput = "";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
+		System.out.println("actualOutput:\n"+actualOutput);
+		System.out.println("expectedOutput:\n"+expectedOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(cuttool.getStatusCode(), 0);
     }

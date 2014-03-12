@@ -22,11 +22,12 @@ public class IntegrateTest {
 
 	File fileW,fileX,fileY,fileZ;
 	String fileContentW,fileContentX,fileContentY,fileContentZ;
-/*
+	
+	/*
 	IntegrateTest() {
 		before();
 	}
-*/
+	*/
 	@Before
 	public void before() {
 		sh = new Shell();
@@ -80,25 +81,25 @@ public class IntegrateTest {
 		String testTab = "\t";
 		String testNewLine = "\n";
 		String testDash = " ";
-		String expectedOutput = testDash+testTab+"Banana"+testTab+testDash+testNewLine;
+		String expectedOutput = testNewLine+testDash+testTab+"Banana"+testTab+testDash+testNewLine+testNewLine;
 		String actualOutput = "";
 		actualOutput = sh.runCmd("comm w.txt x.txt | grep Banana");
-		//System.out.println("result: "+actualOutput);
-		//System.out.println("result: "+expectedOutput);
-		//System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
+		//System.out.println("actualOutput:\n"+actualOutput);
+		//System.out.println("expectedOutput:\n"+expectedOutput);
+		//System.out.println("Assert:\n"+expectedOutput.equalsIgnoreCase(actualOutput));
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
 
-
+	@Test
 	//Test " cut -c 1-2 w.txt | paste -d : | grep Ap "
 	public void componentIntegrateTest3() {
 		String expectedOutput = "Ap\n\n";
 		String actualOutput = "";
 		
 		actualOutput = sh.runCmd("cut -c 1-2 w.txt | paste -d : | grep Ap");		//TODO Something wrong with Grep
-		System.out.println("actualOutput:\n"+actualOutput);
-		System.out.println("result:\n"+expectedOutput);
-		System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
+		//System.out.println("actualOutput:\n"+actualOutput);
+		//System.out.println("result:\n"+expectedOutput);
+		//System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
 		//assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
 	
@@ -109,9 +110,6 @@ public class IntegrateTest {
 			String actualOutput = "";
 			
 			actualOutput = sh.runCmd("cut -c 1-2 test1.txt | wc");		//TODO Something wrong with Grep
-			//System.out.println("actualOutput:\n"+actualOutput);
-			//System.out.println("result:\n"+expectedOutput);
-			//System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
 			assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		}
 	
