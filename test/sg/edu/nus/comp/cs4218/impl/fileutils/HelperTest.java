@@ -61,7 +61,7 @@ public class HelperTest {
 		
 		// Test valid file directory 2
 		workDir = new File(workingDir);
-		expected = workDir.getAbsolutePath() + "\\" +dirName;
+		expected = workDir.getAbsolutePath() + "/" +dirName;			//Bugs: OS compatible \\ changed to /
 		result = Helper.isValidDirectory(workDir, dirName);
 		assertEquals(expected, result.getAbsolutePath());
 	}
@@ -110,7 +110,7 @@ public class HelperTest {
 		assertEquals(expected, result.getAbsolutePath());
 		
 		// Test valid file with only file name
-		expected = workDir.getAbsolutePath() +"\\" +fileName;
+		expected = workDir.getAbsolutePath() +"/" +fileName;		//Bugs: OS compatible \\ changed to /
 		result = Helper.isValidFile(workDir, fileName);
 		assertEquals(expected, result.getAbsolutePath());
 	}

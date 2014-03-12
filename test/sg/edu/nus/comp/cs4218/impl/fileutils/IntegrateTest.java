@@ -22,11 +22,11 @@ public class IntegrateTest {
 
 	File fileW,fileX,fileY,fileZ;
 	String fileContentW,fileContentX,fileContentY,fileContentZ;
-
+/*
 	IntegrateTest() {
 		before();
 	}
-
+*/
 	@Before
 	public void before() {
 		sh = new Shell();
@@ -101,7 +101,19 @@ public class IntegrateTest {
 		System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
 		//assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
- 
+	
+	@Test
+	//Test " cut -c 1-2 test1.txt | wc "
+	public void componentIntegrateTest4() {
+			String expectedOutput = "File1: chars= 8 words= 4 lines= 4";
+			String actualOutput = "";
+			
+			actualOutput = sh.runCmd("cut -c 1-2 test1.txt | wc");		//TODO Something wrong with Grep
+			//System.out.println("actualOutput:\n"+actualOutput);
+			//System.out.println("result:\n"+expectedOutput);
+			//System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
+			assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		}
 	
 	
 }

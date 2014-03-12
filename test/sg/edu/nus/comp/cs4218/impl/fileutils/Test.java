@@ -19,8 +19,11 @@ public class Test {
 		System.out.println("actualOutput: "+actualOutput);
 		*/
 		try {
-			IntegrateTest ctt = new IntegrateTest();
-			ctt.componentIntegrateTest3();
+			PASTEToolTest gt = new PASTEToolTest();
+			gt.pasteNoOptionsInvalidFilesTest();
+			//System.out.println("result: "+result);
+			//IntegrateTest ctt = new IntegrateTest();
+			//ctt.componentIntegrateTest2();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

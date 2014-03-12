@@ -49,7 +49,7 @@ public class CDToolTest {
 	@Test
 	public void executeChangeValidDirectoryTest() {
 		String stdin = "cd misc";
-		String expected = "Working dir changed to: " +workingDir +"\\misc";
+		String expected = "Working dir changed to: " +workingDir +"/misc";		//Bugs: OS compatible \\misc changed to /misc
 		String newDir = cdTool.execute(workingDir, stdin);
 		assertEquals(expected, newDir);
 		assertEquals(cdTool.getStatusCode(), 0);

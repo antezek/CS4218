@@ -54,7 +54,7 @@ public class Helper {
 			return f;
 		}
 		else {
-			f = new File(workingDir.getAbsolutePath() +"\\" +folderName);
+			f = new File(workingDir.getAbsolutePath() +"/" +folderName);
 			
 			if (f.isDirectory()) {
 				return f;

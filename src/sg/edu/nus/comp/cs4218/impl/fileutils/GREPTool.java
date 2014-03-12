@@ -4,11 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
 
 import sg.edu.nus.comp.cs4218.extended1.IGrepTool;
 import sg.edu.nus.comp.cs4218.impl.ATool;
-import sg.edu.nus.comp.cs4218.impl.Shell;
+
 
 /**
  * GREPToolTest class to test the functionality of GREPTool
@@ -49,7 +48,6 @@ public class GREPTool extends ATool implements IGrepTool {
 	public String execute(File workingDir, String stdin) {
 
 		int i, j = 0;
-		Scanner myScan = new Scanner(System.in);
 		command = stdin.split(SPACE);
 
 		if (isEmptyCommand(command)) {
@@ -85,7 +83,6 @@ public class GREPTool extends ATool implements IGrepTool {
 			}
 		} else {
 			stdContent = getStdInputContents();
-			Shell.setStdInput(false);
 		}
 
 		if (inputType == FILEINPUT) {
@@ -95,23 +92,18 @@ public class GREPTool extends ATool implements IGrepTool {
 				else
 					result = result + fileContent[i];
 			}
+			
+			if(result.endsWith(EOL))
+				result = result.substring(0, result.length()-1);
 
 			return result;
+			
 		} else {
-			/*
-			 * testing for junit!!result = processContents(stdContent);return
-			 * result;
-			 */
-			while (true) {
-				result = processContents(stdContent);
-				System.out.print(result);
-				stdContent = myScan.nextLine();
-				if (!stdContent.equals("ctrl-z"))
-					result = processContents(stdContent);
-				else
-					break;
-			}
-			result = EMPTY;
+			
+			result = processContents(stdContent);
+			if(result.endsWith(EOL))
+				result = result.substring(0, result.length()-1);
+				
 			return result;
 		}
 	}
@@ -234,8 +226,6 @@ public class GREPTool extends ATool implements IGrepTool {
 		for (i = 0; i < size; i++) {
 			if (inputLine[i].contains(pattern)) {
 				matchLine = matchLine + inputLine[i] + EOL;
-			}else{
-				matchLine = matchLine + EOL;			//Bugs: Add EOL behind those output even detect only 1 result
 			}
 		}
 
@@ -348,7 +338,7 @@ public class GREPTool extends ATool implements IGrepTool {
 		String matchLine = EMPTY;
 
 		for (i = 0; i < size; i++) {
-			if (!inputLine[i].contains(pattern)) {
+			if (!inputLine[i].contains(pattern) && inputLine[i]!=EMPTY) {
 				matchLine = matchLine + inputLine[i] + EOL;
 			}
 		}
@@ -450,7 +440,7 @@ public class GREPTool extends ATool implements IGrepTool {
 			output = Integer.toString(numOfMatch);
 		} else if (command[1].equals("-o"))
 			output = getMatchingLinesOnlyMatchingPart(command[2], content);
-		else if (command[1].equals("v"))
+		else if (command[1].equals("-v"))
 			output = getNonMatchingLines(command[2], content);
 
 		else
@@ -460,12 +450,12 @@ public class GREPTool extends ATool implements IGrepTool {
 	}
 
 	// Get the contents inside the files
-	private String getFileContents(File workdir, String fileName)
+	public String getFileContents(File workdir, String fileName)
 			throws IOException {
 
 		String path;
 
-		if (!fileName.contains("/"))
+		if (!fileName.contains("/"))				//Bugs: OS compatible \\ changed to /
 			// it is a fileName, thus it means the file resides in the same
 			// directory as the working directory
 			path = workdir.getAbsolutePath() + "/" + fileName;
@@ -478,25 +468,29 @@ public class GREPTool extends ATool implements IGrepTool {
 	}
 
 	// Read from a file
-	private String readFile(File file) throws IOException {
+	private String readFile(File file) throws IOException{
 
+		String results = "";
 		BufferedReader br = new BufferedReader(new FileReader(file));
 
-		try {
+		StringBuilder fileContents = new StringBuilder();
+		String line = br.readLine();
 
-			StringBuilder fileContents = new StringBuilder();
-			String line = br.readLine();
-
-			while (line != null) {
-				fileContents.append(line);
-				fileContents.append("\n");
-				line = br.readLine();
-			}
-
-			return fileContents.toString();
-		} finally {
-			br.close();
+		while (line != null) {
+			results += line;
+			results += "\n";
+			line = br.readLine();
 		}
-	}
+		if(results!=EMPTY) {
+			if (results.substring(results.length() - 1, results.length())
+					.equals("\n")) {
+				results = results.substring(0, results.length() - 1);
+			}
+		}
+		fileContents.append(results);
+		
+		br.close();
+		return fileContents.toString();
+	}	 
 
 }
