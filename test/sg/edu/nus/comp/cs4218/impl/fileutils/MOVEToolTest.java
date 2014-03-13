@@ -13,15 +13,9 @@ import org.junit.Test;
 public class MOVEToolTest {
 	private MOVETool moveTool;
 	private File workingDir;
-	private File from;
-	private File to;
-	private File from2;
-	private File to2;
-	private File from3;
-	private File invalidFile;
-	private File invalidDir;
-	private File newFile1;
-	private File newFile2;
+	private File from, from2, from3, from4;
+	private File to, to2;
+	private File existingFile, invalidFile, invalidDir, newFile1, newFile2;
 
 	@Before
 	public void setUp() throws Exception {
@@ -37,6 +31,10 @@ public class MOVEToolTest {
 		to2.mkdir();
 		from3 = new File("./misc/tempmovefile3.txt");
 		from3.createNewFile();
+		from4 = new File("./misc/tempmovefile4.txt");
+		from4.createNewFile();
+		existingFile = new File("./misc/TestFolder/tempmovefile4.txt");
+		existingFile.createNewFile();
 		invalidFile = new File("invalidFile");
 		invalidDir = new File("invalidDir");
 		newFile1 = new File("");
@@ -49,6 +47,8 @@ public class MOVEToolTest {
 		from.delete();
 		from2.delete();
 		from3.delete();
+		from4.delete();
+		existingFile.delete();
 		newFile1.delete();
 		newFile2.delete();
 		invalidFile.delete();
@@ -69,57 +69,81 @@ public class MOVEToolTest {
 		newFile1 = new File(to, from.getName());
 		assertTrue(newFile1.exists());
 	}
-	
+
 	/**
 	 * Test expected behaviour of moving file
 	 */
 	@Test
 	public void executeMoveValidFileTest() {
-		String stdin = "move " +from2.getAbsolutePath() + " " +to2.getAbsolutePath();
-		String expected = "Moved file tempmovefile2.txt to " +to2.getAbsolutePath();
-		String result = moveTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String stdin = "move " + from2.getAbsolutePath() + " " + to2.getAbsolutePath();
+		String expected = "Moved file tempmovefile2.txt to " + to2.getAbsolutePath();
+		String actual = moveTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(moveTool.getStatusCode(), 0);
 		assertFalse(from2.exists());
 		newFile2 = new File(to2, from2.getName());
 		assertTrue(newFile2.exists());
 	}
-	
+
+	/**
+	 * Test error handling: file already exists in dir
+	 */
+	@Test
+	public void executeCopyValidFileExistsTest() {
+		String stdin = "copy " + from4.getAbsolutePath() + " " + to.getAbsolutePath();
+		String expected = "Error: failed to move file";
+		String actual = moveTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
+		assertEquals(moveTool.getStatusCode(), 1);
+		assertTrue(from4.exists());
+	}
+
 	/**
 	 * Test error handling: move invalid file to valid dir
 	 */
 	@Test
 	public void executeMoveInvalidFileTest() {
-		String stdin = "move " +invalidFile.getAbsolutePath() + " " +to2.getAbsolutePath();
+		String stdin = "move " + invalidFile.getAbsolutePath() + " " + to2.getAbsolutePath();
 		String expected = "Error: file or dir not found";
-		String result = moveTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = moveTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(moveTool.getStatusCode(), 1);
 	}
-	
+
 	/**
 	 * Test error handling: move valid file to invalid dir
 	 */
 	@Test
 	public void executeMoveInvalidDirTest() {
-		String stdin = "move " +from3.getAbsolutePath() + " " +invalidDir.getAbsolutePath();
+		String stdin = "move " + from3.getAbsolutePath() + " " + invalidDir.getAbsolutePath();
 		String expected = "Error: file or dir not found";
-		String result = moveTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = moveTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(moveTool.getStatusCode(), 1);
 	}
-	
+
 	/**
 	 * Test error handling: move invalid file to invalid dir
 	 */
 	@Test
 	public void executeMoveInvalidFileDirTest() {
-		String stdin = "move " +invalidFile.getAbsolutePath() + " " +invalidDir.getAbsolutePath();
+		String stdin = "move " + invalidFile.getAbsolutePath() + " " + invalidDir.getAbsolutePath();
 		String expected = "Error: file or dir not found";
-		String result = moveTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = moveTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(moveTool.getStatusCode(), 1);
 	}
-	
+
+	/**
+	 * Test error handling: move null file test
+	 */
+	@Test
+	public void executeMoveNullFileTest() {
+		String stdin = "move file directory error";
+		String expected = "Error: file name null";
+		String actual = moveTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
+		assertEquals(moveTool.getStatusCode(), 1);
+	}
 
 }

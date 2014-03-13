@@ -17,10 +17,7 @@ import org.junit.Test;
 public class DELETEToolTest {
 	private DELETETool delTool;
 	private File workingDir;
-	private File toDelete;
-	private File toDelete2;
-	private File toDelete3;
-	private File toDelete4;
+	private File toDelete, toDelete2, toDelete3, toDelete4;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -68,8 +65,8 @@ public class DELETEToolTest {
 	public void executeDeleteFullFilePathTest() {
 		String stdin = "delete " +toDelete3.getAbsolutePath();
 		String expected = "Deleted file " +toDelete3.getAbsolutePath();
-		String result = delTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = delTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertFalse(toDelete3.exists());
 		assertEquals(delTool.getStatusCode(), 0);
 	}
@@ -81,8 +78,8 @@ public class DELETEToolTest {
 	public void executeDeleteSimpleFileNameTest() {
 		String stdin = "delete " +toDelete4.getName();
 		String expected = "Deleted file " +toDelete4.getAbsolutePath();
-		String result = delTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = delTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertFalse(toDelete4.exists());
 		assertEquals(delTool.getStatusCode(), 0);
 	}
@@ -94,8 +91,8 @@ public class DELETEToolTest {
 	public void executeDeleteInvalidFileNameTest() {
 		String stdin = "delete notvalid.txt";
 		String expected = "Error: file not found";
-		String result = delTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = delTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(delTool.getStatusCode(), 1);
 	}
 	
@@ -106,8 +103,8 @@ public class DELETEToolTest {
 	public void executeDeleteBlankFileNameTest() {
 		String stdin = "delete ";
 		String expected = "Error: file name null";
-		String result = delTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = delTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(delTool.getStatusCode(), 1);
 	}
 
