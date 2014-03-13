@@ -9,7 +9,7 @@ import org.junit.runners.Suite;
 		CUTToolTest.class, PASTEToolTest.class, SORTToolTest.class,
 		GREPToolTest.class, LSToolTest.class, PWDToolTest.class,
 		ECHOToolTest.class, CATToolTest.class, PIPEToolTest.class,
-		WCToolTest.class, CDToolTest.class, ShellTest.class })
+		WCToolTest.class, CDToolTest.class, ShellTest.class})
 public class JUnitTestSuite {
 
 }

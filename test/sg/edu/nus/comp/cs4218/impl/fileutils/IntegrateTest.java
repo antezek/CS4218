@@ -81,7 +81,7 @@ public class IntegrateTest {
 	}
 
 	@Test
-	// Test " echo abcde | cut -c 1-3 "
+	// Test " echo | cut "
 	public void componentIntegrateTest1() {
 		String expectedOutput = "abc";
 		String actualOutput = "";
@@ -90,7 +90,7 @@ public class IntegrateTest {
 	}
 
 	@Test
-	// Test " comm w.txt x.txt | grep Banana "
+	// Test " comm | grep "
 	public void componentIntegrateTest2() {
 		String testTab = "\t";
 		String testNewLine = "\n";
@@ -103,7 +103,7 @@ public class IntegrateTest {
 	}
 
 	@Test
-	// Test " cut -c 1-2 w.txt | paste -d : | grep Ap "
+	// Test " cut | paste | grep "
 	public void componentIntegrateTest3() {
 		String expectedOutput = "Ap\n\n";
 		String actualOutput = "";
@@ -112,7 +112,7 @@ public class IntegrateTest {
 	}
 
 	@Test
-	// Test " cut -c 1-2 test1.txt | wc "
+	// Test " cut | wc "
 	public void componentIntegrateTest4() {
 		String expectedOutput = "File1: chars= 8 words= 4 lines= 4";
 		String actualOutput = "";
@@ -122,7 +122,7 @@ public class IntegrateTest {
 	}
 
 	@Test
-	// Test " grep -C 2 haha PASSAGE2.txt LOST.txt | sort "
+	// Test " grep | sort "
 	public void componentIntegrateTest5() {
 		String expectedOutput = "File1:\nAnd I your willing victim\n"
 				+ "And we can haha learn to love again\n"
@@ -144,7 +144,7 @@ public class IntegrateTest {
 	}
 
 	@Test
-	// Test " cat PASSAGE2.txt | grep haha | sort "
+	// Test " cat | grep | sort "
 	public void componentIntegrateTest6() {
 		String expectedOutput = "File1:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
 				+ "And we can haha learn to love again\nBetween haha our love, our love, oh our love, our love\n"
@@ -156,7 +156,7 @@ public class IntegrateTest {
 	}
 
 	@Test
-	// Test grep -B 1 Fashion PASSAGE.txt | wc
+	// Test grep | wc
 	public void componentIntegrateTest7() {
 		String expectedOutput = "File1: chars= 421 words= 83 lines= 7";
 		String actualOutput = "";
@@ -179,7 +179,7 @@ public class IntegrateTest {
 	}
 	
 	@Test
-	// Test " echo hello world, Programming is fun!! :D | wc "
+	// Test " echo | wc "
 	public void componentIntegrateTest9() {
 		String expectedOutput = "File1: chars= 27 words= 6 lines= 1";
 		String actualOutput = "";
@@ -190,4 +190,15 @@ public class IntegrateTest {
 		 System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
+	
+	@Test
+	// Test " echo | cut | paste | grep | wc  "
+	public void componentIntegrateTest10() {
+		String expectedOutput = "File1: chars= 21 words= 3 lines= 1";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd("echo hello world, Programming is fun!! | cut -c 1-24 | paste -d : | grep Program | wc");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
+	
 }
