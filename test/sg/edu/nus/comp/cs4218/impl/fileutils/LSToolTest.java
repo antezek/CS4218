@@ -50,8 +50,8 @@ public class LSToolTest {
 	public void getValidDirectoryListingTest() {
 		File f = validFile;
 		String expected = "aaa.txt\n" + "bbb.txt\n" + "ValidDir";
-		String result = lsTool.getStringForFiles(lsTool.getFiles(f));
-		assertEquals(expected, result);
+		String actual = lsTool.getStringForFiles(lsTool.getFiles(f));
+		assertEquals(expected, actual);
 		assertEquals(lsTool.getStatusCode(), 0);
 	}
 	
@@ -63,8 +63,8 @@ public class LSToolTest {
 		File f = validFile;
 		String stdin = "ls";
 		String expected = "aaa.txt\n" + "bbb.txt\n" + "ValidDir";
-		String result = lsTool.execute(f, stdin);
-		assertEquals(expected, result);
+		String actual = lsTool.execute(f, stdin);
+		assertEquals(expected, actual);
 		assertEquals(lsTool.getStatusCode(), 0);
 	}
 	
@@ -76,8 +76,8 @@ public class LSToolTest {
 		File f = emptyFile;
 		String stdin = "ls";
 		String expected = "Error: No files in working directory";
-		String result = lsTool.execute(f, stdin);
-		assertEquals(expected, result);
+		String actual = lsTool.execute(f, stdin);
+		assertEquals(expected, actual);
 		assertEquals(lsTool.getStatusCode(), 0);
 	}
 

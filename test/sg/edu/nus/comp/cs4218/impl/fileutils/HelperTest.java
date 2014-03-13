@@ -17,7 +17,7 @@ import org.junit.Test;
  */
 public class HelperTest {
 	private String dirName, fileName, expected, workingDir;
-	private File validFile, validDir, result, workDir;
+	private File validFile, validDir, actual, workDir;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -38,7 +38,7 @@ public class HelperTest {
 		fileName = null;
 		expected = null;
 		workingDir = null;
-		result = null;
+		actual = null;
 		workDir = null;
 		validFile.delete();
 		validDir.delete();
@@ -56,14 +56,14 @@ public class HelperTest {
 		// Test valid file directory 2
 		workDir = new File(workingDir);
 		expected = workDir.getAbsolutePath();
-		result = Helper.isValidDirectory(workDir, "misc");
-		assertEquals(expected, result.getAbsolutePath());
+		actual = Helper.isValidDirectory(workDir, "misc");
+		assertEquals(expected, actual.getAbsolutePath());
 		
 		// Test valid file directory 3
 		workDir = new File(workingDir);
 		expected = workDir.getAbsolutePath() + "/" +dirName;			//Bugs: OS compatible \\ changed to /
-		result = Helper.isValidDirectory(workDir, dirName);
-		assertEquals(expected, result.getAbsolutePath());
+		actual = Helper.isValidDirectory(workDir, dirName);
+		assertEquals(expected, actual.getAbsolutePath());
 	}
 	
 	/**
@@ -79,31 +79,31 @@ public class HelperTest {
 		// Test error handling: invalid file directory
 		dirName = "InvalidTest";
 		workDir = new File(workingDir);
-		result = Helper.isValidDirectory(workDir, dirName);
-		assertNull(result);
+		actual = Helper.isValidDirectory(workDir, dirName);
+		assertNull(actual);
 		
 		// Test error handling: invalid directory name with numbers
 		dirName = "54321";
-		result = Helper.isValidDirectory(workDir, dirName);
-		assertNull(result);
+		actual = Helper.isValidDirectory(workDir, dirName);
+		assertNull(actual);
 		
 		// Test error handling: invalid directory name with spaces
 		dirName = "not a directory";
-		result = Helper.isValidDirectory(workDir, dirName);
-		assertNull(result);
+		actual = Helper.isValidDirectory(workDir, dirName);
+		assertNull(actual);
 		
 		// Test error handling: blank directory
 		dirName = "";
-		result = Helper.isValidDirectory(workDir, dirName);
-		assertNull(result);
+		actual = Helper.isValidDirectory(workDir, dirName);
+		assertNull(actual);
 		
 		dirName = " ";
-		result = Helper.isValidDirectory(workDir, dirName);
-		assertNull(result);
+		actual = Helper.isValidDirectory(workDir, dirName);
+		assertNull(actual);
 		
 		dirName = null;
-		result = Helper.isValidDirectory(workDir, dirName);
-		assertNull(result);
+		actual = Helper.isValidDirectory(workDir, dirName);
+		assertNull(actual);
 		
 	}
 	
@@ -115,13 +115,13 @@ public class HelperTest {
 		// Test valid file with full file path
 		workDir = new File(workingDir);
 		expected = validFile.getAbsolutePath();
-		result = Helper.isValidFile(workDir, validFile.getAbsolutePath());
-		assertEquals(expected, result.getAbsolutePath());
+		actual = Helper.isValidFile(workDir, validFile.getAbsolutePath());
+		assertEquals(expected, actual.getAbsolutePath());
 		
 		// Test valid file with only file name
 		expected = workDir.getAbsolutePath() +"/" +fileName;		//Bugs: OS compatible \\ changed to /
-		result = Helper.isValidFile(workDir, fileName);
-		assertEquals(expected, result.getAbsolutePath());
+		actual = Helper.isValidFile(workDir, fileName);
+		assertEquals(expected, actual.getAbsolutePath());
 	}
 	
 	/**
@@ -131,36 +131,36 @@ public class HelperTest {
 	public void invalidFileTest() {
 		// Test error handling: invalid file
 		fileName = "invalid.txt";
-		result = Helper.isValidFile(workDir, fileName);
-		assertNull(result);
+		actual = Helper.isValidFile(workDir, fileName);
+		assertNull(actual);
 		
 		// Test error handling: invalid file
 		fileName = "./misc/secondinvalid.txt";
-		result = Helper.isValidFile(workDir, fileName);
-		assertNull(result);
+		actual = Helper.isValidFile(workDir, fileName);
+		assertNull(actual);
 		
 		// Test error handling: invalid file name with numbers
 		fileName = "12345";
-		result = Helper.isValidFile(workDir, fileName);
-		assertNull(result);
+		actual = Helper.isValidFile(workDir, fileName);
+		assertNull(actual);
 		
 		// Test error handling: invalid file name with spaces
 		fileName = "not a file";
-		result = Helper.isValidFile(workDir, fileName);
-		assertNull(result);
+		actual = Helper.isValidFile(workDir, fileName);
+		assertNull(actual);
 		
 		// Test error handling: blank file
 		fileName = "";
-		result = Helper.isValidFile(workDir, fileName);
-		assertNull(result);
+		actual = Helper.isValidFile(workDir, fileName);
+		assertNull(actual);
 		
 		fileName = " ";
-		result = Helper.isValidFile(workDir, fileName);
-		assertNull(result);
+		actual = Helper.isValidFile(workDir, fileName);
+		assertNull(actual);
 		
 		fileName = null;
-		result = Helper.isValidFile(workDir, fileName);
-		assertNull(result);
+		actual = Helper.isValidFile(workDir, fileName);
+		assertNull(actual);
 		
 	}
 	
@@ -171,13 +171,13 @@ public class HelperTest {
 	public void getCommandTest() {
 		String command = "Hello World";
 		String expected = "Hello";
-		String result = Helper.getCommand(command);
-		assertEquals(expected, result);
+		String actual = Helper.getCommand(command);
+		assertEquals(expected, actual);
 		
 		command = "This is a line of commands";
 		expected = "This";
-		result = Helper.getCommand(command);
-		assertEquals(expected, result);
+		actual = Helper.getCommand(command);
+		assertEquals(expected, actual);
 		
 	}
 

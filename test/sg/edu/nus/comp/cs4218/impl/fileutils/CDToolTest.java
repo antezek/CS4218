@@ -38,8 +38,8 @@ public class CDToolTest {
 	public void changeValidDirectoryTest() {
 		String dir = "./misc";
 		File f = new File(dir);
-		File newDir = cdTool.changeDirectory(dir);
-		assertEquals(f.getAbsolutePath(), newDir.getAbsolutePath());
+		File actual = cdTool.changeDirectory(dir);
+		assertEquals(f.getAbsolutePath(), actual.getAbsolutePath());
 		assertEquals(cdTool.getStatusCode(), 0);
 	}
 	
@@ -50,8 +50,8 @@ public class CDToolTest {
 	public void executeChangeValidDirectoryTest() {
 		String stdin = "cd misc";
 		String expected = "Working dir changed to: " +workingDir +"/misc";		//Bugs: OS compatible \\misc changed to /misc
-		String newDir = cdTool.execute(workingDir, stdin);
-		assertEquals(expected, newDir);
+		String actual = cdTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(cdTool.getStatusCode(), 0);
 	}
 	
@@ -63,8 +63,8 @@ public class CDToolTest {
 	@Test
 	public void changeInvalidFileDirectoryTest() {
 		String dir = tempcdfile.getAbsolutePath();
-		File newDir = cdTool.changeDirectory(dir);
-		assertNull(newDir);
+		File actual = cdTool.changeDirectory(dir);
+		assertNull(actual);
 		assertEquals(cdTool.getStatusCode(), 1);
 	}
 	
@@ -76,8 +76,8 @@ public class CDToolTest {
 	public void executeChangeInvalidDirectoryTest() {
 		String stdin = "cd " +tempcdfile.getAbsolutePath();
 		String expected = "Error: not a directory";
-		String newDir = cdTool.execute(workingDir, stdin);
-		assertEquals(expected, newDir);
+		String actual = cdTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(cdTool.getStatusCode(), 1);
 	}
 	
@@ -88,8 +88,8 @@ public class CDToolTest {
 	@Test
 	public void changeNonExistentDirectoryTest() {
 		String dir = "./invalid";
-		File newDir = cdTool.changeDirectory(dir);
-		assertNull(newDir);
+		File actual = cdTool.changeDirectory(dir);
+		assertNull(actual);
 		assertEquals(cdTool.getStatusCode(), 1);
 	}
 	
@@ -101,8 +101,8 @@ public class CDToolTest {
 	public void executeChangeNonExistentDirectoryTest() {
 		String stdin = "cd invalid";
 		String expected = "Error: not a directory";
-		String newDir = cdTool.execute(workingDir, stdin);
-		assertEquals(expected, newDir);
+		String actual = cdTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(cdTool.getStatusCode(), 1);
 	}
 	
@@ -113,8 +113,8 @@ public class CDToolTest {
 	public void executeChangeNullDirectoryTest() {
 		String stdin = "cd ";
 		String expected = "Error: directory cannot be null";
-		String newDir = cdTool.execute(workingDir, stdin);
-		assertEquals(expected, newDir);
+		String actual = cdTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(cdTool.getStatusCode(), 1);
 	}
 

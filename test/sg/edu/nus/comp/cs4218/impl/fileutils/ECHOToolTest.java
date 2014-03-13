@@ -34,13 +34,13 @@ public class ECHOToolTest {
 	@Test
 	public void echoValidTextTest() {
 		String toEcho = "Hello World";
-		String result = echoTool.echo(toEcho);
-		assertEquals(toEcho, result);
+		String actual = echoTool.echo(toEcho);
+		assertEquals(toEcho, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 		
 		toEcho = "12345";
-		result = echoTool.echo(toEcho);
-		assertEquals(toEcho, result);
+		actual = echoTool.echo(toEcho);
+		assertEquals(toEcho, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -51,14 +51,14 @@ public class ECHOToolTest {
 	public void executeEchoValidTextTest() {
 		String toEcho = "Hello World";
 		String stdin = "echo " + toEcho;
-		String result = echoTool.execute(workingDir, stdin);
-		assertEquals(toEcho, result);
+		String actual = echoTool.execute(workingDir, stdin);
+		assertEquals(toEcho, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 		
 		toEcho = "12345";
 		stdin = "echo " + toEcho;
-		result = echoTool.execute(workingDir, stdin);
-		assertEquals(toEcho, result);
+		actual = echoTool.execute(workingDir, stdin);
+		assertEquals(toEcho, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -70,8 +70,8 @@ public class ECHOToolTest {
 	public void echoValidSystemVariableTest() {
 		String toEcho = "homepath";
 		String expected = System.getenv(toEcho);
-		String result = echoTool.echo(toEcho);
-		assertEquals(expected, result);
+		String actual = echoTool.echo(toEcho);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -82,8 +82,8 @@ public class ECHOToolTest {
 	public void executeEchoValidSystemVariableTest() {
 		String stdin = "echo homepath";
 		String expected = System.getenv("homepath");
-		String result = echoTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = echoTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -92,9 +92,9 @@ public class ECHOToolTest {
 	 */
 	@Test
 	public void echoInvalidSystemVariableTest() {
-		String toEcho = "homebase";
-		String result = echoTool.echo(toEcho);
-		assertEquals(toEcho, result);
+		String expected = "homebase";
+		String actual = echoTool.echo(expected);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -115,9 +115,9 @@ public class ECHOToolTest {
 	 */
 	@Test
 	public void echoEmptyTextTest() {
-		String toEcho = "";
-		String result = echoTool.echo(toEcho);
-		assertEquals(toEcho, result);
+		String expected = "";
+		String actual = echoTool.echo(expected);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -128,8 +128,8 @@ public class ECHOToolTest {
 	public void executeEchoEmptyTextTest() {
 		String stdin = "echo";
 		String expected = "Error: args null";
-		String result = echoTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = echoTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 1);
 	}
 	
@@ -138,9 +138,9 @@ public class ECHOToolTest {
 	 */
 	@Test
 	public void echoBlankTextTest() {
-		String toEcho = " ";
-		String result = echoTool.echo(toEcho);
-		assertEquals(toEcho, result);
+		String expected = " ";
+		String actual = echoTool.echo(expected);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -151,8 +151,8 @@ public class ECHOToolTest {
 	public void executeEchoBlankTextTest() {
 		String stdin = "echo  ";
 		String expected = "Error: args null";
-		String result = echoTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = echoTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 1);
 	}
 	
@@ -161,9 +161,9 @@ public class ECHOToolTest {
 	 */
 	@Test
 	public void echoLargeNumberTest() {
-		String toEcho = String.valueOf(Integer.MAX_VALUE+1);
-		String result = echoTool.echo(toEcho);
-		assertEquals(toEcho, result);
+		String expected = String.valueOf(Integer.MAX_VALUE+1);
+		String actual = echoTool.echo(expected);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -175,8 +175,8 @@ public class ECHOToolTest {
 		int maxNum = Integer.MAX_VALUE+1;
 		String stdin = "echo " +maxNum;
 		String expected = String.valueOf(maxNum);
-		String result = echoTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = echoTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -185,9 +185,9 @@ public class ECHOToolTest {
 	 */
 	@Test
 	public void echoZeroNumberTest() {
-		String toEcho = String.valueOf(00000000000);
-		String result = echoTool.echo(toEcho);
-		assertEquals(toEcho, result);
+		String expected = String.valueOf(00000000000);
+		String actual = echoTool.echo(expected);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -198,8 +198,8 @@ public class ECHOToolTest {
 	public void executeEchoZeroNumberTest() {
 		String stdin = "echo " +0000000000;
 		String expected = String.valueOf(0000000000);
-		String result = echoTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = echoTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -208,9 +208,9 @@ public class ECHOToolTest {
 	 */
 	@Test
 	public void echoNegativeNumberTest() {
-		String toEcho = String.valueOf(-54321);
-		String result = echoTool.echo(toEcho);
-		assertEquals(toEcho, result);
+		String expected = String.valueOf(-54321);
+		String actual = echoTool.echo(expected);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
@@ -221,8 +221,8 @@ public class ECHOToolTest {
 	public void executeEchoNegativeNumberTest() {
 		String stdin = "echo " + -12345;
 		String expected = String.valueOf(-12345);
-		String result = echoTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = echoTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 

@@ -76,8 +76,8 @@ public class COPYToolTest {
 	public void executeCopyValidFileTest() {
 		String stdin = "copy " +from2.getAbsolutePath() + " " +to2.getAbsolutePath();
 		String expected = "Copied file tempcopyfile2.txt to " +to2.getAbsolutePath();
-		String result = copyTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = copyTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(copyTool.getStatusCode(), 0);
 		assertTrue(from2.exists());
 		newFile2 = new File(to2, from2.getName());
@@ -91,8 +91,8 @@ public class COPYToolTest {
 	public void executeCopyValidFileExistsTest() {
 		String stdin = "copy " +from4.getAbsolutePath() + " " +to.getAbsolutePath();
 		String expected = "Error: failed to copy file";
-		String result = copyTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = copyTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(copyTool.getStatusCode(), 1);
 		assertTrue(from4.exists());
 	}
@@ -104,8 +104,8 @@ public class COPYToolTest {
 	public void executeCopyInvalidFileTest() {
 		String stdin = "copy " +invalidFile.getAbsolutePath() + " " +to2.getAbsolutePath();
 		String expected = "Error: file or dir not found";
-		String result = copyTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = copyTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(copyTool.getStatusCode(), 1);
 	}
 	
@@ -116,8 +116,8 @@ public class COPYToolTest {
 	public void executeCopyInvalidDirTest() {
 		String stdin = "copy " +from3.getAbsolutePath() + " " +invalidDir.getAbsolutePath();
 		String expected = "Error: file or dir not found";
-		String result = copyTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = copyTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(copyTool.getStatusCode(), 1);
 	}
 	
@@ -128,8 +128,8 @@ public class COPYToolTest {
 	public void executeCopyInvalidFileDirTest() {
 		String stdin = "copy " +invalidFile.getAbsolutePath() + " " +invalidDir.getAbsolutePath();
 		String expected = "Error: file or dir not found";
-		String result = copyTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = copyTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(copyTool.getStatusCode(), 1);
 	}
 	
@@ -140,8 +140,8 @@ public class COPYToolTest {
 	public void executeMoveNullFileTest() {
 		String stdin = "copy file directory error";
 		String expected ="Error: file name null";
-		String result = copyTool.execute(workingDir, stdin);
-		assertEquals(expected, result);
+		String actual = copyTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
 		assertEquals(copyTool.getStatusCode(), 1);
 	}
 	
