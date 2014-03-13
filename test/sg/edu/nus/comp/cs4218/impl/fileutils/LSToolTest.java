@@ -14,25 +14,21 @@ import org.junit.Test;
  */
 public class LSToolTest {
 	private LSTool lsTool;
-	private String validDir;
-	private String emptyDir;
-	private File a;
-	private File b;
-	private File valid;
-	private File empty;
+	private File a, b;
+	private File validFile, emptyFile, validDir;
 
 	@Before
 	public void setUp() throws Exception {
 		lsTool = new LSTool();
-		validDir = "./misc/LSToolTestValid";
-		emptyDir = "./misc/LSToolTestEmpty";
-		valid = new File(validDir);
-		empty = new File(emptyDir);
-		a = new File(valid, "aaa.txt");
-		b = new File(valid, "bbb.txt");
+		validFile = new File("./misc/LSToolTestValid");
+		emptyFile = new File("./misc/LSToolTestEmpty");
+		validDir = new File("./misc/LSToolTestValid/ValidDir");
+		a = new File(validFile, "aaa.txt");
+		b = new File(validFile, "bbb.txt");
 		
-		valid.mkdir();
-		empty.mkdir();
+		validFile.mkdir();
+		emptyFile.mkdir();
+		validDir.mkdir();
 		a.createNewFile();
 		b.createNewFile();
 	}
@@ -40,12 +36,11 @@ public class LSToolTest {
 	@After
 	public void tearDown() throws Exception {
 		lsTool = null;
-		validDir = null;
-		emptyDir = null;
 		a.delete();
 		b.delete();
-		valid.delete();
-		empty.delete();
+		validDir.delete();
+		validFile.delete();
+		emptyFile.delete();
 	}
 
 	/**
@@ -53,9 +48,8 @@ public class LSToolTest {
 	 */
 	@Test
 	public void getValidDirectoryListingTest() {
-		File f = new File(validDir);
-		String expected = "aaa.txt" +"\n"
-							+ "bbb.txt";
+		File f = validFile;
+		String expected = "aaa.txt\n" + "bbb.txt\n" + "ValidDir";
 		String result = lsTool.getStringForFiles(lsTool.getFiles(f));
 		assertEquals(expected, result);
 		assertEquals(lsTool.getStatusCode(), 0);
@@ -66,10 +60,9 @@ public class LSToolTest {
 	 */
 	@Test
 	public void executeGetValidDirectoryListingTest() {
-		File f = new File(validDir);
+		File f = validFile;
 		String stdin = "ls";
-		String expected = "aaa.txt" +"\n"
-							+ "bbb.txt";
+		String expected = "aaa.txt\n" + "bbb.txt\n" + "ValidDir";
 		String result = lsTool.execute(f, stdin);
 		assertEquals(expected, result);
 		assertEquals(lsTool.getStatusCode(), 0);
@@ -80,7 +73,7 @@ public class LSToolTest {
 	 */
 	@Test
 	public void getEmptyDirectoryListingTest() {
-		File f = new File(emptyDir);
+		File f = emptyFile;
 		String stdin = "ls";
 		String expected = "Error: No files in working directory";
 		String result = lsTool.execute(f, stdin);

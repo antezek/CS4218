@@ -18,7 +18,7 @@ public class Helper {
 	 * @return File if file exists, null otherwise
 	 */
 	public static File isValidFile(File workingDir, String fileName) {
-		if (fileName.equalsIgnoreCase(REGEX_WHITE_SPACE) || fileName == null || fileName.equalsIgnoreCase("")) {
+		if (fileName == null || fileName.equalsIgnoreCase(" ") || fileName.equalsIgnoreCase("")) {
 			return null;
 		}
 		
@@ -44,7 +44,7 @@ public class Helper {
 	 * @return File if directory exists, null otherwise
 	 */
 	public static File isValidDirectory(File workingDir, String folderName) {
-		if (folderName.equalsIgnoreCase(REGEX_WHITE_SPACE) || folderName == null || folderName.equalsIgnoreCase("")) {
+		if (folderName == null || folderName.equalsIgnoreCase(" ") || folderName.equalsIgnoreCase("")) {
 			return null;
 		}
 		

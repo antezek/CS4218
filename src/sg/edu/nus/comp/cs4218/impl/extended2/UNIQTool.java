@@ -14,7 +14,6 @@ import sg.edu.nus.comp.cs4218.impl.ATool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.Helper;
 
 public class UNIQTool extends ATool implements IUniqTool {
-	private File workingDir;
 	private boolean ignoreCase;
 	private boolean help;
 	private boolean numFields;
@@ -23,7 +22,6 @@ public class UNIQTool extends ATool implements IUniqTool {
 
 	public UNIQTool(String[] arguments) {
 		super(null);
-		workingDir = new File(System.getProperty("user.dir"));
 		ignoreCase = false;
 		help = false;
 		numFields = false;

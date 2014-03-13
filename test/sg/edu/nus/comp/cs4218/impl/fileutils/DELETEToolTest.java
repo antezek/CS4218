@@ -17,10 +17,7 @@ import org.junit.Test;
 public class DELETEToolTest {
 	private DELETETool delTool;
 	private File workingDir;
-	private File toDelete;
-	private File toDelete2;
-	private File toDelete3;
-	private File toDelete4;
+	private File toDelete, toDelete2, toDelete3, toDelete4;
 	
 	@Before
 	public void setUp() throws Exception {

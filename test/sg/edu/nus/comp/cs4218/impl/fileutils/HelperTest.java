@@ -16,14 +16,8 @@ import org.junit.Test;
  *
  */
 public class HelperTest {
-	private String dirName;
-	private String fileName;
-	private String expected;
-	private String workingDir;
-	private File validFile;
-	private File result;
-	private File validDir;;
-	private File workDir;
+	private String dirName, fileName, expected, workingDir;
+	private File validFile, validDir, result, workDir;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -61,6 +55,12 @@ public class HelperTest {
 		
 		// Test valid file directory 2
 		workDir = new File(workingDir);
+		expected = workDir.getAbsolutePath();
+		result = Helper.isValidDirectory(workDir, "misc");
+		assertEquals(expected, result.getAbsolutePath());
+		
+		// Test valid file directory 3
+		workDir = new File(workingDir);
 		expected = workDir.getAbsolutePath() + "/" +dirName;			//Bugs: OS compatible \\ changed to /
 		result = Helper.isValidDirectory(workDir, dirName);
 		assertEquals(expected, result.getAbsolutePath());
@@ -96,6 +96,15 @@ public class HelperTest {
 		dirName = "";
 		result = Helper.isValidDirectory(workDir, dirName);
 		assertNull(result);
+		
+		dirName = " ";
+		result = Helper.isValidDirectory(workDir, dirName);
+		assertNull(result);
+		
+		dirName = null;
+		result = Helper.isValidDirectory(workDir, dirName);
+		assertNull(result);
+		
 	}
 	
 	/**
@@ -144,6 +153,31 @@ public class HelperTest {
 		fileName = "";
 		result = Helper.isValidFile(workDir, fileName);
 		assertNull(result);
+		
+		fileName = " ";
+		result = Helper.isValidFile(workDir, fileName);
+		assertNull(result);
+		
+		fileName = null;
+		result = Helper.isValidFile(workDir, fileName);
+		assertNull(result);
+		
+	}
+	
+	/**
+	 * Test expected behaviour of getCommand method
+	 */
+	@Test
+	public void getCommandTest() {
+		String command = "Hello World";
+		String expected = "Hello";
+		String result = Helper.getCommand(command);
+		assertEquals(expected, result);
+		
+		command = "This is a line of commands";
+		expected = "This";
+		result = Helper.getCommand(command);
+		assertEquals(expected, result);
 		
 	}
 

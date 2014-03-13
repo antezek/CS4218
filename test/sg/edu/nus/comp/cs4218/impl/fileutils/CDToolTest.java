@@ -15,14 +15,14 @@ import org.junit.Test;
  */
 public class CDToolTest {
 	private CDTool cdTool;
-	private File workingDir;
-	File tempcdfile;
+	private File workingDir, tempcdfile;
 
 	@Before
 	public void setUp() throws Exception {
 		cdTool = new CDTool();
 		workingDir = new File(System.getProperty("user.dir"));
 		tempcdfile = new File("./misc/tempcdfile.txt");
+		tempcdfile.createNewFile();
 	}
 
 	@After
@@ -74,7 +74,7 @@ public class CDToolTest {
 	 */
 	@Test
 	public void executeChangeInvalidDirectoryTest() {
-		String stdin = "cd " +tempcdfile.getName();
+		String stdin = "cd " +tempcdfile.getAbsolutePath();
 		String expected = "Error: not a directory";
 		String newDir = cdTool.execute(workingDir, stdin);
 		assertEquals(expected, newDir);
@@ -101,6 +101,18 @@ public class CDToolTest {
 	public void executeChangeNonExistentDirectoryTest() {
 		String stdin = "cd invalid";
 		String expected = "Error: not a directory";
+		String newDir = cdTool.execute(workingDir, stdin);
+		assertEquals(expected, newDir);
+		assertEquals(cdTool.getStatusCode(), 1);
+	}
+	
+	/**
+	 * Test error handling of changing to null file directory
+	 */
+	@Test
+	public void executeChangeNullDirectoryTest() {
+		String stdin = "cd ";
+		String expected = "Error: directory cannot be null";
 		String newDir = cdTool.execute(workingDir, stdin);
 		assertEquals(expected, newDir);
 		assertEquals(cdTool.getStatusCode(), 1);
