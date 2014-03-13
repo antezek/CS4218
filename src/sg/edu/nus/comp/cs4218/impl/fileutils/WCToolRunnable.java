@@ -14,9 +14,11 @@ public class WCToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
+		String result = "";
 		WCTool wcTool = new WCTool();
 		System.out.println(wcTool.execute(workingDir, stdin));
-
+		result = wcTool.execute(workingDir, stdin);
+		Result.result = result;
 	}
 
 }

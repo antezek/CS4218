@@ -13,7 +13,10 @@ public class COMMToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
+		String result = "";
 		COMMTool commTool = new COMMTool();
-		System.out.println(commTool.execute(workingDir, stdin));
+		result = commTool.execute(workingDir, stdin);
+		//System.out.println(commTool.execute(workingDir, stdin));
+		Result.result = result;
 	}
 }

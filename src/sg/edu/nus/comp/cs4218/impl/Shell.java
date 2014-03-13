@@ -216,6 +216,7 @@ public class Shell implements IShell {
 	 * Starts the main program
 	 */
 	public static void startRun() {
+		String result = "";
 		Runnable run = null;
 		ITool tool = null;
 		while (true) {
@@ -224,7 +225,8 @@ public class Shell implements IShell {
 			Shell s = new Shell();
 			tool = s.parse(stdin);
 			run = s.execute(tool);
-			startMainThread(run);
+			result = startMainThread(run);
+			System.out.println(result);
 		}
 	}
 	
@@ -258,13 +260,22 @@ public class Shell implements IShell {
 	 * 
 	 * @param run
 	 */
-	public static void startMainThread(Runnable run) {
+	public static String startMainThread(Runnable run) {
+		String result = "";
 		mainThread = new Thread(run);
 		hm.put("t1", mainThread);
 		mainThread.start();
+		try {
+			mainThread.join();
+			result = Result.result;
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (!Thread.currentThread().isInterrupted() && mainThread.isAlive()) {
 			startInterruptListener();
 		}
+		return result;
 	}
 
 	/**

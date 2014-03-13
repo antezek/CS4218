@@ -900,7 +900,7 @@ public class GREPToolTest {
 		grepToolTest = new GREPTool();
 		Path currentRelativePath = Paths.get("");
 		String curDir = currentRelativePath.toAbsolutePath().toString();
-		String filePath = curDir +"\\"+"PASSAGE.txt";
+		String filePath = curDir +"/"+"PASSAGE.txt";
 		
 		File wrkDir = new File(curDir);
 		try {

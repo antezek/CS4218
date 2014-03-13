@@ -506,7 +506,6 @@ public class COMMTool extends ATool implements ICommTool {
 		} else {
 			result = getHelp();
 		}
-
 		return result; // Return error msg
 	}
 }

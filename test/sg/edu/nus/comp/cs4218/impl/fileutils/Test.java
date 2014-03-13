@@ -24,7 +24,7 @@ public class Test {
 			//gt.cOptionWithEmptyFileTest();
 			//System.out.println("result: "+result);
 			IntegrateTest ctt = new IntegrateTest();
-			ctt.componentIntegrateTest2();
+			ctt.componentIntegrateTest6();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

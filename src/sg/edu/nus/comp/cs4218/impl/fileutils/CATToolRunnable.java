@@ -13,8 +13,10 @@ public class CATToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
+		String result = "";
 		CATTool catTool = new CATTool();
-		System.out.println(catTool.execute(workingDir, stdin));
+		result = catTool.execute(workingDir, stdin);
+		//System.out.println(catTool.execute(workingDir, stdin));
+		Result.result = result;
 	}
-
 }

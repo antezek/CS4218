@@ -14,8 +14,10 @@ public class SORTToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
+		String result = "";
 		SORTTool sortTool = new SORTTool();
 		System.out.println(sortTool.execute(workingDir, stdin));
-
+		result = sortTool.execute(workingDir, stdin);
+		Result.result = result;
 	}
 }

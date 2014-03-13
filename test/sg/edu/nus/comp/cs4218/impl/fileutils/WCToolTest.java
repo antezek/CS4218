@@ -56,7 +56,7 @@ public class WCToolTest {
 		}		
 	}
 
-	@After
+	@After	
 	public void after(){
 		wctool = null;
 			
