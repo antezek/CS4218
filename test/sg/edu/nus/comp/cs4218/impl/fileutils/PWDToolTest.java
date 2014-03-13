@@ -10,11 +10,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import sg.edu.nus.comp.cs4218.fileutils.IPwdTool;
-
 public class PWDToolTest {
 	// TODO Always test against the interface!
-	private IPwdTool pwdtool;
+	private PWDTool pwdtool;
 	private File workingDir, nonExistDir, invalidDir;
 
 	@Before
@@ -96,6 +94,11 @@ public class PWDToolTest {
 		String actual = pwdtool.execute(workingDir, "pwd");
 		assertEquals(expected, actual);
 		assertEquals(pwdtool.getStatusCode(), 0);
+	}
+	
+	@Test
+	public void runTest() {
+		pwdtool.run();
 	}
 
 }

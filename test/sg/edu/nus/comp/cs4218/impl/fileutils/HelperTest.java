@@ -18,9 +18,11 @@ import org.junit.Test;
 public class HelperTest {
 	private String dirName, fileName, expected, workingDir;
 	private File validFile, validDir, actual, workDir;
+	private Helper helperTool;
 	
 	@Before
 	public void setUp() throws Exception {
+		helperTool = new Helper();
 		workingDir = "misc";
 		dirName = "HelperTest";
 		validDir = new File("misc/" +dirName);
@@ -42,6 +44,7 @@ public class HelperTest {
 		workDir = null;
 		validFile.delete();
 		validDir.delete();
+		helperTool = null;
 	}
 
 	/**

@@ -41,6 +41,7 @@ public class CATTool extends ATool implements ICatTool {
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			return "Unable to read file";
 		}
 		
 		return displayString.trim();
