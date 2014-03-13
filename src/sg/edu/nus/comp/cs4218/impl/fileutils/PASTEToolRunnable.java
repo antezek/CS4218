@@ -15,7 +15,7 @@ public class PASTEToolRunnable implements Runnable {
 	public void run() {
 		String result = "";
 		PASTETool pasteTool = new PASTETool();
-		System.out.println(pasteTool.execute(workingDir, stdin));
+		//System.out.println(pasteTool.execute(workingDir, stdin));
 		result = pasteTool.execute(workingDir, stdin);
 		Result.result = result;
 	}

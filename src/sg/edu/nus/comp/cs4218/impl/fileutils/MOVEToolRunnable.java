@@ -15,7 +15,7 @@ public class MOVEToolRunnable implements Runnable{
 	public void run() {
 		String result = "";
 		MOVETool moveTool = new MOVETool();
-		System.out.println(moveTool.execute(workingDir, stdin));
+		//System.out.println(moveTool.execute(workingDir, stdin));
 		result = moveTool.execute(workingDir, stdin);
 		Result.result = result;
 	}

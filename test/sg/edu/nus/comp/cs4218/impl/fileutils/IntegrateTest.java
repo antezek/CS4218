@@ -23,10 +23,11 @@ public class IntegrateTest {
 	File fileW, fileX, fileY, fileZ, inputFile1, inputFile2, inputFile3;
 	String fileContentW, fileContentX, fileContentY, fileContentZ, input1,
 			input2, input3;
-	
-	  //IntegrateTest() { before(); }
-	 
-	
+/*
+	IntegrateTest() {
+		before();
+	}
+*/
 	@Before
 	public void before() {
 		sh = new Shell();
@@ -117,9 +118,6 @@ public class IntegrateTest {
 		String actualOutput = "";
 
 		actualOutput = sh.runCmd("cut -c 1-2 test1.txt | wc");
-		// System.out.println("actualOutput:\n"+actualOutput);
-		// System.out.println("result:\n"+expectedOutput);
-		// System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
 
@@ -144,18 +142,52 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("grep -C 2 haha PASSAGE2.txt LOST.txt | sort");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-	
-	//Test " cat PASSAGE2.txt | grep | sort "
+
+	@Test
+	// Test " cat PASSAGE2.txt | grep haha | sort "
 	public void componentIntegrateTest6() {
 		String expectedOutput = "File1:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-				+ "And we can haha learn to love again\nBetween haha our love, our love, oh our love, our love\nOh we had everything haha\nRight from haha the start\nThings you never haha say to me";
+				+ "And we can haha learn to love again\nBetween haha our love, our love, oh our love, our love\n"
+				+ "Oh we had everything haha\nRight from haha the start\nThings you never haha say to me";
 		String actualOutput = "";
 
-		actualOutput = sh.runCmd("cat PASSAGE2.txt");
-		 System.out.println("actualOutput:\n"+actualOutput);
-		 //System.out.println("result:\n"+expectedOutput);
-		 //System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
-		//assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		actualOutput = sh.runCmd("cat PASSAGE2.txt | grep haha | sort");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
 
+	@Test
+	// Test grep -B 1 Fashion PASSAGE.txt | wc
+	public void componentIntegrateTest7() {
+		String expectedOutput = "File1: chars= 421 words= 83 lines= 7";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd("grep -B 1 Fashion PASSAGE.txt | wc");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
+	
+	@Test
+	// Test " ls | sort "
+	public void componentIntegrateTest8() {
+		String expectedOutput = "File1:\n.DS_Store\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\n"
+				+ "PASSAGE2.txt\nPASSAGE3.txt\nREADME.txt\na.txt\nb.txt\nbin\nc.txt\nd.txt\nem1.txt\nem2.txt\ninput1.txt\n"
+				+ "input2.txt\nmisc\nnulltest.txt\nsrc\ntemppipefile.txt\ntest\ntest1.txt\ntest2.txt\ntest3.txt\nunsort.txt\nw.txt\n"
+				+ "x.txt\ny.txt\nz.txt";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd("ls | sort");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
+	
+	@Test
+	// Test " echo hello world, Programming is fun!! :D | wc "
+	public void componentIntegrateTest9() {
+		String expectedOutput = "File1: chars= 27 words= 6 lines= 1";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd("echo hello world, Programming is fun!! :D | wc");
+		 System.out.println("actualOutput:\n"+actualOutput);
+		 System.out.println("result:\n"+expectedOutput);
+		 System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
 }

@@ -13,8 +13,11 @@ public class DELETEToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
+		String result = "";
 		DELETETool deleteTool = new DELETETool();
-		System.out.println(deleteTool.execute(workingDir, stdin));
+		deleteTool.execute(workingDir, stdin);
+		//System.out.println(deleteTool.execute(workingDir, stdin));
+		Result.result = result;
 	}
 
 }

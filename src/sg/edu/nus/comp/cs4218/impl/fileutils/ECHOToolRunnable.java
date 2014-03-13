@@ -16,7 +16,7 @@ public class ECHOToolRunnable implements Runnable {
 		String result = "";
 		ECHOTool echoTool = new ECHOTool();
 		result = echoTool.execute(workingDir, stdin);
-		System.out.println(echoTool.execute(workingDir, stdin));
+		//System.out.println(echoTool.execute(workingDir, stdin));
 		Result.result = result;
 	}
 

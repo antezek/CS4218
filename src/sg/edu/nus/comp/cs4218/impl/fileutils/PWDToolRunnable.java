@@ -15,7 +15,7 @@ public class PWDToolRunnable implements Runnable {
 	public void run() {
 		String result = "";
 		PWDTool pwdTool = new PWDTool();
-		System.out.println(pwdTool.execute(workingDir, stdin));
+		//System.out.println(pwdTool.execute(workingDir, stdin));
 		result = pwdTool.execute(workingDir, stdin);
 		Result.result = result;
 	}

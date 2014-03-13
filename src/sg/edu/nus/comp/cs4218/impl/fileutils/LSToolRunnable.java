@@ -16,7 +16,7 @@ public class LSToolRunnable implements Runnable {
 		String result = "";
 		LSTool lsTool = new LSTool();
 		result = lsTool.execute(workingDir, stdin);
-		System.out.println(lsTool.execute(workingDir, stdin));
+		//System.out.println(lsTool.execute(workingDir, stdin));
 		Result.result = result;
 	}
 

@@ -31,7 +31,6 @@ public class PIPETool extends ATool implements IPipingTool {
 
 	@Override
 	public String pipe(ITool from, ITool to) {	
-
 		return null;
 	}
 

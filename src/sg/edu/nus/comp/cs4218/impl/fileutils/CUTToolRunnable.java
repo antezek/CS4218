@@ -15,7 +15,7 @@ public class CUTToolRunnable implements Runnable {
 	public void run() {
 		String result = "";
 		CUTTool cutTool = new CUTTool();
-		System.out.println(cutTool.execute(workingDir, stdin));
+		//System.out.println(cutTool.execute(workingDir, stdin));
 		result = cutTool.execute(workingDir, stdin);
 		Result.result = result;
 	}
