@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,14 +21,14 @@ public class IntegrateTest {
 	ITool tool = null;
 	File workingDirectory;
 
-	File fileW, fileX, fileY, fileZ, inputFile1, inputFile2, inputFile3;
+	File fileW, fileX, fileY, fileZ, inputFile1, inputFile2, inputFile3, fileS,
+			fileT;
 	String fileContentW, fileContentX, fileContentY, fileContentZ, input1,
-			input2, input3;
-/*
-	IntegrateTest() {
-		before();
-	}
-*/
+			input2, input3, passage, passage2;
+
+	/*
+	 * IntegrateTest() { before(); }
+	 */
 	@Before
 	public void before() {
 		sh = new Shell();
@@ -40,6 +41,8 @@ public class IntegrateTest {
 		inputFile1 = new File("test1.txt");
 		inputFile2 = new File("test2.txt");
 		inputFile3 = new File("test3.txt");
+		fileS = new File("PASSAGE.txt");
+		fileT = new File("PASSAGE2.txt");
 
 		fileContentW = "Apple\nMelon\nOrange";
 		fileContentX = "Banana\nMelon\nOrange";
@@ -48,6 +51,45 @@ public class IntegrateTest {
 		input1 = "apple\nball\ncat\ndog";
 		input2 = "hello\nworld\ncoding\nis\nfun";
 		input3 = "";
+		passage = "Fashion is a general term for a popular style or practice, especially in clothing, footwear,\n"
+				+ "accessories, makeup, body piercing, or furniture.\n"
+				+ "Fashion refers to a distinctive and often habitual trend in the style\n"
+				+ "in which a person dresses or to prevailing styles in behaviour.\n"
+				+ "Fashion also refers to the newest creations of textile designers.\n"
+				+ "The more technical term costume has become so linked to its term\n"
+				+ "that the use of the former has been relegated to special senses like fancy dress or masquerade wear,\n"
+				+ "while Fashion means clothing more generally, including the study of it.\n"
+				+ "Although aspects of fashion can be feminine or masculine, some trends are androgynous.\n";
+
+		passage2 = "Right from haha the start\n"
+				+ "You were a thief you stole my heart\n"
+				+ "And I your willing victim\n"
+				+ "I let you see the parts of me\n"
+				+ "That weren't all that pretty\n"
+				+ "And with every touch you fixed them\n"
+				+ "Now you've been talking in your sleep\n"
+				+ "Things you never haha say to me\n"
+				+ "Tell me that you've had enough\n"
+				+ "Of our love, our love\n"
+				+ "\n"
+				+ "Just give me a reason\n"
+				+ "Just a little bit's enough\n"
+				+ "Just a second we're not broken just bent\n"
+				+ "And we can haha learn to love again\n"
+				+ "It's in the stars\n"
+				+ "It's been written in the scars on our hearts\n"
+				+ "We're not broken just bent\n"
+				+ "And we can learn to love again\n"
+				+ "Im sorry I don't understand where all of this is coming from\n"
+				+ "I thought that we were fine\n"
+				+ "Oh we had everything haha\n"
+				+ "Your head is running wild again\n"
+				+ "My dear we still have everything\n"
+				+ "And its all in your mind\n" + "Yeah but this is happening\n"
+				+ "You've been having real bad dreams\n" + "Oh oh\n"
+				+ "You used to lie so close to me\n" + "Oh oh\n"
+				+ "There's nothing more than empty sheets\n"
+				+ "Between haha our love, our love, oh our love, our love\n";
 
 		writeToFile(fileW, fileContentW);
 		writeToFile(fileX, fileContentX);
@@ -59,7 +101,21 @@ public class IntegrateTest {
 		writeToFile(inputFile1, input1);
 		writeToFile(inputFile2, input2);
 		writeToFile(inputFile3, input3);
+		writeToFile(fileS, passage);
+		writeToFile(fileT, passage2);
+	}
 
+	@After
+	public void after() throws Exception {
+		fileW.delete();
+		fileX.delete();
+		fileY.delete();
+		fileZ.delete();
+		inputFile1.delete();
+		inputFile2.delete();
+		inputFile3.delete();
+		fileS.delete();
+		fileT.delete();
 	}
 
 	private void writeToFile(File f, String fContent) {
@@ -164,41 +220,42 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("grep -B 1 Fashion PASSAGE.txt | wc");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-	
+
 	@Test
 	// Test " ls | sort "
 	public void componentIntegrateTest8() {
 		String expectedOutput = "File1:\n.DS_Store\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\n"
-				+ "PASSAGE2.txt\nPASSAGE3.txt\nREADME.txt\na.txt\nb.txt\nbin\nc.txt\nd.txt\nem1.txt\nem2.txt\ninput1.txt\n"
-				+ "input2.txt\nmisc\nnulltest.txt\nsrc\ntemppipefile.txt\ntest\ntest1.txt\ntest2.txt\ntest3.txt\nunsort.txt\nw.txt\n"
-				+ "x.txt\ny.txt\nz.txt";
+				+ "PASSAGE2.txt\nREADME.txt\nbin\nmisc\nsample\nsrc\ntemppipefile.txt\ntest\ntest1.txt\n"
+				+ "test2.txt\ntest3.txt\nw.txt\nx.txt\ny.txt\nz.txt";
 		String actualOutput = "";
 
 		actualOutput = sh.runCmd("ls | sort");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-	
+
 	@Test
 	// Test " echo | wc "
 	public void componentIntegrateTest9() {
 		String expectedOutput = "File1: chars= 27 words= 6 lines= 1";
 		String actualOutput = "";
 
-		actualOutput = sh.runCmd("echo hello world, Programming is fun!! :D | wc");
-		 System.out.println("actualOutput:\n"+actualOutput);
-		 System.out.println("result:\n"+expectedOutput);
-		 System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
+		actualOutput = sh
+				.runCmd("echo hello world, Programming is fun!! :D | wc");
+		// System.out.println("actualOutput:\n" + actualOutput);
+		// System.out.println("result:\n" + expectedOutput);
+		// System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-	
+
 	@Test
 	// Test " echo | cut | paste | grep | wc  "
 	public void componentIntegrateTest10() {
 		String expectedOutput = "File1: chars= 21 words= 3 lines= 1";
 		String actualOutput = "";
 
-		actualOutput = sh.runCmd("echo hello world, Programming is fun!! | cut -c 1-24 | paste -d : | grep Program | wc");
+		actualOutput = sh
+				.runCmd("echo hello world, Programming is fun!! | cut -c 1-24 | paste -d : | grep Program | wc");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-	
+
 }

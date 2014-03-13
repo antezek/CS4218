@@ -53,7 +53,7 @@ public class CUTToolTest {
 		writeToFile(inputFile4, input1);
 	}
 
-    //TODO Put back after tag
+    @After
 	public void after(){
 		cuttool = null;
 		

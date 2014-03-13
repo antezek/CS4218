@@ -138,7 +138,9 @@ public class GREPToolTest {
 
     @After
 	public void after(){
-		
+		fileA.delete();
+		fileB.delete();
+		fileC.delete();
 	}
     
 	//Test Cases

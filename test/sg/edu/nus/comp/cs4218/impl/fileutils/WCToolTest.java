@@ -59,7 +59,8 @@ public class WCToolTest {
 	@After	
 	public void after(){
 		wctool = null;
-			
+		inputFile1.delete();
+		inputFile2.delete();
 	}
 	
 	String actualOutput,expectedOutput;

@@ -81,7 +81,7 @@ public class PASTEToolTest {
 
 	}
 
-	
+	@After
 	public void after() throws Exception {
 		pasteTool = null;
 
@@ -89,7 +89,8 @@ public class PASTEToolTest {
 		fileB.delete();
 		fileC.delete();
 		fileD.delete();
-
+		fileEM1.delete();
+		fileEM2.delete();
 	}
 
 	@Test
