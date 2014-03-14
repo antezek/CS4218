@@ -6,16 +6,24 @@ import java.util.Scanner;
 
 import sg.edu.nus.comp.cs4218.IShell;
 import sg.edu.nus.comp.cs4218.ITool;
+import sg.edu.nus.comp.cs4218.impl.extended2.COMMTool;
+import sg.edu.nus.comp.cs4218.impl.extended2.COMMToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.extended2.CUTTool;
+import sg.edu.nus.comp.cs4218.impl.extended2.CUTToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.extended2.PASTETool;
+import sg.edu.nus.comp.cs4218.impl.extended2.PASTEToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.extended2.SORTTool;
+import sg.edu.nus.comp.cs4218.impl.extended2.SORTToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.extended2.UNIQTool;
+import sg.edu.nus.comp.cs4218.impl.extended2.UNIQToolRunnable;
+import sg.edu.nus.comp.cs4218.impl.extended2.WCTool;
+import sg.edu.nus.comp.cs4218.impl.extended2.WCToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.CATTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.CATToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.CDTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.CDToolRunnable;
-import sg.edu.nus.comp.cs4218.impl.fileutils.COMMTool;
-import sg.edu.nus.comp.cs4218.impl.fileutils.COMMToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.COPYTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.COPYToolRunnable;
-import sg.edu.nus.comp.cs4218.impl.fileutils.CUTTool;
-import sg.edu.nus.comp.cs4218.impl.fileutils.CUTToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.DELETETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.DELETEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.ECHOTool;
@@ -27,17 +35,11 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.LSTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.LSToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.MOVEToolRunnable;
-import sg.edu.nus.comp.cs4218.impl.fileutils.PASTETool;
-import sg.edu.nus.comp.cs4218.impl.fileutils.PASTEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PIPETool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PIPEToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDTool;
 import sg.edu.nus.comp.cs4218.impl.fileutils.PWDToolRunnable;
 import sg.edu.nus.comp.cs4218.impl.fileutils.Result;
-import sg.edu.nus.comp.cs4218.impl.fileutils.SORTTool;
-import sg.edu.nus.comp.cs4218.impl.fileutils.SORTToolRunnable;
-import sg.edu.nus.comp.cs4218.impl.fileutils.WCTool;
-import sg.edu.nus.comp.cs4218.impl.fileutils.WCToolRunnable;
 
 /**
  * The Shell is used to interpret and execute user's commands. Following
@@ -60,6 +62,7 @@ public class Shell implements IShell {
 	private static final String CMD_CUT = "cut";
 	private static final String CMD_PASTE = "paste";
 	private static final String CMD_WC = "wc";
+	private static final String CMD_UNIQ = "uniq";
 	
 	public Shell(){
 		hm = new HashMap<String, Thread>();
@@ -67,7 +70,7 @@ public class Shell implements IShell {
 	
 	// List of commands
 	private enum COMMAND {
-		PWD, CD, LS, COPY, MOVE, DELETE, CAT, ECHO, GREP, PIPE, COMM, SORT, CUT, PASTE, WC, INVALID
+		PWD, CD, LS, COPY, MOVE, DELETE, CAT, ECHO, GREP, PIPE, COMM, SORT, CUT, PASTE, WC, UNIQ, INVALID
 	}
 
 	// Scanner
@@ -149,6 +152,8 @@ public class Shell implements IShell {
 				return new PASTETool();
 			case WC:
 				return new WCTool();
+			case UNIQ:
+				return new UNIQTool();
 			default:
 				System.err.println("Cannot parse " + input);
 				return null;
@@ -190,6 +195,8 @@ public class Shell implements IShell {
 			return new PASTEToolRunnable(workingDir, stdin);
 		} else if (tool instanceof WCTool) {
 			return new WCToolRunnable(workingDir, stdin);
+		} else if (tool instanceof UNIQTool) {
+			return new UNIQToolRunnable(workingDir, stdin);
 		}
 		return null;
 	}
@@ -370,6 +377,8 @@ public class Shell implements IShell {
 			return COMMAND.PASTE;
 		} else if (command.equalsIgnoreCase(CMD_WC)) {
 			return COMMAND.WC;
+		} else if (command.equalsIgnoreCase(CMD_UNIQ)) {
+			return COMMAND.UNIQ;
 		} else {
 			return COMMAND.INVALID;
 		}

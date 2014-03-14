@@ -10,24 +10,23 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class UNIQToolTest {
-	private UNIQTool uniqtool;
+	private UNIQTool uniqTool;
 	String actualOutput, expectedOutput, helpOutput, stdin;
 	File workingDirectory;
 	File inputFile1, inputFile2, inputFile3, inputFile4, absFile1, absFile2,
-			relativeFile, emptyFile, invalidFile, tempFile;
+			relativeFile, emptyFile;
 
 	@Before
 	public void before() {
 		workingDirectory = new File(System.getProperty("user.dir"));
-		stdin = null;
-
+		uniqTool = new UNIQTool();
+		
 		helpOutput = "uniq : Writes the unique lines in the given input, with repetitions compares only in adjacent input lines.";
 		helpOutput += "\nCommand Format - uniq [OPTIONS] [FILE]\nFILE - Name of the file. Alternatively use \"-\" to enter standard input.";
 		helpOutput += "\nOPTIONS\n\t-f NUM : Skips NUM fields on each line before checking for uniqueness. Fields are sequences of non-space non-tab characters that are separated from each other by at least one space or tab.";
@@ -47,7 +46,7 @@ public class UNIQToolTest {
 		writeToFile(inputFile3, input3);
 		writeToFile(inputFile4, input4);
 
-		absFile1 = new File(workingDirectory + "\\" + "Test_Output_4.txt");
+		absFile1 = new File(workingDirectory + "/" + "Test_Output_4.txt");
 		absFile2 = new File(System.getProperty("home.dir")
 				+ "Test_Output_5.txt");
 		relativeFile = new File("./../Test_Output_6.txt");
@@ -57,14 +56,11 @@ public class UNIQToolTest {
 
 		emptyFile = new File("Test_Output_7.txt");
 		writeToFile(emptyFile, "");
-		
-		invalidFile = new File("Invalid");
-		tempFile = new File("tempFile");
 	}
 
 	@After
 	public void after() {
-		uniqtool = null;
+		uniqTool = null;
 		if (inputFile1.exists())
 			inputFile1.delete();
 		if (inputFile2.exists())
@@ -81,8 +77,6 @@ public class UNIQToolTest {
 			relativeFile.delete();
 		if (emptyFile.exists())
 			emptyFile.delete();
-		invalidFile.delete();
-		tempFile.delete();
 	}
 
 	public void writeToFile(File file, String input) {
@@ -146,12 +140,11 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqSingleFileGetUniqTest() {
-		String[] arguments = new String[] {};
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.getUnique(true, (readFromFile(inputFile1)));
+//		String[] arguments = new String[] {};
+		actualOutput = uniqTool.getUnique(true, (readFromFile(inputFile1)));
 		expectedOutput = "hi\nhello\nabc\n";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
 
 	/**
@@ -159,12 +152,12 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqSingleFileExecuteTest() {
-		String[] arguments = new String[] { "Test_Output.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "Test_Output.txt" };
+		stdin = "uniq Test_Output.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "hi\nhello\nabc";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
 
 	/**
@@ -172,33 +165,38 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqMultipleFileExecuteTest() {
-		String[] arguments = new String[] { "Test_Output.txt",
-				"Test_Output_2.txt", "Test_Output_3.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "Test_Output.txt", "Test_Output_2.txt", "Test_Output_3.txt" };
+		stdin = "uniq Test_Output.txt Test_Output_2.txt Test_Output_3.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "hi\nhello\nabc\nn hi\nf hi\nhi\nabc fgh hihi\n* abc hi\n(( hi hi\n[] l hi";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqInvalidFileExecuteTest() {
-		String[] arguments = new String[] { "Invalid.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+		//String[] arguments = new String[] { "Invalid.txt" };
+		stdin = "uniq Invalid.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "No such file";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), -1);
+		assertEquals(uniqTool.getStatusCode(), -1);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqInvalidValidFileExecuteTest() {
-		String[] arguments = new String[] { "Invalid.txt", "Test_Output.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "Invalid.txt", "Test_Output.txt" };
+		stdin = "uniq Invalid.txt Test_Output.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "No such file";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), -1);
+		assertEquals(uniqTool.getStatusCode(), -1);
 	}
 
 	/**
@@ -206,12 +204,12 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqValidInvalidFileExecuteTest() {
-		String[] arguments = new String[] { "Test_Output.txt", "Invalid.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "Test_Output.txt", "Invalid.txt" };
+		stdin = "uniq Test_Output.txt Invalid.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "hi\nhello\nabc\nNo such file";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), -1);
+		assertEquals(uniqTool.getStatusCode(), -1);
 	}
 
 	/**
@@ -219,22 +217,25 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqMinusIGetUniqTest() {
-		String[] arguments = new String[] { "-i", "Test_Output_4.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.getUnique(true, (readFromFile(inputFile4)));
+//		String[] arguments = new String[] { "-i", "Test_Output_4.txt" };
+		stdin = "uniq -i Test_Output_4.txt";
+		actualOutput = uniqTool.getUnique(true, (readFromFile(inputFile4)));
 		expectedOutput = "hi\nn Hi\nf hi\n";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqMinusIExecuteTest() {
-		String[] arguments = new String[] { "-i", "Test_Output_4.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-i", "Test_Output_4.txt" };
+		stdin = "uniq -i Test_Output_4.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "hi\nn Hi\nf hi";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
 
 	/**
@@ -242,45 +243,51 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqMinusFGetUniqTest() {
-		String[] arguments = new String[] { "-f", "1", "Test_Output_4.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.getUniqueSkipNum(1, false,
-				(readFromFile(inputFile4)));
+//		String[] arguments = new String[] { "-f", "1", "Test_Output_4.txt" };
+		stdin = "uniq -f 1 Test_Output_4.txt";
+		actualOutput = uniqTool.getUniqueSkipNum(1, false,(readFromFile(inputFile4)));
 		expectedOutput = "Hi\nhi\n";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqMinusFExecuteTest() {
-		String[] arguments = new String[] { "-f", "1", "Test_Output_4.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-f", "1", "Test_Output_4.txt" };
+		stdin = "uniq -f 1 Test_Output_4.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "Hi\nhi";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqMinusIMinusFExecuteTest() {
-		String[] arguments = new String[] { "-i", "-f", "1",
-				"Test_Output_4.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-i", "-f", "1", "Test_Output_4.txt" };
+		stdin = "uniq -i -f 1 Test_Output_4.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "Hi";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqMinusFMinusIExecuteTest() {
-		String[] arguments = new String[] { "-f", "1", "-i",
-				"Test_Output_4.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-f", "1", "-i", "Test_Output_4.txt" };
+		stdin = "uniq -f 1 -i Test_Output_4.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "Hi";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
 
 	/**
@@ -288,13 +295,12 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqMultipleMinusFMultipleFileExecuteTest() {
-		String[] arguments = new String[] { "-f", "0", "-f", "1", "-f", "2",
-				"Test_Output.txt", "Test_Output_2.txt" };//
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-f", "0", "-f", "1", "-f", "2", "Test_Output.txt", "Test_Output_2.txt" };
+		stdin = "uniq -f 0 -f 1 -f 2 Test_Output.txt Test_Output_2.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "hi\nhello\nabc\nn hi\nf hi\nhi\nabc fgh hihi\nhi\nfgh hihi\nhihi";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
 
 	/**
@@ -302,33 +308,37 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqMultipleMinusIMultipleFileExecuteTest() {
-		String[] arguments = new String[] { "-i", "-i", "Test_Output.txt",
-				"Test_Output_2.txt" };//
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-i", "-i", "Test_Output.txt", "Test_Output_2.txt" };
+		stdin = "uniq -i -i Test_Output.txt Test_Output_2.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "hi\nhello\nabc\nn hi\nf hi\nhi\nabc fgh hihi";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqHelpExecuteTest() {
-		String[] arguments = new String[] { "-i", "-f", "1", "-help",
-				"Test_Output.txt", "Test_Output_2.txt" };//
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-i", "-f", "1", "-help", "Test_Output.txt", "Test_Output_2.txt" };
+		stdin = "uniq -i -f 1 -help Test_Output.txt Test_Output_2.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		assertTrue(actualOutput.equalsIgnoreCase(helpOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqMinusFStringArgExecuteTest() {
-		String[] arguments = new String[] { "-f", "abc", "Test_Output_4.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-f", "abc", "Test_Output_4.txt" };
+		stdin = "uniq -f abc Test_Output_4.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "Invalid argument for -f";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
 
 	/**
@@ -336,47 +346,53 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqMinusFDecimalArgExecuteTest() {
-		String[] arguments = new String[] { "-f", "0", "-f", "1.55",
-				"Test_Output.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-f", "0", "-f", "1.55", "Test_Output.txt" };
+		stdin = "uniq -f 0 -f 1.55 Test_Output.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "hi\nhello\nabc\nInvalid argument for -f";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqMinusFNegArgExecuteTest() {
-		String[] arguments = new String[] { "-f", "-1", "Test_Output.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-f", "-1", "Test_Output.txt" };
+		stdin = "uniq -f -1 Test_Output.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "Invalid argument for -f";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	@Test
 	public void uniqMinusFMaxIntArgExecuteTest() {
-		String[] arguments = new String[] { "-f", "" + (Integer.MAX_VALUE + 1),
-				"Test_Output.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+//		String[] arguments = new String[] { "-f", "" + (Integer.MAX_VALUE + 1), "Test_Output.txt" };
+		stdin = "uniq -f " +(Integer.MAX_VALUE + 1) + " Test_Output.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		expectedOutput = "Invalid argument for -f";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
-
+	
+	/**
+	 * @CORRECTED
+	 */
 	/**
 	 * Additional test case to test multiple help commands
 	 */
 	@Test
 	public void uniqMultipleHelpExecuteTest() {
-		String[] arguments = new String[] { "-help", "-help", "-help", "-help",
-				"Test_Output.txt", "Test_Output_2.txt" };
-		uniqtool = new UNIQTool(arguments);
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
-		assertTrue(actualOutput.equalsIgnoreCase(helpOutput));
-		assertEquals(uniqtool.getStatusCode(), 0);
+		//String[] arguments = new String[] { "-help", "-help", "-help", "-help", "Test_Output.txt", "Test_Output_2.txt" };
+		stdin = "uniq -help -help -help -help Test_Output.txt Test_Output_2.txt";
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
+		assertEquals(helpOutput, actualOutput);
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
 
 	/**
@@ -384,40 +400,11 @@ public class UNIQToolTest {
 	 */
 	@Test
 	public void uniqMultipleMinusFExecuteTest() {
-		String[] arguments = new String[] { "-f", "-f", "-f", "-f",
-				"Test_Output.txt", "Test_Output_2.txt" };
-		uniqtool = new UNIQTool(arguments);
+		//String[] arguments = new String[] { "-f", "-f", "-f", "-f", "Test_Output.txt", "Test_Output_2.txt" };
+		stdin = "uniq -f -f -f -f Test_Output.txt Test_Output_2.txt";
 		expectedOutput = "Invalid argument for -f";
-		actualOutput = uniqtool.execute(workingDirectory, stdin);
+		actualOutput = uniqTool.execute(workingDirectory, stdin);
 		assertEquals(expectedOutput, actualOutput);
-		assertEquals(uniqtool.getStatusCode(), 0);
-	}
-	
-	/**
-	 * Additional test case to test reading from null file
-	 */
-	@Test
-	public void uniqTestReadFromNullFile() {
-		String[] arguments = new String[] {""};
-		uniqtool = new UNIQTool(arguments);
-		expectedOutput = "File not found";
-		actualOutput = uniqtool.readFromFile(invalidFile);
-		assertEquals(expectedOutput, actualOutput);
-	}
-	
-	/**
-	 * Additional test case to test error handling for IOException
-	 * @throws IOException
-	 */
-	@Test
-	public void uniqTestForIOExceptionFile() throws IOException {
-		String[] arguments = new String[] {""};
-		uniqtool = new UNIQTool(arguments);
-		expectedOutput = "Unable to read file";
-		final RandomAccessFile raFile = new RandomAccessFile(tempFile, "rw");
-		raFile.getChannel().lock();
-		actualOutput = uniqtool.readFromFile(tempFile);
-		assertEquals(expectedOutput, actualOutput);
-		raFile.close();
+		assertEquals(uniqTool.getStatusCode(), 0);
 	}
 }

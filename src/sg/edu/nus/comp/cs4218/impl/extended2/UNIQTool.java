@@ -19,9 +19,22 @@ public class UNIQTool extends ATool implements IUniqTool {
 	private boolean numFields;
 	private ArrayList<String> fileList;
 	private ArrayList<String> numberList;
-
-	public UNIQTool(String[] arguments) {
+	
+	public UNIQTool() {
 		super(null);
+		ignoreCase = false;
+		help = false;
+		numFields = false;
+		fileList = new ArrayList<String>();
+		numberList = new ArrayList<String>();
+	}
+
+	@Override
+	public String execute(File workingDir, String stdin) {
+		String result = "";
+		String cmd = Helper.getCommand(stdin);
+		stdin = stdin.replace(cmd, "").trim();
+		String[] arguments = stdin.split(Helper.REGEX_WHITE_SPACE);
 		ignoreCase = false;
 		help = false;
 		numFields = false;
@@ -46,11 +59,6 @@ public class UNIQTool extends ATool implements IUniqTool {
 				}
 			}
 		}
-	}
-
-	@Override
-	public String execute(File workingDir, String stdin) {
-		String result = "";
 
 		if (help) {
 			return getHelp();

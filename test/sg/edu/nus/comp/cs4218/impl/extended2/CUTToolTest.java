@@ -7,12 +7,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+
+
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.extended2.ICutTool;
-import sg.edu.nus.comp.cs4218.impl.extended2.CUTTool;
 
 
 public class CUTToolTest {
@@ -20,7 +22,7 @@ public class CUTToolTest {
 	private ICutTool cuttool; 
 	String actualOutput,expectedOutput,helpOutput;
 	File workingDirectory;
-	File inputFile1, inputFile2, inputFile3,inputFile4;
+	File inputFile1, inputFile2, inputFile3,inputFile4, longFileC, longFileD;
 	String absoluteFilePath;
 	
 	@Before
@@ -44,14 +46,26 @@ public class CUTToolTest {
 		String input1 = "apple\nball\ncat\ndog";
 		String input2 = "hello\nworld\ncoding\nis\nfun";
 		String input3 = "";
+		String longInputC = "Long Input Long Input Nothing is Longer Than This\n"+
+				   			"Are You Long, I am Long, very very Long\n" +
+				   			"Testing for Long Input\n";
+		String longInputD = "Long Input% Long Input% Nothing is Longer% Than This\n"+
+				   		    "Are You Long, I% am Long, very% very Long\n" +
+				   		    "Testing% for %Long %Input\n";
+		
 		inputFile1 = new File("test1.txt");
 		inputFile2 = new File("test2.txt");
 		inputFile3 = new File("test3.txt");
 		inputFile4 = new File(absoluteFilePath);
+		longFileC = new File("longFileC.txt");
+		longFileD = new File("longFileD.txt");
+		
 		writeToFile(inputFile1, input1);
 		writeToFile(inputFile2, input2);
 		writeToFile(inputFile3, input3);
 		writeToFile(inputFile4, input1);
+		writeToFile(longFileC,longInputC);
+		writeToFile(longFileD,longInputD);
 	}
 
     @After
@@ -66,6 +80,12 @@ public class CUTToolTest {
 			inputFile3.delete();
 		if(inputFile4.exists())
 			inputFile4.delete();
+		if(longFileC.exists())
+			longFileC.delete();
+		if(longFileD.exists())
+			longFileD.delete();
+		
+		
 	}
 	
     public void writeToFile(File file, String input){
@@ -89,12 +109,15 @@ public class CUTToolTest {
 		}
 	}
 
+    //Test Case written by other groups.
+    
     @Test
     public void cOptionTest()
-    {
-    	String[] arguments = new String[]{"-c", "1-2","-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "abcde");
+    {	
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "1-2","-", "abcde"} ;
+    	cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 - abcde");
 		expectedOutput = "ab";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -102,14 +125,14 @@ public class CUTToolTest {
 		assertEquals(cuttool.getStatusCode(), 0);
     }
     
-
+    @Test
     //Both std input and file input are executed (std input first)
-	@Test
 	public void fileInputAndStdInputTest()
 	{
-		String[] arguments = new String[]{"-c", "1-2","test1.txt","-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "abcde");
+		//Changes: command stdin is shifted to execute method to cater to our project
+		//String[] arguments = new String[]{"-c", "1-2","test1.txt","-"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 test1.txt - abcde");
 		expectedOutput = "ab\nap\nba\nca\ndo\n";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -120,9 +143,10 @@ public class CUTToolTest {
 	@Test
 	public void absoluteFilePathTest()
 	{
-		String[] arguments = new String[]{"-c", "1-2", absoluteFilePath } ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, null);
+		//Changes: command stdin is shifted to execute method to cater to our project
+		//String[] arguments = new String[]{"-c", "1-2", absoluteFilePath } ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 "+absoluteFilePath);
 		expectedOutput = "ap\nba\nca\ndo\n";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -133,9 +157,11 @@ public class CUTToolTest {
     @Test
     public void cOptionInputInvalidRangeTest()
     {
-    	String[] arguments = new String[]{"-c", "2-1","-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "abcde");
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "2-1","-"} ;
+		//cuttool = new CUTTool(arguments);
+    	cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 2-1 - abcde");
 		expectedOutput = "";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -146,9 +172,10 @@ public class CUTToolTest {
     @Test
     public void dOptionFollowedByFOptionTest()
     {
-    	String[] arguments = new String[]{"-d", ":","-f","1-2","-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "one:two:three:four:five:six:seven");
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-d", ":","-f","1-2","-"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -d : -f 1-2 - one:two:three:four:five:six:seven");
 		expectedOutput = "one:two";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -159,9 +186,10 @@ public class CUTToolTest {
     @Test
     public void fOptionFollowedByDOptionTest()
     {
-    	String[] arguments = new String[]{"-f", "1-2","-d",":","-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "one:two:three:four:five:six:seven");
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-f", "1-2","-d",":","-"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -f 1-2 -d : - one:two:three:four:five:six:seven");
 		expectedOutput = "one:two";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -172,9 +200,10 @@ public class CUTToolTest {
     @Test
     public void dOptionWithFileTest()
     {
-    	String[] arguments = new String[]{"-d", ":","-f","0","test1.txt"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, null);
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-d", ":","-f","0","test1.txt"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -d : -f 0 test1.txt");
 		expectedOutput = "apple\nball\ncat\ndog\n";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -182,13 +211,14 @@ public class CUTToolTest {
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(cuttool.getStatusCode(), 0);
     }
-    
+  
     @Test
     public void cOptionWithFileTest()
     {
-    	String[] arguments = new String[]{"-c", "1-2","test1.txt"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, null);
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "1-2","test1.txt"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 test1.txt");
 		expectedOutput = "ap\nba\nca\ndo\n";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -200,9 +230,10 @@ public class CUTToolTest {
     @Test
     public void cOptionWithEmptyFileTest()
     {
-    	String[] arguments = new String[]{"-c", "1-2","test3.txt"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, null);
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "1-2","test3.txt"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 test3.txt");
 		expectedOutput = "";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -214,9 +245,10 @@ public class CUTToolTest {
     @Test
     public void cOptionWithMultipleFilesTest()
     {
-    	String[] arguments = new String[]{"-c", "1-2","test1.txt","test2.txt"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, null);
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "1-2","test1.txt","test2.txt"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 test1.txt test2.txt");
 		expectedOutput = "ap\nba\nca\ndo\n\n"+ "he\nwo\nco\nis\nfu\n";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -228,12 +260,14 @@ public class CUTToolTest {
     @Test
     public void cOptionWithFileMissingTest()
     {
-    	String[] arguments = new String[]{"-c", "1-2","file.txt"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, null);
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "1-2","file.txt"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 file.txt");
 		expectedOutput = "File not found";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
+		assertEquals(expectedOutput, actualOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(cuttool.getStatusCode(), -1);
     }
@@ -243,9 +277,10 @@ public class CUTToolTest {
     @Test
     public void cOptionRepeatedTest()
     {
-    	String[] arguments = new String[]{"-c", "1-2", "-c", "3-4", "-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "abcde");
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "1-2", "-c", "3-4", "-"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 -c 3-4 - abcde");
 		expectedOutput = "abcd";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -257,9 +292,10 @@ public class CUTToolTest {
     @Test
     public void dOptionRepeatedTest()
     {
-    	String[] arguments = new String[]{"-d", " ", "-d", ":", "-f","1-3","-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "one:two:three:four:five:six:seven");
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-d", " ", "-d", ":", "-f","1-3","-"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -d   -d : -f 1-3 - one:two:three:four:five:six:seven");
 		expectedOutput = "one:two:three";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -271,9 +307,10 @@ public class CUTToolTest {
     @Test
     public void cDOptionTest()
     {
-    	String[] arguments = new String[]{"-c", "1-2", "-d", ":", "-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "one:two:three:four:five:six:seven");
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "1-2", "-d", ":", "-"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 -d : - one:two:three:four:five:six:seven");
 		expectedOutput = "on";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -285,12 +322,14 @@ public class CUTToolTest {
     @Test
     public void cFOptionTest()
     {
-    	String[] arguments = new String[]{"-c", "1-2", "-f", "2", "-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "one:two:three:four:five:six:seven");
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "1-2", "-f", "2", "-"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 -f 2 - one:two:three:four:five:six:seven");
 		expectedOutput = "on";
 		actualOutput= actualOutput.replace("\n", "");
 		expectedOutput=expectedOutput.replace("\n", "");
+		assertEquals(expectedOutput, actualOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(cuttool.getStatusCode(), 0);
     }
@@ -299,9 +338,10 @@ public class CUTToolTest {
     @Test
     public void cDFOptionTest()
     {
-    	String[] arguments = new String[]{"-c", "1-2", "-f", "2-4", "-d", ":","-"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, "one:two:three:four:five:six:seven");
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-c", "1-2", "-f", "2-4", "-d", ":","-"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 -f 2-4 -d : - one:two:three:four:five:six:seven");
 		expectedOutput = "ontwo:three:four";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -312,9 +352,10 @@ public class CUTToolTest {
     @Test
     public void helpTest()
     {
-    	String[] arguments = new String[]{"-help"} ;
-		cuttool = new CUTTool(arguments);
-		actualOutput = cuttool.execute(workingDirectory, null);
+    	//Changes: command stdin is shifted to execute method to cater to our project
+    	//String[] arguments = new String[]{"-help"} ;
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -help");
 		expectedOutput = helpOutput;
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
@@ -324,10 +365,9 @@ public class CUTToolTest {
     }
   
 	@Test
-	public void cutSpecfiedCharactersTest1() throws IOException {
-	
-		String[] arguments = null ;
-		cuttool = new CUTTool(arguments);
+	public void cutSpecfiedCharactersTest1() throws IOException 
+	{
+		cuttool = new CUTTool();
 		actualOutput = cuttool.cutSpecfiedCharacters("1-2", "abc");
 		expectedOutput = "ab";
 		actualOutput = actualOutput.replace("\n", "");
@@ -337,9 +377,9 @@ public class CUTToolTest {
 	}
 	
 	@Test
-	public void cutSpecfiedCharactersTest2() throws IOException {
-		String[] arguments = null ;
-		cuttool = new CUTTool(arguments);
+	public void cutSpecfiedCharactersTest2() throws IOException 
+	{
+		cuttool = new CUTTool();
 		actualOutput = cuttool.cutSpecfiedCharacters("1-4,5,6,10", "the quick brown fox jumps over the lazy dog");
 		expectedOutput = "the qu ";
 		actualOutput = actualOutput.replace("\n", "");
@@ -350,10 +390,9 @@ public class CUTToolTest {
 	
 	@Test 
 	//LIST with negative values as -2-3 as  1 till 2
-	public void cutSpecfiedCharactersTest3() throws IOException {
-	
-		String[] arguments = null ;
-		cuttool = new CUTTool(arguments);
+	public void cutSpecfiedCharactersTest3() throws IOException 
+	{
+		cuttool = new CUTTool();
 		actualOutput = cuttool.cutSpecfiedCharacters("-2-3", "abc");
 		expectedOutput = "ab";
 		actualOutput = actualOutput.replace("\n", "");
@@ -364,10 +403,9 @@ public class CUTToolTest {
 	}
 
 	@Test
-	public void cutSpecfiedCharactersForEmptyStringTest() throws IOException {
-	
-		String[] arguments = null ;
-		cuttool = new CUTTool(arguments);
+	public void cutSpecfiedCharactersForEmptyStringTest() throws IOException 
+	{
+		cuttool = new CUTTool();
 		actualOutput = cuttool.cutSpecfiedCharacters("1-2", "");
 		expectedOutput = "";
 		actualOutput = actualOutput.replace("\n", "");
@@ -378,10 +416,9 @@ public class CUTToolTest {
 
 	//5- as LIST is interpreted as 5 till end of string
 	@Test
-	public void cutSpecifiedCharactersUseDelimiterTest1() throws IOException {
-		
-		String[] arguments = null ;
-		cuttool = new CUTTool(arguments);	
+	public void cutSpecifiedCharactersUseDelimiterTest1() throws IOException 
+	{
+		cuttool = new CUTTool();	
 		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("5-", ":" ,"one:two:three:four:five:six:seven");
 		expectedOutput = "five:six:seven";
 		actualOutput = actualOutput.replace("\n", "");
@@ -392,10 +429,9 @@ public class CUTToolTest {
 	
 	//-3 as LIST is interpreted as 1-3
 	@Test
-	public void cutSpecifiedCharactersUseDelimiterTest2() throws IOException {
-		
-		String[] arguments = null ;
-		cuttool = new CUTTool(arguments);
+	public void cutSpecifiedCharactersUseDelimiterTest2() throws IOException 
+	{
+		cuttool = new CUTTool();
 		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("-3", ":" ,"one:two:three:four:five:six:seven");
 		expectedOutput = "one:two:three";
 		actualOutput = actualOutput.replace("\n", "");
@@ -406,10 +442,9 @@ public class CUTToolTest {
 
 	//test 3
 	@Test
-	public void cutSpecifiedCharactersUseDelimiterTest3() throws IOException {
-		
-		String[] arguments = null ;
-		cuttool = new CUTTool(arguments);
+	public void cutSpecifiedCharactersUseDelimiterTest3() throws IOException 
+	{
+		cuttool = new CUTTool();
 		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("1-10", ":" ,"one:two:three:four:five:six:seven");
 		expectedOutput = "one:two:three:four:five:six:seven";
 		actualOutput = actualOutput.replace("\n", "");
@@ -420,10 +455,9 @@ public class CUTToolTest {
 
 	//test 4
 	@Test
-	public void cutSpecifiedCharactersUseDelimiterTest4() throws IOException {
-		
-		String[] arguments = null ;
-		cuttool = new CUTTool(arguments);
+	public void cutSpecifiedCharactersUseDelimiterTest4() throws IOException 
+	{	
+		cuttool = new CUTTool();
 		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("3", " " ,"foo:bar:baz:qux:quux");
 		expectedOutput = "foo:bar:baz:qux:quux";
 		actualOutput = actualOutput.replace("\n", "");
@@ -433,10 +467,9 @@ public class CUTToolTest {
 	}
 	
 	@Test
-	public void cutSpecifiedCharactersUseDelimiterTest5() throws IOException {
-		
-		String[] arguments = null ;
-		cuttool = new CUTTool(arguments);
+	public void cutSpecifiedCharactersUseDelimiterTest5() throws IOException 
+	{
+		cuttool = new CUTTool();
 		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("3", " " ,"the quick brown fox jumps over the lazy dog");
 		expectedOutput = "brown";
 		actualOutput = actualOutput.replace("\n", "");
@@ -446,5 +479,200 @@ public class CUTToolTest {
 		
     }
 	
-
+	//ADDITIONAL TEST CASES
+	
+	//SECTION ONE: TESTING cutSpecifiedCharacters method
+		
+	@Test
+	//Testing for invalid character range specified
+	public void cutSpecfiedCharactersCharRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecfiedCharacters("a-b", "Yoyo");
+		expectedOutput = "Invalid Range Specify";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test
+	//Testing for range with no end specify
+	public void cutSpecfiedCharactersNoEndRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecfiedCharacters("1-", "Yoyo");
+		expectedOutput = "Yoyo\n";
+		
+		assertEquals(actualOutput,expectedOutput);
+	}
+	
+	@Test
+	//Testing for range with exceed range
+	public void cutSpecfiedCharactersExceedRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecfiedCharacters("1-30", "check it out");
+		expectedOutput = "check it out\n";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test
+	//Testing for long input
+	public void cutSpecfiedCharactersLongInput() {
+		
+		cuttool = new CUTTool();
+		String longInput = "Long Input Long Input Nothing is Longer Than This\n"+
+						   "Are You Long, I am Long, very very Long\n" +
+				           "Testing for Long Input\n";
+		
+		actualOutput = cuttool.cutSpecfiedCharacters("1,4,6-10", longInput);
+		expectedOutput = "LgInput\n" + "A ou Lo\n"+"Ttng fo\n";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	//SECTION TWO: Testing cutSpecifiedCharactersUseDelimiter
+	
+	@Test
+	//Testing for invalid character range specified
+	public void cutSpecfiedCharactersUseDelimiterCharRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("a-b", ":", "YOYO");
+		expectedOutput = "Invalid Range Specify";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test
+	//Testing for Empty input 
+	public void cutSpecfiedCharactersUseDelimiterEmptyInput() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("1-2", ":", "");
+		expectedOutput = "\n";
+		
+		assertEquals(actualOutput, expectedOutput);
+	}
+	
+	@Test
+	//Testing for start range > end range
+	public void cutSpecfiedCharactersUseDelimiterInvalidRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("3-1", "%", "yoyo");
+		expectedOutput = "Invalid Range Specify";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test
+	//Testing for 0 range
+	public void cutSpecfiedCharactersUseDelimiterZeroRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("0", "%", "yo%yo%yo");
+		expectedOutput = "yo%yo%yo\n";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test 
+	//Testing for Long Input
+	public void cutSpecfiedCharactersUseDelimiterLongInput() {
+		
+		cuttool = new CUTTool();
+		String longInput = "Long Input% Long Input% Nothing is Longer% Than This\n"+
+				   		   "Are You Long, I% am Long, very% very Long\n" +
+				   		   "Testing% for %Long %Input\n";
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("1-3","%" , longInput);
+		expectedOutput = "Long Input% Long Input% Nothing is Longer\n"+
+						 "Are You Long, I% am Long, very% very Long\n"+
+						 "Testing% for %Long \n";
+		
+		assertEquals(actualOutput,expectedOutput);
+		
+	}
+	
+	//SECTION THREE: Testing Execute method
+	
+	@Test
+	//Testing for c Option with Long Input
+	public void testExecuteCOptionWithLongInput() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1,4,6-10 longFileC.txt");
+		expectedOutput ="LgInput\n" + "A ou Lo\n"+"Ttng fo";
+		
+		assertEquals(expectedOutput, actualOutput);
+	}
+	
+	@Test
+	//Testing for d and f option with Long Input
+	public void testExecuteDOptionWithLongInput() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -d % -f 1-3 longFileD.txt");
+		expectedOutput ="Long Input% Long Input% Nothing is Longer\n"+
+				 		"Are You Long, I% am Long, very% very Long\n"+
+				 		"Testing% for %Long ";
+		
+		assertEquals(expectedOutput, actualOutput);
+	}
+	
+	@Test
+	//Testing for all options with Long Input
+	public void testExecuteAllOptionWithLongInput() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1,4,6-10 -d % -f 1-3 longFileD.txt");
+		expectedOutput = "LgInput\n"+
+				 		 "A ou Lo\n"+
+				 		 "Ttng% f\n"+
+				 		 "Long Input% Long Input% Nothing is Longer\n"+
+						 "Are You Long, I% am Long, very% very Long\n" +
+						 "Testing% for %Long ";
+		
+		assertEquals(expectedOutput, actualOutput);
+	}
+	
+	//SECTION FOUR: Miscellaneous Testing
+	
+	@Test
+	//Test for invalid Option
+	public void invalidOptionTest() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -g 1-2 - nothing");
+		expectedOutput = "Invalid Option";
+		assertEquals(actualOutput, expectedOutput);
+	}
+	
+	@Test
+	//Test for insufficient information command
+	public void commandNotComplete() {
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -f");
+		expectedOutput = "Invalid Option";
+		assertEquals(actualOutput, expectedOutput);
+	}
+	
+	@Test
+	//Testing Execute with Invalid file path
+	public void testExecuteWithInvalidFilePath(){
+		
+		cuttool = new CUTTool();
+		String filePath = "C:/test1.txt";
+			
+		String output = cuttool.execute(workingDirectory, "cut -c 1 "+filePath);
+		String expected = "File not found";
+			
+		assertEquals(output,expected);
+	}
 }

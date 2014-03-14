@@ -95,10 +95,5 @@ public class PWDToolTest {
 		assertEquals(expected, actual);
 		assertEquals(pwdtool.getStatusCode(), 0);
 	}
-	
-	@Test
-	public void runTest() {
-		pwdtool.run();
-	}
 
 }
