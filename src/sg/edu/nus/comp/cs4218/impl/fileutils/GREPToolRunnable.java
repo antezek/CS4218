@@ -13,11 +13,8 @@ public class GREPToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		String result = "";
 		GREPTool grepTool = new GREPTool();
-		result = grepTool.execute(workingDir, stdin);
-		//System.out.println(grepTool.execute(workingDir, stdin));
-		Result.result = result;
+		Result.result = grepTool.execute(workingDir, stdin);
 	}
 
 }

@@ -13,10 +13,7 @@ public class MOVEToolRunnable implements Runnable{
 
 	@Override
 	public void run() {
-		String result = "";
 		MOVETool moveTool = new MOVETool();
-		//System.out.println(moveTool.execute(workingDir, stdin));
-		result = moveTool.execute(workingDir, stdin);
-		Result.result = result;
+		Result.result = moveTool.execute(workingDir, stdin);;
 	}
 }

@@ -52,10 +52,10 @@ public class PIPEToolTest {
 	 * Test expected behaviour of valid subsequent inputs
 	 */
 	
-	public void checkValidCommandTypeForSubsequentInputTest() {
-		pt.checkValidCommandTypeForPipe("grep", false);
-
-	}
+//	public void checkValidCommandTypeForSubsequentInputTest() {
+//		pt.checkValidCommandTypeForPipe("grep", false);
+//
+//	}
 
 	/**
 	 * Test error handling for invalid subsequent inputs

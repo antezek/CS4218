@@ -16,10 +16,8 @@ public class UNIQToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		String result = "";
 		UNIQTool uniqTool = new UNIQTool();
-		result = uniqTool.execute(workingDir, stdin);
-		Result.result = result;
+		Result.result = uniqTool.execute(workingDir, stdin);;
 	}
 
 }

@@ -66,6 +66,9 @@ public class PASTETool extends ATool implements IPasteTool {
 			tempCmd[count] = scan.next();
 			count++;
 		}
+		counter.close();
+		scan.close();
+		
 		return tempCmd;
 	}
 

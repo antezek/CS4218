@@ -1,19 +1,18 @@
 package sg.edu.nus.comp.cs4218.impl.extended2;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import sg.edu.nus.comp.cs4218.extended2.ICommTool;
-import sg.edu.nus.comp.cs4218.extended2.IPasteTool;
 
 public class COMMToolTest {
 
@@ -117,6 +116,7 @@ public class COMMToolTest {
 	@After
 	public void after() throws Exception {
 		commTool = null;
+		System.gc();
 		fileA.delete();
 		fileB.delete();
 		fileC.delete();

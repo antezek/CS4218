@@ -48,8 +48,9 @@ public class COPYTool extends ATool implements ICopyTool {
 		
 		if (!isFileNameNull(parts)) {
 			File from = Helper.isValidFile(workingDir, parts[1]);
-			File to = new File(parts[2]);
-			if (from != null && Helper.isValidDirectory(to)) {
+			File to = Helper.isValidDirectory(workingDir, parts[2]);
+			
+			if ((from != null) && (to != null)) {
 				// copying file
 				if (copy(from, to)) {
 					return String.format(MESSAGE_COPY_SUCCESS, from.getName(), to.getAbsolutePath());

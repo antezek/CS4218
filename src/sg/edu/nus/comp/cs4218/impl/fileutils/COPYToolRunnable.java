@@ -13,11 +13,8 @@ public class COPYToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		String result = "";
 		COPYTool copyTool = new COPYTool();
-		//System.out.println(copyTool.execute(workingDir, stdin));
-		result = copyTool.execute(workingDir, stdin);
-		Result.result = result;
+		Result.result = copyTool.execute(workingDir, stdin);
 	}
 
 }

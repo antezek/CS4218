@@ -54,8 +54,9 @@ public class MOVETool extends ATool implements IMoveTool {
 
 		if (!isFileNameNull(parts)) {
 			File from = Helper.isValidFile(workingDir, parts[1]);
-			File to = new File(parts[2]);
-			if (from != null && Helper.isValidDirectory(to)) {
+			File to = Helper.isValidDirectory(workingDir, parts[2]);
+			
+			if ((from != null) && (to != null)) {
 				// moving file
 				if (move(from, to)) {
 					return String.format(MESSAGE_MOVE_SUCCESS, from.getName(), to.getAbsolutePath());

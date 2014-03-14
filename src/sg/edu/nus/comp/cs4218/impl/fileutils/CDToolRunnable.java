@@ -13,11 +13,8 @@ public class CDToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		String result = "";
 		CDTool cdTool = new CDTool();
-		result = cdTool.execute(workingDir, stdin);
-		//System.out.println(cdTool.execute(workingDir, stdin));
-		Result.result = result;
+		Result.result = cdTool.execute(workingDir, stdin);
 	}
 
 }

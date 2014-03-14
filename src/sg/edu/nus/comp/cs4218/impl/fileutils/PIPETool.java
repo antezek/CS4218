@@ -12,15 +12,10 @@ import sg.edu.nus.comp.cs4218.impl.Shell;
 
 public class PIPETool extends ATool implements IPipingTool {
 	private static final String CMD_PWD = "pwd";
-	private static final String CMD_CD = "cd";
 	private static final String CMD_LS = "ls";
-	private static final String CMD_COPY = "copy";
-	private static final String CMD_MOVE = "move";
-	private static final String CMD_DELETE = "delete";
 	private static final String CMD_CAT = "cat";
 	private static final String CMD_ECHO = "echo";
 	private static final String CMD_GREP = "grep";
-	private static final String CMD_PIPE = "pipe";
 	private static final String CMD_COMM = "comm";
 	private static final String CMD_SORT = "sort";
 	private static final String CMD_CUT = "cut";
@@ -100,7 +95,7 @@ public class PIPETool extends ATool implements IPipingTool {
 			return "invalid input";
 		}
 
-		// tempFile.delete();
+		tempFile.delete();
 		return result;
 	}
 

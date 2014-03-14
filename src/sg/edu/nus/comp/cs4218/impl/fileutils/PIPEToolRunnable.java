@@ -13,11 +13,8 @@ public class PIPEToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		String result = "";
 		PIPETool pipeTool = new PIPETool();
-		result = pipeTool.execute(workingDir, stdin);
-		Result.result = result;
-		// System.out.println(pipeTool.execute(workingDir, stdin));
+		Result.result = pipeTool.execute(workingDir, stdin);;
 	}
 
 }

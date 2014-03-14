@@ -18,6 +18,8 @@ import org.junit.Test;
 public class HelperTest {
 	private String dirName, fileName, expected, workingDir;
 	private File validFile, validDir, actual, workDir;
+	
+	@SuppressWarnings("unused")
 	private Helper helperTool;
 	
 	@Before
@@ -64,7 +66,7 @@ public class HelperTest {
 		
 		// Test valid file directory 3
 		workDir = new File(workingDir);
-		expected = workDir.getAbsolutePath() + "/" +dirName;			//Bugs: OS compatible \\ changed to /
+		expected = workDir.getAbsolutePath() + "\\" +dirName;			//Bugs: OS compatible \\ changed to /
 		actual = Helper.isValidDirectory(workDir, dirName);
 		assertEquals(expected, actual.getAbsolutePath());
 	}
@@ -122,7 +124,7 @@ public class HelperTest {
 		assertEquals(expected, actual.getAbsolutePath());
 		
 		// Test valid file with only file name
-		expected = workDir.getAbsolutePath() +"/" +fileName;		//Bugs: OS compatible \\ changed to /
+		expected = workDir.getAbsolutePath() +"\\" +fileName;		//Bugs: OS compatible \\ changed to /
 		actual = Helper.isValidFile(workDir, fileName);
 		assertEquals(expected, actual.getAbsolutePath());
 	}

@@ -13,11 +13,8 @@ public class PWDToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		String result = "";
 		PWDTool pwdTool = new PWDTool();
-		//System.out.println(pwdTool.execute(workingDir, stdin));
-		result = pwdTool.execute(workingDir, stdin);
-		Result.result = result;
+		Result.result = pwdTool.execute(workingDir, stdin);;
 	}
 
 }

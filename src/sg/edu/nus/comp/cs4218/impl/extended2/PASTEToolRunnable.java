@@ -15,10 +15,7 @@ public class PASTEToolRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		String result = "";
 		PASTETool pasteTool = new PASTETool();
-		//System.out.println(pasteTool.execute(workingDir, stdin));
-		result = pasteTool.execute(workingDir, stdin);
-		Result.result = result;
+		Result.result = pasteTool.execute(workingDir, stdin);
 	}
 }
