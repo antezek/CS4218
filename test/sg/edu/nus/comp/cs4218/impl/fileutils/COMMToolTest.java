@@ -26,9 +26,11 @@ public class COMMToolTest {
 	String actualOutput, expectedOutput, helpOutput;
 	File workingDirectory;
 
-	File fileA, fileB, fileC, fileD, fileF, fileEM1, fileEM2;
+	File fileA, fileB, fileC, fileD, fileF, fileG, fileH, fileI, fileJ, fileK,
+			fileL, fileEM1, fileEM2;
 	String fileContentA, fileContentB, fileContentC, fileContentD,
-			fileContentE, fileContentF;
+			fileContentE, fileContentF, fileContentG, fileContentH,
+			fileContentI, fileContentJ, fileContentK, fileContentL;
 	String testTab, testNewLine, testDash;
 
 	@Before
@@ -53,6 +55,12 @@ public class COMMToolTest {
 		fileC = new File("y.txt");
 		fileD = new File("z.txt");
 		fileF = new File("unsort.txt");
+		fileG = new File("ant1.txt");
+		fileH = new File("ant2.txt");
+		fileI = new File("ant3.txt");
+		fileJ = new File("ant4.txt");
+		fileK = new File("ant5.txt");
+		fileL = new File("ant6.txt");
 		fileEM1 = new File("em1.txt");
 		fileEM2 = new File("em2.txt");
 		fileEM1.createNewFile();
@@ -64,12 +72,24 @@ public class COMMToolTest {
 		fileContentD = "Cat\nBat";
 		fileContentE = "";
 		fileContentF = "Apple\nBanana\nJewel\nRat\nOrange\nZebra\nPolice\nWater";
+		fileContentG = "Lychee\nJackfruit\nKiwi";
+		fileContentH = "Pineapple\nJackfruit\nKiwi";
+		fileContentI = "Apple\nLychee\nJackfruit\nKiwi";
+		fileContentJ = "Lychee\nJackfruit\nKiwi";
+		fileContentK = "Pineapple\nStarfruit";
+		fileContentL = "Lychee\nStarfruit";
 
 		writeToFile(fileA, fileContentA);
 		writeToFile(fileB, fileContentB);
 		writeToFile(fileC, fileContentC);
 		writeToFile(fileD, fileContentD);
 		writeToFile(fileF, fileContentF);
+		writeToFile(fileG, fileContentG);
+		writeToFile(fileH, fileContentH);
+		writeToFile(fileI, fileContentI);
+		writeToFile(fileJ, fileContentJ);
+		writeToFile(fileK, fileContentK);
+		writeToFile(fileL, fileContentL);
 
 		testTab = "\t";
 		testNewLine = "\n";
@@ -103,12 +123,20 @@ public class COMMToolTest {
 		fileC.delete();
 		fileD.delete();
 		fileF.delete();
+		fileG.delete();
+		fileH.delete();
+		fileI.delete();
+		fileJ.delete();
+		fileK.delete();
+		fileL.delete();
 		fileEM1.delete();
 		fileEM2.delete();
 	}
 
+	/**
+	 * Test if overall control flow is correct
+	 */
 	@Test
-	// Test if overall control flow is correct
 	public void overallTest() {
 		// String[] arguments = new String[]{"w.txt","x.txt"};
 
@@ -120,22 +148,15 @@ public class COMMToolTest {
 				+ testDash + testNewLine + testDash + testTab + testDash
 				+ testTab + "Melon" + testNewLine + testDash + testTab
 				+ testDash + testTab + "Orange";
-
-		/*
-		 * System.out.println("actualOutput:\n"+actualOutput);
-		 * System.out.println("expectedOutput:\n"+expectedOutput);
-		 * System.out.println
-		 * ("bool: "+expectedOutput.equalsIgnoreCase(actualOutput));
-		 * System.out.println("statusCode: "+commTool.getStatusCode());
-		 */
-
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 0);
 	}
 
+	/**
+	 * Test file doesn't exist for arg 1
+	 */
 	@Test
-	// File doesn't exist
-	public void compareFilesInvalidFileArgsTest() {
+	public void compareFilesInvalidFileArgs1Test() {
 		String fileName1 = "C:\\Users\\Dale\\w.txt";
 		String fileName2 = "./x.txt";
 		String[] arguments = new String[] { "C:\\Users\\Dale\\w.txt", "./x.txt" };
@@ -145,12 +166,29 @@ public class COMMToolTest {
 
 		expectedOutput = "File 1 doesn't exist!";
 		assertEquals(expectedOutput, actualOutput);
-
 	}
 
+	/**
+	 * Test file doesn't exist for arg 2
+	 */
 	@Test
-	// comm -c -help file1 file2
-	public void compareFilesGiveHelpPriorityTest() {
+	public void compareFilesInvalidFileArgs2Test() {
+		String fileName1 = "C:\\Users\\Dale\\w.txt";
+		String fileName2 = "./x.txt";
+		String[] arguments = new String[] { "./x.txt", "C:\\Users\\Dale\\w.txt" };
+		commTool = new COMMTool(arguments);
+		actualOutput = commTool.execute(workingDirectory,
+				"comm ./x.txt C:\\Users\\Dale\\w.txt");
+
+		expectedOutput = "File 2 doesn't exist!";
+		assertEquals(expectedOutput, actualOutput);
+	}
+
+	/**
+	 * Test help command will take priority over the rest of args
+	 */
+	@Test
+	public void compareFilesCGiveHelpPriorityTest() {
 		String[] arguments = new String[] { "-c", "-help", "file1", "file2" };
 		commTool = new COMMTool(arguments);
 		actualOutput = commTool.execute(workingDirectory,
@@ -161,8 +199,44 @@ public class COMMToolTest {
 		assertEquals(commTool.getStatusCode(), 0);
 	}
 
-	// Both file arguments are empty files
-	// comm em1.txt em2.txt
+	/**
+	 * Test help command will take priority over -d args
+	 */
+	@Test
+	public void compareFilesDGiveHelpPriorityTest() {
+		String[] arguments = new String[] { "-d", "-help", "file1", "file2" };
+		commTool = new COMMTool(arguments);
+		actualOutput = commTool.execute(workingDirectory,
+				"comm -d -help file1 file2");
+		expectedOutput = helpOutput;
+
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(commTool.getStatusCode(), 0);
+	}
+
+	/**
+	 * Test -d args
+	 */
+	@Test
+	public void compareFilesDoNotCheckForSortStatus() {
+		String[] arguments = new String[] { "-d", "w.txt", "x.txt" };
+		commTool = new COMMTool(arguments);
+		actualOutput = commTool
+				.execute(workingDirectory, "comm -d w.txt x.txt");
+		expectedOutput = "Apple" + testTab + testDash + testTab + testDash
+				+ testNewLine + testDash + testTab + "Banana" + testTab
+				+ testDash + testNewLine + testDash + testTab + testDash
+				+ testTab + "Melon" + testNewLine + testDash + testTab
+				+ testDash + testTab + "Orange";
+
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(commTool.getStatusCode(), 0);
+	}
+
+	/*
+	 * Test comm for 2 empty files
+	 */
+	@Test
 	public void compareFilesNoOptionsBothFilesEmptyTest() {
 		String[] arguments = new String[] { "em1.txt", "em2.txt" };
 		String input1 = "em1.txt";
@@ -189,8 +263,12 @@ public class COMMToolTest {
 	 * 
 	 * "testTab + testDash" after "Superman" is removed to be more precise.
 	 */
+
+	/*
+	 * Test for all lines in both files are unique. Result - Column 3 should be
+	 * empty
+	 */
 	@Test
-	// All lines in both files are unique. Column 3 should be empty
 	public void compareFilesNoOptionsAllUniqueTest() {
 		testTab = "\t";
 		testNewLine = "\n";
@@ -216,8 +294,11 @@ public class COMMToolTest {
 
 	}
 
+	/*
+	 * Test for some common lines in both files. Result - All three columns have
+	 * items
+	 */
 	@Test
-	// Some common lines. All three columns have items
 	public void compareFilesNoOptionsSomeUniqueTest() {
 		String[] arguments = new String[] { "w.txt", "x.txt" };
 		String input1 = "w.txt";
@@ -236,37 +317,64 @@ public class COMMToolTest {
 		assertEquals(commTool.getStatusCode(), 0);
 	}
 
+	/*
+	 * //Test for no unique lines at all. Result - Col1 and Col2 are empty
+	 */
 	@Test
-	// No unique lines at all. Col1 and Col2 are empty
 	public void compareFilesNoOptionsNoneUniqueTest() {
 		String[] arguments = new String[] { "w.txt", "w.txt" };
 		String input1 = "w.txt";
 		String input2 = "w.txt";
 		commTool = new COMMTool(arguments);
-		actualOutput = commTool.execute(workingDirectory, "comm w.txt w.txt"); // Changes:
-																				// use
-																				// execute
-																				// instead
-																				// of
-																				// compareFiles
-		// actualOutput = commTool.compareFiles(input1, input2);
+		// Changes: use execute instead of compareFiles actualOutput =
+		// commTool.compareFiles(input1, input2);
+		actualOutput = commTool.execute(workingDirectory, "comm w.txt w.txt");
 		expectedOutput = testDash + testTab + testDash + testTab + "Apple"
 				+ testNewLine + testDash + testTab + testDash + testTab
 				+ "Melon" + testNewLine + testDash + testTab + testDash
 				+ testTab + "Orange";
-
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 0);
 	}
 
-	// ======================================================================================
+	/*
+	 * Test for invalid command input
+	 */
 	@Test
-	// Test for invalid command input
 	public void invalidCommand() {
 		String[] arguments = new String[] { "-e", "w.txt", "x.txt" };
 		commTool = new COMMTool(arguments);
 		actualOutput = commTool
 				.execute(workingDirectory, "comm -e w.txt x.txt");
+		expectedOutput = "Error: Invalid command";
+
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(commTool.getStatusCode(), 1);
+	}
+	
+	/*
+	 * Test for insufficient file input
+	 */
+	@Test
+	public void insufficientCommand() {
+		String[] arguments = new String[] { "-e", "w.txt" };
+		commTool = new COMMTool(arguments);
+		actualOutput = commTool.execute(workingDirectory, "comm -e w.txt");
+		expectedOutput = "File 1 doesn't exist!";
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(commTool.getStatusCode(), 1);
+	}
+	
+	/*
+	 * Test for invalid overloaded command
+	 */
+	@Test
+	public void invalidOverloadCommand() {
+		String[] arguments = new String[] { "-e", "w.txt", "x.txt", "y.txt",
+				"z.txt" };
+		commTool = new COMMTool(arguments);
+		actualOutput = commTool.execute(workingDirectory,
+				"comm -e w.txt x.txt y.txt");
 		expectedOutput = "Error: Invalid command";
 		/*
 		 * System.out.println("actualOutput:\n"+actualOutput);
@@ -278,9 +386,11 @@ public class COMMToolTest {
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 1);
 	}
-
+	
+	/*
+	 * Test sort. Positive case: Files are sorted
+	 */
 	@Test
-	// Positive case: Files are sorted
 	public void compareFilesCheckSortStatusTest1() {
 		String[] arguments = new String[] { "-c", "w.txt", "x.txt" };
 		String input1 = "w.txt";
@@ -300,9 +410,11 @@ public class COMMToolTest {
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 0);
 	}
-
+	
+	/*
+	 * Test negative case: File 2 not sorted
+	 */
 	@Test
-	// Negative case: File 2 not sorted
 	public void compareFilesCheckSortStatusTest2() {
 		String[] arguments = new String[] { "-c", "w.txt", "unsort.txt" };
 		String input1 = "w.txt";
@@ -317,6 +429,121 @@ public class COMMToolTest {
 		// Changes: modify the result from "File 2 not sorted!\n" to
 		// "File 2 not sorted!" to be more concise
 		// expectedOutput = "File 2 not sorted!\n";
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(commTool.getStatusCode(), 0);
+	}
+
+	/*
+	 * Test the placement of line according to the alphabetic order. In this case, words in column A less than column B but more than column C
+	 */
+	@Test
+	public void compareFileALessBMoreC() {
+		testTab = "\t";
+		testNewLine = "\n";
+		testDash = " ";
+		String[] arguments = new String[] { "ant1.txt", "ant2.txt" };
+		commTool = new COMMTool(arguments);
+		// Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory,
+				"comm ant1.txt ant2.txt");
+		// actualOutput = commTool.compareFiles(input1, input2);
+
+		expectedOutput = testDash + testTab + testDash + testTab + "Jackfruit"
+				+ testNewLine + testDash + testTab + testDash + testTab
+				+ "Kiwi" + testTab + testDash + testTab + testDash
+				+ testNewLine + "Lychee" + testTab + testDash + testTab
+				+ testDash + testNewLine + testDash + testTab + "Pineapple";
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(commTool.getStatusCode(), 0);
+	}
+	
+	/*
+	 * Test the placement of line according to the alphabetic order. In this case, words in column A more than column B and column C
+	 */
+	@Test
+	public void compareFileAMoreBMoreC() {
+		testTab = "\t";
+		testNewLine = "\n";
+		testDash = " ";
+		String[] arguments = new String[] { "ant2.txt", "ant1.txt" };
+		commTool = new COMMTool(arguments);
+		// Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory,
+				"comm ant2.txt ant1.txt");
+		expectedOutput = testDash + testTab + testDash + testTab + "Jackfruit"
+				+ testNewLine + testDash + testTab + testDash + testTab
+				+ "Kiwi" + testTab + testDash + testTab + testDash
+				+ testNewLine + testTab + "Lychee" + testTab + testDash
+				+ testNewLine + "Pineapple";
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(commTool.getStatusCode(), 0);
+	}
+	
+	/*
+	 * Test the placement of line according to the alphabetic order. In this case, words in column A more than column B but less than column C
+	 */
+	@Test
+	public void compareFileAMoreBLessC() {
+		testTab = "\t";
+		testNewLine = "\n";
+		testDash = " ";
+		String[] arguments = new String[] { "ant5.txt", "ant6.txt" };
+		commTool = new COMMTool(arguments);
+		// Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory,
+				"comm ant5.txt ant6.txt");
+		expectedOutput = testTab + testDash + testTab + testDash + testNewLine
+				+ testDash + testTab + "Lychee" + testTab + testDash
+				+ testNewLine + "Pineapple" + testTab + testDash + testTab
+				+ testDash + testNewLine + testDash + testTab + testTab
+				+ "Starfruit";
+
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(commTool.getStatusCode(), 0);
+	}
+	
+	/*
+	 * Test the placement for 1 unique in column A and the rest common in column C
+	 */
+	@Test
+	public void compareFileAAndCNoB() {
+		testTab = "\t";
+		testNewLine = "\n";
+		testDash = " ";
+		String[] arguments = new String[] { "ant3.txt", "ant4.txt" };
+		commTool = new COMMTool(arguments);
+		// Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory,
+				"comm ant3.txt ant4.txt");
+		expectedOutput = "Apple" + testTab + testDash + testTab + testDash
+				+ testNewLine + testDash + testTab + testTab + "Lychee"
+				+ testNewLine + testDash + testTab + testDash + testTab
+				+ "Jackfruit" + testNewLine + testDash + testTab + testDash
+				+ testTab + "Kiwi";
+
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(commTool.getStatusCode(), 0);
+	}
+
+	/*
+	 * Test the placement for 1 unique in column B and the rest in column C
+	 */
+	@Test
+	public void compareFileBAndCNoA() {
+		testTab = "\t";
+		testNewLine = "\n";
+		testDash = " ";
+		String[] arguments = new String[] { "ant4.txt", "ant3.txt" };
+		commTool = new COMMTool(arguments);
+		// Changes: use execute instead of compareFiles
+		actualOutput = commTool.execute(workingDirectory,
+				"comm ant4.txt ant3.txt");
+		expectedOutput = testTab + testDash + testTab + testDash + testNewLine
+				+ testDash + testTab + "Apple" + testTab + testDash
+				+ testNewLine + testDash + testTab + testDash + testTab
+				+ "Lychee" + testNewLine + testDash + testTab + testDash
+				+ testTab + "Jackfruit" + testNewLine + testDash + testTab
+				+ testDash + testTab + "Kiwi";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 0);
 	}

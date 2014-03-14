@@ -54,7 +54,7 @@ public class PIPEToolTest {
 	
 	public void checkValidCommandTypeForSubsequentInputTest() {
 		pt.checkValidCommandTypeForPipe("grep", false);
-		//assertTrue(pt.checkValidCommandTypeForPipe("grep", false));
+
 	}
 
 	/**

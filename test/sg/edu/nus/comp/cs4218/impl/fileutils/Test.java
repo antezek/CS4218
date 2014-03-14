@@ -19,12 +19,12 @@ public class Test {
 		System.out.println("actualOutput: "+actualOutput);
 		*/
 		try {
-			//CUTToolTest gt = new CUTToolTest();
-			//gt.before();
-			//gt.cOptionWithEmptyFileTest();
+			PWDToolTest gt = new PWDToolTest();
+			gt.before();
+			gt.executeGetStringForDirectoryTest();
 			//System.out.println("result: "+result);
-			IntegrateTest ctt = new IntegrateTest();
-			ctt.componentIntegrateTest8();
+			//IntegrateTest ctt = new IntegrateTest();
+			//ctt.componentIntegrateTest16();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

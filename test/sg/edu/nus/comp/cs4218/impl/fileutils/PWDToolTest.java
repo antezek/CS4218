@@ -16,7 +16,7 @@ public class PWDToolTest {
 	// TODO Always test against the interface!
 	private IPwdTool pwdtool;
 	private File workingDir, nonExistDir, invalidDir;
-
+	
 	@Before
 	public void before() throws Exception {
 		workingDir = new File(System.getProperty("user.dir"));

@@ -24,8 +24,8 @@ public class PASTEToolTest {
 	String actualOutput,expectedOutput,helpOutput;
 	File workingDirectory;
 
-	File fileA,fileB,fileC,fileD,fileEM1,fileEM2;
-	String fileContentA,fileContentB,fileContentC,fileContentD,fileContentE;
+	File fileA,fileB,fileC,fileD,fileEM1,fileEM2, longFile1, longFile2;
+	String fileContentA,fileContentB,fileContentC,fileContentD,fileContentE,longInput1, longInput2;
 
 	@Before
 	public void before() throws Exception {
@@ -44,6 +44,8 @@ public class PASTEToolTest {
 		fileB = new File("b.txt");
 		fileC = new File("c.txt");
 		fileD = new File("d.txt");
+		longFile1 = new File("longFile1.txt");
+		longFile2 = new File("longFile2.txt");
 		
 		fileEM1 = new File("em1.txt");
 		fileEM2 = new File("em2.txt");
@@ -56,12 +58,21 @@ public class PASTEToolTest {
 		fileContentC = "Superman\nSpiderman\nBatman";
 		fileContentD = "Cat";
 		fileContentE = "";
+		longInput1 = "Long Input Long Input Nothing is Longer Than This\n"+
+	   				 "Are You Long, I am Long, very very Long\n" +
+	   				 "Testing for Long Input\n";
+		longInput2 = "I'm just wild and young\n" +
+	   				 "I'm just wild and young\n" +
+	   				 "Do it just for fun\n" +
+	   				 "Yes Sir\n"+
+	   				 "One of a Kind\n";
 		
 		writeToFile(fileA, fileContentA);
 		writeToFile(fileB, fileContentB);
 		writeToFile(fileC, fileContentC);
 		writeToFile(fileD,fileContentD);
-
+		writeToFile(longFile1,longInput1);
+		writeToFile(longFile2,longInput2);
 	}
 
 	private void writeToFile(File f, String fContent){
@@ -89,10 +100,14 @@ public class PASTEToolTest {
 		fileB.delete();
 		fileC.delete();
 		fileD.delete();
+		longFile1.delete();
+		longFile2.delete(); 
 		fileEM1.delete();
 		fileEM2.delete();
 	}
 
+	//Test Case By Other Groups
+	
 	@Test
 	//If only "-help", print help message
 	public void pasteGetHelpAsOnlyArgumentTest() {
@@ -241,7 +256,6 @@ public class PASTEToolTest {
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
 	}
-
 
 	@Test
 	//case where numDelim = 1 for 1 file
@@ -449,7 +463,6 @@ public class PASTEToolTest {
 		pasteTool = new PASTETool();
 		actualOutput = pasteTool.execute(workingDirectory, "paste -s -d : a.txt");
 		expectedOutput = "Table\tChair\tMan";
-		assertEquals(expectedOutput,actualOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(pasteTool.getStatusCode(), 0);	
 	}
@@ -595,7 +608,73 @@ public class PASTEToolTest {
 	}
 		
 	//SECTION THREE: Testing Execute Method 
+	
+	@Test
+	//Testing For -s Option for Long Input with Single File
+	public void testExecuteSOptionForLongInputSingleFile() {
 		
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory,"paste -s longFile1.txt");
+		expectedOutput = "Long Input Long Input Nothing is Longer Than This\t"+
+						 "Are You Long, I am Long, very very Long\t" +
+						 "Testing for Long Input";
+				
+		assertEquals(actualOutput, expectedOutput);		
+	}
+	
+	@Test
+	//Testing For -s Option for Long Input with Multiple Files
+	public void testExecuteSOptionForLongInputMulFile() {
+		
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory,"paste -s longFile1.txt longFile2.txt");
+		expectedOutput = "Long Input Long Input Nothing is Longer Than This\t"+
+						 "Are You Long, I am Long, very very Long\t" +
+						 "Testing for Long Input\n"+
+						 "I'm just wild and young\t" +
+		   				 "I'm just wild and young\t" +
+		   				 "Do it just for fun\t" +
+		   				 "Yes Sir\t"+
+		   				 "One of a Kind";
+				
+		assertEquals(actualOutput, expectedOutput);	
+	}
+	
+	@Test
+	//Testing for -d Option For Long Input with Single File
+	public void testExecuteDOptionForLongInputSingleFile() {
+	
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory,"paste -d % longFile1.txt");
+		expectedOutput = "Long Input Long Input Nothing is Longer Than This\n"+
+				 		 "Are You Long, I am Long, very very Long\n"+
+				 		 "Testing for Long Input";
+				 	
+	
+		assertEquals(actualOutput, expectedOutput);	
+		
+	}
+
+	@Test
+	//Testing For -d Option For Long Input with multiple files
+	public void testExceuteDOptionForLongInputMulFile() {
+		
+		pasteTool = new PASTETool();
+		actualOutput = pasteTool.execute(workingDirectory,"paste -d % longFile1.txt longFile2.txt");
+		expectedOutput = "Long Input Long Input Nothing is Longer Than This%I'm just wild and young\n"+
+				 		 "Are You Long, I am Long, very very Long%I'm just wild and young\n" +
+				 		 "Testing for Long Input%Do it just for fun\n"+
+				 		 "%Yes Sir\n"+
+				 		 "%One of a Kind";
+	
+		assertEquals(actualOutput, expectedOutput);	
+				
+	}
+	
+	//SECTION FOUR: Miscellaneous Testing
+	
+	
+	
 	@Test
 	//Test for invalid command
 	public void testForInvalidCommand() {
@@ -609,6 +688,7 @@ public class PASTEToolTest {
 		String expected = "Invalid Command";
 			
 		assertEquals(expected, actual);
+		assertEquals(pasteTool.getStatusCode(),-1);
 	}
 		
 	@Test

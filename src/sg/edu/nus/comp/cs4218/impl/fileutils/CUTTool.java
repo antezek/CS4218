@@ -16,6 +16,7 @@ public class CUTTool extends ATool implements ICutTool {
 	private final String EOL = "\n";
 	private final String EMPTY = "";
 	private final String DASH = "-";
+	private final String TAB = "\t";
 
 	private final String ERROR1 = "Invalid Option";
 	private final String ERROR2 = "Invalid Command";
@@ -35,6 +36,7 @@ public class CUTTool extends ATool implements ICutTool {
 	private int fileInput;
 	private int stdInput;
 	private int statusCode;
+	private boolean delimPresent;
 	private String input;
 	private String output;
 	private String stditem;
@@ -45,13 +47,15 @@ public class CUTTool extends ATool implements ICutTool {
 		output = EMPTY;
 		fileInputList = new Vector<String>();
 		cList = new Vector<String>();
-		delimiter = EMPTY;
+		delimiter = TAB;
 		inputStartIndex = 0;
 		fileInput = INPUTABSENT;
 		stdInput = INPUTABSENT;
+		delimPresent = false;
 		statusCode = 0;
 	}
 
+	//Get the command from StandardInput
 	public String[] getCmd(String stdin) {
 		String[] tempCmd;
 		int finalCount = 0;
@@ -71,6 +75,11 @@ public class CUTTool extends ATool implements ICutTool {
 		return tempCmd;
 	}
 
+	/*
+	 * Execute Method:
+	 * Main method to extract and process the input given by user and outputs the results 
+	 * or error msg if any
+	 */
 	@Override
 	public String execute(File workingDir, String stdin) {
 		String[] temp;
@@ -83,13 +92,13 @@ public class CUTTool extends ATool implements ICutTool {
 		temp = getCmd(stdin);
 		if (temp.length > 3) {
 			if (temp[temp.length - 2].equals("-")) {
-				if (isRepeat) {
-					// To cater for empty space
+				if(isRepeat){
+					//To cater for empty space
 					arg = new String[temp.length - 1];
-				} else {
+				}else{
 					arg = new String[temp.length - 2];
 				}
-
+				
 			} else {
 				arg = new String[temp.length - 1];
 			}
@@ -102,39 +111,57 @@ public class CUTTool extends ATool implements ICutTool {
 				stditem = temp[temp.length - 1];
 				break;
 			} else {
-				if (isRepeat && count == 1) {
+				if(isRepeat && count==1){
 					arg[count] = " ";
 					i--;
-				} else {
+				}else{
 					arg[count] = temp[i];
 				}
 			}
 			count++;
 		}
 		output = EMPTY;
-		if (!checkFirstInput())
+		
+		//Check if the first option exist and valid
+		if (!checkFirstInput()) {
 			output = ERROR1;
+			statusCode = -1;
+			return output;
+		}
+		
+		//Help Option exists
 		if (arg[0].equals("-help"))
 			return output;
 
 		checkForMoreThanOneOptions();
 		checkForInputType(workingDir);
 
-		if (output.equals(EMPTY))
+		//If no error message, we will start processing the inputs
+		if(output.equals(EMPTY)) {
 			processInput();
-
+		}
+		
 		if (output.equals(ERROR3))
 			statusCode = -1;
 
-		if (output.equals(ERROR1) || output.equals(ERROR2)
-				|| output.equals(ERROR4))
+		if (output.equals(ERROR2)|| output.equals(ERROR4))
 			return EMPTY;
-		else
-			return output;
+		else {
+			if(!output.equals(EMPTY) && output.endsWith(EOL))
+				output = output.substring(0, output.length()-1);
+		}
+		
+		return output;
 	}
 
+	//Check the first input, add in the relevant data and move the input start index to the correct position
 	private boolean checkFirstInput() {
-
+		
+		if(arg[0].equals("-c")||arg[0].equals("-d")||arg[0].equals("-f"))
+		{
+			if(arg.length < 3)
+				return false;
+		}
 		if (arg[0].equals("-c")) {
 
 			cList.add(arg[1]);
@@ -142,6 +169,7 @@ public class CUTTool extends ATool implements ICutTool {
 		} else if (arg[0].equals("-d")) {
 
 			delimiter = arg[1];
+			delimPresent = true;
 
 		} else if (arg[0].equals("-f")) {
 
@@ -156,12 +184,14 @@ public class CUTTool extends ATool implements ICutTool {
 		inputStartIndex = 2;
 		return true;
 	}
-
+	
+	//Main method to process Help Option
 	private void processHelp() {
 
 		output = getHelp();
 	}
 
+	//There might be more than one options present, so we have to save the data and push the input start index accordingly
 	private void checkForMoreThanOneOptions() {
 
 		for (int i = 2; i < arg.length; i = i + 2) {
@@ -172,6 +202,7 @@ public class CUTTool extends ATool implements ICutTool {
 			} else if (arg[i].equals("-d")) {
 
 				delimiter = arg[i + 1];
+				delimPresent = true;
 
 			} else if (arg[i].equals("-f")) {
 
@@ -185,12 +216,8 @@ public class CUTTool extends ATool implements ICutTool {
 
 	}
 
+	//Check if input is std or file
 	private void checkForInputType(File workdir) {
-
-		if (arg.length <= inputStartIndex) {
-			output = ERROR2;
-			return;
-		}
 
 		for (int i = inputStartIndex; i < arg.length; i++) {
 			if (arg[i].startsWith(DASH))
@@ -207,7 +234,8 @@ public class CUTTool extends ATool implements ICutTool {
 		}
 	}
 
-	private String getFileContents(File workdir, String fileName)
+	//Getting the contents from a file
+	public String getFileContents(File workdir, String fileName)
 			throws IOException {
 
 		String path;
@@ -226,32 +254,33 @@ public class CUTTool extends ATool implements ICutTool {
 
 	// Read from a file
 	private String readFile(File file) throws IOException {
+
 		String results = "";
 		BufferedReader br = new BufferedReader(new FileReader(file));
 
-		try {
+		StringBuilder fileContents = new StringBuilder();
+		String line = br.readLine();
 
-			StringBuilder fileContents = new StringBuilder();
-			String line = br.readLine();
-
-			while (line != null) {
-				results += line;
-				results += "\n";
-				//fileContents.append(line);
-				//fileContents.append("\n"); // CHANGED. BUGS!!
-				line = br.readLine();
-			}
+		while (line != null) {
+			results += line;
+			results += "\n";
+			line = br.readLine();
+		}
+		
+		if(results!=EMPTY) {
 			if (results.substring(results.length() - 1, results.length())
 					.equals("\n")) {
 				results = results.substring(0, results.length() - 1);
 			}
-			fileContents.append(results);
-			return fileContents.toString();
-		} finally {
-			br.close();
 		}
+		fileContents.append(results);
+		
+		br.close();
+		return fileContents.toString();
+	 
 	}
 
+	//Main method to process the input based on the options
 	private void processInput() {
 
 		processCOptions();
@@ -260,19 +289,21 @@ public class CUTTool extends ATool implements ICutTool {
 
 	}
 
+	//Processing -d option
 	private void processDOptions() {
 
-		if (delimiter.equals(EMPTY))
+		if (!delimPresent)
 			return;
 
 		else {
+			//If std input is present
 			if (stdInput == INPUTPRESENT) {
 
 				output = output
 						+ cutSpecifiedCharactersUseDelimiter(fList, delimiter,
 								stditem);
 			}
-
+			//File option present
 			int fileCounter = 0;
 			if (fileInput == INPUTPRESENT) {
 				while (fileCounter < fileInputList.size()) {
@@ -280,14 +311,17 @@ public class CUTTool extends ATool implements ICutTool {
 					output = output
 							+ cutSpecifiedCharactersUseDelimiter(fList,
 									delimiter, fileInputList.get(fileCounter));
+					
 					fileCounter++;
 				}
 
+				
 			}
 		}
 
 	}
 
+	//Process -c Options
 	private void processCOptions() {
 
 		if (cList.isEmpty())
@@ -298,7 +332,7 @@ public class CUTTool extends ATool implements ICutTool {
 			for (int i = 0; i < cList.size(); i++) {
 
 				if (stdInput == INPUTPRESENT) {
-
+					//STD input present
 					output = output
 							+ cutSpecfiedCharacters(cList.get(i), stditem);
 				}
@@ -306,7 +340,7 @@ public class CUTTool extends ATool implements ICutTool {
 
 			int fileCounter = 0;
 			if (fileInput == INPUTPRESENT) {
-
+				//File input present
 				while (fileCounter < fileInputList.size()) {
 
 					for (int j = 0; j < cList.size(); j++) {
@@ -324,12 +358,14 @@ public class CUTTool extends ATool implements ICutTool {
 
 	}
 
+	//getter method for status code
 	@Override
 	public int getStatusCode() {
 
 		return statusCode;
 	}
 
+	//Main method use to process -c Option
 	@Override
 	public String cutSpecfiedCharacters(String list, String input) {
 
@@ -349,27 +385,32 @@ public class CUTTool extends ATool implements ICutTool {
 
 						splitRange = splitList[i].split(DASH);
 						if (splitRange.length < 2) {
-
+							//if no end range is specify
 							start = Integer.parseInt(splitRange[0]);
 							end = lines[h].length();
 
 						} else {
 							if (splitList[i].startsWith(DASH)) {
+								//negative start range specify
 								start = 1;
 								end = Integer.parseInt(splitRange[1]);
 							} else {
+								//Normal case
 								start = Integer.parseInt(splitRange[0]);
 								end = Integer.parseInt(splitRange[1]);
 							}
 						}
 
 						if (end < start) {
+							//Invalid range: end<start
 							results = ERROR4;
 							return results;
 						}
 						if (end > input.length())
+							//If end>length take end = length
 							end = input.length();
 
+						//get the characters using start and end
 						for (int j = start; j <= end; j++) {
 
 							if (lines[i].charAt(j - 1) != '\n')
@@ -383,20 +424,16 @@ public class CUTTool extends ATool implements ICutTool {
 					}
 				}
 
-				results = results + EOL; // CHANGED!!!
+				results = results + EOL;
 			}
 
 		} catch (Exception e) {
 			results = ERROR4;
 		}
-		// Remove trailing \n
-		if (results.substring(results.length() - 1, results.length()).equals(
-				"\n")) {
-			results = results.substring(0, results.length() - 1);
-		}
 		return results;
 	}
 
+	//Main method to process -d options
 	@Override
 	public String cutSpecifiedCharactersUseDelimiter(String list, String delim,
 			String input) {
@@ -409,7 +446,7 @@ public class CUTTool extends ATool implements ICutTool {
 		int start, end;
 
 		if (input.equals(EMPTY))
-			return EMPTY;
+			return EMPTY+EOL;
 
 		try {
 			for (int k = 0; k < lines.length; k++) {
@@ -419,25 +456,29 @@ public class CUTTool extends ATool implements ICutTool {
 					if (splitList[i].contains(DASH)) {
 						splitRange = splitList[i].split(DASH);
 						if (splitRange.length < 2) {
-
+							//if no end range is specify
 							start = Integer.parseInt(splitRange[0]);
 							end = lines[k].length() - 1;
 
 						} else {
 							if (splitList[i].startsWith(DASH)) {
+								//negative start range specify
 								start = 1;
 								end = Integer.parseInt(splitRange[1]);
 							} else {
+								//Normal case
 								start = Integer.parseInt(splitRange[0]);
 								end = Integer.parseInt(splitRange[1]);
 							}
 						}
 
 						if (end < start) {
+							//Invalid range: end <start
 							results = ERROR4;
 							return results;
 						}
 						if (end >= splitByDelim.length)
+							//if end larger than the component length, end = component length
 							end = splitByDelim.length;
 
 						for (int j = start; j <= end; j++) {
@@ -463,11 +504,12 @@ public class CUTTool extends ATool implements ICutTool {
 				}
 			}
 		} catch (Exception e) {
-			results = "Invalid Range specify";
+			results = ERROR4;
 		}
 		return results;
 	}
 
+	//Main method to get help
 	@Override
 	public String getHelp() {
 

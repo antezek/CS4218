@@ -33,10 +33,4 @@ public class PWDTool extends ATool implements IPwdTool{
 		result = getStringForDirectory(workingDir);
 		return result;
 	}
-	
-	public void run() {
-		System.out.println(result);
-	}
-
-
 }

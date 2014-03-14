@@ -16,7 +16,7 @@ import org.junit.Test;
 import sg.edu.nus.comp.cs4218.impl.fileutils.GREPTool;
 
 public class GREPToolTest {
-
+	
 	private final String PASSAGE = "Fashion is a general term for a popular style or practice, especially in clothing, footwear,\n" +
 									"accessories, makeup, body piercing, or furniture.\n" +
 									"Fashion refers to a distinctive and often habitual trend in the style\n" +
@@ -138,7 +138,7 @@ public class GREPToolTest {
 
     @After
 	public void after(){
-		fileA.delete();
+    	fileA.delete();
 		fileB.delete();
 		fileC.delete();
 	}
@@ -553,7 +553,6 @@ public class GREPToolTest {
 				          "Fashion refers to a distinctive and often habitual trend in the style\n" +
 				          "Fashion also refers to the newest creations of textile designers.\n" +
 				          "while Fashion means clothing more generally, including the study of it.";
-		
 		assertEquals(matchLines, expected);	
 	}
 	

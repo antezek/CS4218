@@ -14,12 +14,19 @@ public class PIPETool extends ATool implements IPipingTool {
 	private static final String CMD_PWD = "pwd";
 	private static final String CMD_CD = "cd";
 	private static final String CMD_LS = "ls";
+	private static final String CMD_COPY = "copy";
+	private static final String CMD_MOVE = "move";
+	private static final String CMD_DELETE = "delete";
 	private static final String CMD_CAT = "cat";
 	private static final String CMD_ECHO = "echo";
 	private static final String CMD_GREP = "grep";
-	private static final String CMD_WC = "wc";
+	private static final String CMD_PIPE = "pipe";
+	private static final String CMD_COMM = "comm";
 	private static final String CMD_SORT = "sort";
-	
+	private static final String CMD_CUT = "cut";
+	private static final String CMD_PASTE = "paste";
+	private static final String CMD_WC = "wc";
+
 	private Shell s;
 	private File workDir;
 	private File tempFile;
@@ -30,7 +37,7 @@ public class PIPETool extends ATool implements IPipingTool {
 	}
 
 	@Override
-	public String pipe(ITool from, ITool to) {	
+	public String pipe(ITool from, ITool to) {
 		return null;
 	}
 
@@ -52,21 +59,23 @@ public class PIPETool extends ATool implements IPipingTool {
 		String strInputCmdPipe = stdin;
 		pipeCommand = strInputCmdPipe.split("[|]+");
 		pipeCmdCount = pipeCommand.length;
-		
+
 		// formatting commands
 		for (int i = 0; i < pipeCmdCount; i++) {
 			pipeCommand[i] = ltrim(pipeCommand[i]);
 			StringBuilder sb = new StringBuilder(pipeCommand[i]);
-			
-			if (pipeCommand[i].charAt(pipeCommand[i].length() -1) == ' ') {
-				sb = sb.deleteCharAt(pipeCommand[i].length() -1);
-				pipeCommand[i] = sb.toString();
+			if(sb.length()!=0){						
+				if (pipeCommand[i].charAt(pipeCommand[i].length() - 1) == ' ') {		//Bug: StringOutOfBoundException
+					sb = sb.deleteCharAt(pipeCommand[i].length() - 1);
+					pipeCommand[i] = sb.toString();
+				}
 			}
 		}
-		
+
 		// Check for valid commands
 		for (int i = 0; i < pipeCmdCount; i++) {
-			isValid = checkValidCommandTypeForPipe(Helper.getCommand(pipeCommand[i]), isFirst);
+			isValid = checkValidCommandTypeForPipe(
+					Helper.getCommand(pipeCommand[i]), isFirst);
 			if (!isValid) {
 				break;
 			}
@@ -79,23 +88,22 @@ public class PIPETool extends ATool implements IPipingTool {
 			tool = s.parse(pipeCommand[0]);
 			result = tool.execute(workingDir, pipeCommand[0]);
 			createPIPEFile(result);
-			
+
 			// parsing subsequent commands
 			for (int i = 1; i < pipeCmdCount; i++) {
 				tool = s.parse(pipeCommand[i]);
-				result = pipe(pipeCommand[i] +" " +"temppipefile.txt", tool);
+				result = pipe(pipeCommand[i] + " " + "temppipefile.txt", tool);
 				createPIPEFile(result);
 			}
-		}
-		else {
+		} else {
 			// invalid command; stop execution
 			return "invalid input";
 		}
-		
-		//tempFile.delete();
+
+		// tempFile.delete();
 		return result;
 	}
-	
+
 	public static String ltrim(String s) {
 		int i = 0;
 		while (i < s.length() && Character.isWhitespace(s.charAt(i))) {
@@ -105,9 +113,9 @@ public class PIPETool extends ATool implements IPipingTool {
 	}
 
 	/**
-	 * Check for valid command types for pipe processing
-	 * First command can only be GREP/LS/ECHO/CAT/PWD
-	 * Subsequent commands can only be GREP
+	 * Check for valid command types for pipe processing First command can only
+	 * be GREP/LS/ECHO/CAT/PWD Subsequent commands can only be GREP
+	 * 
 	 * @param command
 	 * @param isFirst
 	 * @return true if valid, false if otherwise
@@ -118,42 +126,44 @@ public class PIPETool extends ATool implements IPipingTool {
 			// Processing first command
 			if (command.equalsIgnoreCase(CMD_GREP)
 					|| command.equalsIgnoreCase(CMD_PWD)
-					|| command.equalsIgnoreCase(CMD_CD)
 					|| command.equalsIgnoreCase(CMD_LS)
 					|| command.equalsIgnoreCase(CMD_CAT)
 					|| command.equalsIgnoreCase(CMD_ECHO)
-					|| command.equalsIgnoreCase(CMD_SORT)){
+					|| command.equalsIgnoreCase(CMD_SORT)
+					|| command.equalsIgnoreCase(CMD_COMM)
+					|| command.equalsIgnoreCase(CMD_CUT)) {
 				valid = true;
 			} else {
-				//valid = false;				//TODO Change back to false
-				valid = true;
-			}	
+				valid = false; // TODO Change back to false
+				// valid = true;
+			}
 		} else {
 			// Processing second command, only GREP is allowed
-			if (command.equalsIgnoreCase(CMD_GREP)|| command.equalsIgnoreCase(CMD_CAT)
+			if (command.equalsIgnoreCase(CMD_GREP)
 					|| command.equalsIgnoreCase(CMD_WC)
-					|| command.equalsIgnoreCase(CMD_SORT)) {
+					|| command.equalsIgnoreCase(CMD_SORT)
+					|| command.equalsIgnoreCase(CMD_CUT)
+					|| command.equalsIgnoreCase(CMD_PASTE)) {
 				valid = true;
 			} else {
-				//valid = false;				//TODO Change back to false
-				valid = true;
+				valid = false; // TODO Change back to false
+				// valid = true;
 			}
 		}
 		return valid;
 
 	}
-	
+
 	private void createPIPEFile(String result) {
 		try {
 			tempFile = new File("temppipefile.txt");
-			
+
 			if (tempFile.exists()) {
 				tempFile.delete();
-			}
-			else {
+			} else {
 				tempFile.createNewFile();
 			}
-			
+
 			// Adding contents
 			FileWriter fstream = new FileWriter(tempFile);
 			BufferedWriter out = new BufferedWriter(fstream);

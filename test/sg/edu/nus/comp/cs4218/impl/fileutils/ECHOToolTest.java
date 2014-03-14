@@ -62,31 +62,6 @@ public class ECHOToolTest {
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
 	
-	
-	/**
-	 * Test expected behaviour of echoing valid system variable
-	 */
-	@Test
-	public void echoValidSystemVariableTest() {
-		String toEcho = "homepath";
-		String expected = System.getenv(toEcho);
-		String actual = echoTool.echo(toEcho);
-		assertEquals(expected, actual);
-		assertEquals(echoTool.getStatusCode(), 0);
-	}
-	
-	/**
-	 * Test expected behaviour of echoing valid system variable
-	 */
-	@Test
-	public void executeEchoValidSystemVariableTest() {
-		String stdin = "echo homepath";
-		String expected = System.getenv("homepath");
-		String actual = echoTool.execute(workingDir, stdin);
-		assertEquals(expected, actual);
-		assertEquals(echoTool.getStatusCode(), 0);
-	}
-	
 	/**
 	 * Test error handling of echoing an invalid system variable
 	 */
@@ -225,5 +200,30 @@ public class ECHOToolTest {
 		assertEquals(expected, actual);
 		assertEquals(echoTool.getStatusCode(), 0);
 	}
+
+	/**
+	 * Test expected behaviour of echoing valid system variable (only works on window OS)
+	 */
+	//@Test
+	public void echoValidSystemVariableTest() {
+		String toEcho = "homepath";
+		String expected = System.getenv(toEcho);
+		String actual = echoTool.echo(toEcho);
+		assertEquals(expected, actual);
+		assertEquals(echoTool.getStatusCode(), 0);
+	}
+	
+	/**
+	 * Test expected behaviour of echoing valid system variable	(only works on window OS)
+	 */
+	//@Test
+	public void executeEchoValidSystemVariableTest() {
+		String stdin = "echo homepath";
+		String expected = System.getenv("homepath");
+		String actual = echoTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
+		assertEquals(echoTool.getStatusCode(), 0);
+	}
+	
 
 }

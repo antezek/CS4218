@@ -226,10 +226,7 @@ public class GREPTool extends ATool implements IGrepTool {
 		for (i = 0; i < size; i++) {
 			if (inputLine[i].contains(pattern)) {
 				matchLine = matchLine + inputLine[i] + EOL;
-			}else{
-				matchLine = matchLine + EOL;				//Bugs: add in \n even these's i
 			}
-
 		}
 
 		return matchLine;
@@ -458,7 +455,7 @@ public class GREPTool extends ATool implements IGrepTool {
 
 		String path;
 
-		if (!fileName.contains("/"))				//Bugs: OS compatible \\ changed to /
+		if (!fileName.contains("/"))
 			// it is a fileName, thus it means the file resides in the same
 			// directory as the working directory
 			path = workdir.getAbsolutePath() + "/" + fileName;

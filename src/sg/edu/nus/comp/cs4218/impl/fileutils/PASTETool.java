@@ -49,6 +49,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		stditem = EMPTY;
 	}
 
+	//Get the command from StandardInput
 	public String[] getCmd(String stdin) {
 		String[] tempCmd;
 		int finalCount = 0;
@@ -68,6 +69,11 @@ public class PASTETool extends ATool implements IPasteTool {
 		return tempCmd;
 	}
 
+	/*
+	 * Execute Method:
+	 * Main method to extract and process the input given by user and outputs the results 
+	 * or error msg if any
+	 */
 	@Override
 	public String execute(File workingDir, String stdin) {
 		
@@ -75,6 +81,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		int count = 0;
 		temp = getCmd(stdin);
 	
+		//Getting the list of arguments
 		if (temp.length > 3) {
 			if (temp[temp.length - 2].equals("-")) {
 				arg = new String[temp.length - 2];
@@ -99,22 +106,29 @@ public class PASTETool extends ATool implements IPasteTool {
 			}
 			count++;
 		}
+		
+		//Check for input
 		checkFirstInput();
 		checkForMoreThanOneOptions();
 		
+		//Help option exist
 		if(output.equals(getHelp()))
 			return output;
 		
+		//Check if it is STD or File
 		checkForInputType(workingDir);
 		
+		//If no error msg reflected on output, we go ahead and process the inputs given
 		if(output.equals(EMPTY)) {
 			processInput();
-			output = output.substring(0, output.length()-1);
+			if(!output.equals(EMPTY) && output.endsWith(EOL))
+				output = output.substring(0, output.length()-1);
 		}
 		
 		return output;
 	}
 	
+	//Check the first input and move the input start index to the correct position
 	private void checkFirstInput() {
 		
 		if(arg[0].equals("-s")) {
@@ -136,6 +150,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		}
 	}
 	
+	//With all the options indicated, we will process the inputs accordingly
 	private void processInput() {
 		
 		if(sOptions == INPUTPRESENT) {
@@ -147,6 +162,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		
 	}
 	
+	//Process parallel files paste for -d Option
 	private void processDOptions() {
 		
 		if(stdInput == INPUTPRESENT) {
@@ -160,6 +176,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		
 		while(!AllEOL) {
 			
+			//Get all the parallel lines
 			lnEOL = 0;
 			String parallelLines = EMPTY;
 			for(int i = 0 ; i<fileInputList.size(); i++)
@@ -186,16 +203,19 @@ public class PASTETool extends ATool implements IPasteTool {
 				AllEOL = true;
 		}
 		
+		//We will remove the last line which is all EOL
 		PLList.remove(PLList.size()-1);
 		
 		for(int i = 0; i<PLList.size();i++)
 		{
+			//For each parallel lines, we process paste use delimiter
 			String [] Pln = PLList.get(i).split(EOL);
 			output = output + pasteUseDelimiter(delimiter, Pln);
 			output = output + EOL;
 		}
 	}
 	
+	//Main mthod to process -d Option
 	@Override
 	public String pasteUseDelimiter(String delim, String[] input) {
 		
@@ -220,6 +240,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		return result;
 	}
 
+	//processing -s option from file or std input
 	private void processSOptions() {
 		
 		if(stdInput == INPUTPRESENT) {
@@ -235,6 +256,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		}
 	}
 	
+	//Main method to process -s options
 	@Override
 	public String pasteSerial(String[] input) {
 		
@@ -250,10 +272,12 @@ public class PASTETool extends ATool implements IPasteTool {
 		return result;
 	}
 
+	//Check whether the input is std or file
 	private void checkForInputType(File workdir) {
 		
 		if(arg.length <= inputStartIndex){
 			output = ERROR2;
+			statusCode = -1;
 			return;
 		}
 		
@@ -272,7 +296,8 @@ public class PASTETool extends ATool implements IPasteTool {
 					String input = getFileContents(workdir, file);
 					fileInputList.add(input);
 				} catch(Exception e) {
-					String[] fileName = file.split("\\\\"); //Bugs: OS compatible \\\\ changed to //
+					String[] fileName = file.split("\\\\");
+					statusCode = -1;
 					if(fileName.length>1)
 						output = fileName[fileName.length-1]+": "+ ERROR3;
 					else
@@ -283,6 +308,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		
 	}
 	
+	//Getting the contents from a file
 	private String getFileContents(File workdir, String fileName)
 			throws IOException {
 
@@ -302,22 +328,7 @@ public class PASTETool extends ATool implements IPasteTool {
 
 	// Read from a file
 	private String readFile(File file) throws IOException {
-/*
-		BufferedReader br = new BufferedReader(new FileReader(file));
-
-		StringBuilder fileContents = new StringBuilder();
-		String line = br.readLine();
-
-		while (line != null) {
-			fileContents.append(line);
-			fileContents.append("\n");
-			line = br.readLine();
-		}
-
-		br.close();
-		return fileContents.toString();
-		*/
-		
+	
 		String results = "";
 		BufferedReader br = new BufferedReader(new FileReader(file));
 
@@ -343,11 +354,13 @@ public class PASTETool extends ATool implements IPasteTool {
 	 
 	}
 
+	//Processing -help options
 	private void processHelp() {
 		
 		output = getHelp();
 	}
 	
+	//There might be more than one options present, so we have to push the input start index accordingly
 	private void checkForMoreThanOneOptions() {
 		
 		if(inputStartIndex==-1 || inputStartIndex==0)
@@ -392,6 +405,7 @@ public class PASTETool extends ATool implements IPasteTool {
 	
 	}
 
+	//main method for help
 	@Override
 	public String getHelp() {
 		String helpString = "paste : writes to standard output lines "
@@ -407,6 +421,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		return helpString;
 	}
 	
+	//Getter method for status code
 	public int getStatusCode() {
 		return statusCode;
 	}

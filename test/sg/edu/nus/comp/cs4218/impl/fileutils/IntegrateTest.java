@@ -26,9 +26,6 @@ public class IntegrateTest {
 	String fileContentW, fileContentX, fileContentY, fileContentZ, input1,
 			input2, input3, passage, passage2;
 
-	/*
-	 * IntegrateTest() { before(); }
-	 */
 	@Before
 	public void before() {
 		sh = new Shell();
@@ -135,40 +132,44 @@ public class IntegrateTest {
 		}
 
 	}
-
+	/*
+	 * Test " echo | cut "
+	 */
 	@Test
-	// Test " echo | cut "
 	public void componentIntegrateTest1() {
 		String expectedOutput = "abc";
 		String actualOutput = "";
 		actualOutput = sh.runCmd("echo abcde | cut -c 1-3");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-
+	/*
+	 * Test " comm | grep "
+	 */
 	@Test
-	// Test " comm | grep "
 	public void componentIntegrateTest2() {
 		String testTab = "\t";
 		String testNewLine = "\n";
 		String testDash = " ";
-		String expectedOutput = testNewLine + testDash + testTab + "Banana"
-				+ testTab + testDash + testNewLine + testNewLine;
+		String expectedOutput = testDash + testTab + "Banana" + testTab
+				+ testDash;
 		String actualOutput = "";
 		actualOutput = sh.runCmd("comm w.txt x.txt | grep Banana");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-
+	/*
+	 * Test " cut | paste | grep "
+	 */
 	@Test
-	// Test " cut | paste | grep "
 	public void componentIntegrateTest3() {
-		String expectedOutput = "Ap\n\n";
+		String expectedOutput = "Ap";
 		String actualOutput = "";
 		actualOutput = sh.runCmd("cut -c 1-2 w.txt | paste -d : | grep Ap");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-
+	/*
+	 * Test " cut | wc "
+	 */
 	@Test
-	// Test " cut | wc "
 	public void componentIntegrateTest4() {
 		String expectedOutput = "File1: chars= 8 words= 4 lines= 4";
 		String actualOutput = "";
@@ -176,9 +177,10 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("cut -c 1-2 test1.txt | wc");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-
-	@Test
-	// Test " grep | sort "
+	/*
+	 * Test " grep | sort "
+	 */
+	@Test 
 	public void componentIntegrateTest5() {
 		String expectedOutput = "File1:\nAnd I your willing victim\n"
 				+ "And we can haha learn to love again\n"
@@ -198,11 +200,13 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("grep -C 2 haha PASSAGE2.txt LOST.txt | sort");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-
+	
+	/*
+	 * Test " cat | grep | sort "
+	 */
 	@Test
-	// Test " cat | grep | sort "
 	public void componentIntegrateTest6() {
-		String expectedOutput = "File1:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+		String expectedOutput = "File1:\n"
 				+ "And we can haha learn to love again\nBetween haha our love, our love, oh our love, our love\n"
 				+ "Oh we had everything haha\nRight from haha the start\nThings you never haha say to me";
 		String actualOutput = "";
@@ -210,9 +214,11 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("cat PASSAGE2.txt | grep haha | sort");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-
+	
+	/*
+	 * Test grep | wc
+	 */
 	@Test
-	// Test grep | wc
 	public void componentIntegrateTest7() {
 		String expectedOutput = "File1: chars= 421 words= 83 lines= 7";
 		String actualOutput = "";
@@ -220,41 +226,118 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("grep -B 1 Fashion PASSAGE.txt | wc");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-
+	
+	/*
+	 * 	Test " ls | sort "
+	 */
 	@Test
-	// Test " ls | sort "
+
 	public void componentIntegrateTest8() {
 		String expectedOutput = "File1:\n.DS_Store\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\n"
-				+ "PASSAGE2.txt\nREADME.txt\nbin\nmisc\nsample\nsrc\ntemppipefile.txt\ntest\ntest1.txt\n"
+				+ "PASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntemppipefile.txt\ntest\ntest1.txt\n"
 				+ "test2.txt\ntest3.txt\nw.txt\nx.txt\ny.txt\nz.txt";
 		String actualOutput = "";
 
 		actualOutput = sh.runCmd("ls | sort");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-
+	
+	/*
+	 * Test " echo | wc "
+	 */
 	@Test
-	// Test " echo | wc "
 	public void componentIntegrateTest9() {
 		String expectedOutput = "File1: chars= 27 words= 6 lines= 1";
 		String actualOutput = "";
 
 		actualOutput = sh
 				.runCmd("echo hello world, Programming is fun!! :D | wc");
-		// System.out.println("actualOutput:\n" + actualOutput);
-		// System.out.println("result:\n" + expectedOutput);
-		// System.out.println("Assert: "+expectedOutput.equalsIgnoreCase(actualOutput));
+
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-
+	
+	/*
+	 * Test " echo | cut | paste | grep | wc  "
+	 */
 	@Test
-	// Test " echo | cut | paste | grep | wc  "
 	public void componentIntegrateTest10() {
 		String expectedOutput = "File1: chars= 21 words= 3 lines= 1";
 		String actualOutput = "";
 
 		actualOutput = sh
 				.runCmd("echo hello world, Programming is fun!! | cut -c 1-24 | paste -d : | grep Program | wc");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
+	
+	/*
+	 * negative Test case " cd | sort "
+	 */
+	@Test
+	public void componentIntegrateTest11() {
+		String expectedOutput = "invalid input";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd("cd | sort");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
+	
+	/*
+	 * negative Test case " delete | sort "
+	 */
+	@Test 
+	public void componentIntegrateTest12() {
+		String expectedOutput = "invalid input";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd("delete | sort");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
+	
+	/*
+	 * negative Test case " ls | delete "
+	 */
+	@Test
+	public void componentIntegrateTest13() {
+		String expectedOutput = "invalid input";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd("ls | delete");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
+	
+	/*
+	 * negative Test case " delete | move | cd "
+	 */
+	@Test
+	public void componentIntegrateTest14() {
+		String expectedOutput = "invalid input";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd("delete | move | cd");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
+
+	/*
+	 * negative Test case " CD | delete "
+	 */
+	@Test
+	public void componentIntegrateTest15() {
+		String expectedOutput = "invalid input";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd("ls | delete");
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+	}
+	
+	/*
+	 * negative Test case " | "
+	 */
+	@Test
+	public void componentIntegrateTest16() {
+		String expectedOutput = "invalid input";
+		String actualOutput = "";
+
+		actualOutput = sh.runCmd(" | ");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
 

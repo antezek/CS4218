@@ -13,14 +13,9 @@ public class ComObj {
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
-		this.name = name;
-	}
+
 	public String getSlot() {
 		return slot;
-	}
-	public void setSlot(String slot) {
-		this.slot = slot;
 	}
 }
 	

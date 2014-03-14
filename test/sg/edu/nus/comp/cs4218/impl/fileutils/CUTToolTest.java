@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,7 @@ public class CUTToolTest {
 	private ICutTool cuttool; 
 	String actualOutput,expectedOutput,helpOutput;
 	File workingDirectory;
-	File inputFile1, inputFile2, inputFile3,inputFile4;
+	File inputFile1, inputFile2, inputFile3,inputFile4, longFileC, longFileD;
 	String absoluteFilePath;
 	
 	@Before
@@ -43,14 +44,26 @@ public class CUTToolTest {
 		String input1 = "apple\nball\ncat\ndog";
 		String input2 = "hello\nworld\ncoding\nis\nfun";
 		String input3 = "";
+		String longInputC = "Long Input Long Input Nothing is Longer Than This\n"+
+				   			"Are You Long, I am Long, very very Long\n" +
+				   			"Testing for Long Input\n";
+		String longInputD = "Long Input% Long Input% Nothing is Longer% Than This\n"+
+				   		    "Are You Long, I% am Long, very% very Long\n" +
+				   		    "Testing% for %Long %Input\n";
+		
 		inputFile1 = new File("test1.txt");
 		inputFile2 = new File("test2.txt");
 		inputFile3 = new File("test3.txt");
 		inputFile4 = new File(absoluteFilePath);
+		longFileC = new File("longFileC.txt");
+		longFileD = new File("longFileD.txt");
+		
 		writeToFile(inputFile1, input1);
 		writeToFile(inputFile2, input2);
 		writeToFile(inputFile3, input3);
 		writeToFile(inputFile4, input1);
+		writeToFile(longFileC,longInputC);
+		writeToFile(longFileD,longInputD);
 	}
 
     @After
@@ -65,6 +78,12 @@ public class CUTToolTest {
 			inputFile3.delete();
 		if(inputFile4.exists())
 			inputFile4.delete();
+		if(longFileC.exists())
+			longFileC.delete();
+		if(longFileD.exists())
+			longFileD.delete();
+		
+		
 	}
 	
     public void writeToFile(File file, String input){
@@ -88,6 +107,8 @@ public class CUTToolTest {
 		}
 	}
 
+    //Test Case written by other groups.
+    
     @Test
     public void cOptionTest()
     {	
@@ -188,7 +209,7 @@ public class CUTToolTest {
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(cuttool.getStatusCode(), 0);
     }
-    
+  
     @Test
     public void cOptionWithFileTest()
     {
@@ -214,8 +235,6 @@ public class CUTToolTest {
 		expectedOutput = "";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
-		System.out.println("actualOutput:\n"+actualOutput);
-		System.out.println("expectedOutput:\n"+expectedOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(cuttool.getStatusCode(), 0);
     }
@@ -246,6 +265,7 @@ public class CUTToolTest {
 		expectedOutput = "File not found";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
+		assertEquals(expectedOutput, actualOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(cuttool.getStatusCode(), -1);
     }
@@ -307,6 +327,7 @@ public class CUTToolTest {
 		expectedOutput = "on";
 		actualOutput= actualOutput.replace("\n", "");
 		expectedOutput=expectedOutput.replace("\n", "");
+		assertEquals(expectedOutput, actualOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(cuttool.getStatusCode(), 0);
     }
@@ -456,5 +477,200 @@ public class CUTToolTest {
 		
     }
 	
-
+	//ADDITIONAL TEST CASES
+	
+	//SECTION ONE: TESTING cutSpecifiedCharacters method
+		
+	@Test
+	//Testing for invalid character range specified
+	public void cutSpecfiedCharactersCharRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecfiedCharacters("a-b", "Yoyo");
+		expectedOutput = "Invalid Range Specify";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test
+	//Testing for range with no end specify
+	public void cutSpecfiedCharactersNoEndRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecfiedCharacters("1-", "Yoyo");
+		expectedOutput = "Yoyo\n";
+		
+		assertEquals(actualOutput,expectedOutput);
+	}
+	
+	@Test
+	//Testing for range with exceed range
+	public void cutSpecfiedCharactersExceedRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecfiedCharacters("1-30", "check it out");
+		expectedOutput = "check it out\n";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test
+	//Testing for long input
+	public void cutSpecfiedCharactersLongInput() {
+		
+		cuttool = new CUTTool();
+		String longInput = "Long Input Long Input Nothing is Longer Than This\n"+
+						   "Are You Long, I am Long, very very Long\n" +
+				           "Testing for Long Input\n";
+		
+		actualOutput = cuttool.cutSpecfiedCharacters("1,4,6-10", longInput);
+		expectedOutput = "LgInput\n" + "A ou Lo\n"+"Ttng fo\n";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	//SECTION TWO: Testing cutSpecifiedCharactersUseDelimiter
+	
+	@Test
+	//Testing for invalid character range specified
+	public void cutSpecfiedCharactersUseDelimiterCharRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("a-b", ":", "YOYO");
+		expectedOutput = "Invalid Range Specify";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test
+	//Testing for Empty input 
+	public void cutSpecfiedCharactersUseDelimiterEmptyInput() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("1-2", ":", "");
+		expectedOutput = "\n";
+		
+		assertEquals(actualOutput, expectedOutput);
+	}
+	
+	@Test
+	//Testing for start range > end range
+	public void cutSpecfiedCharactersUseDelimiterInvalidRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("3-1", "%", "yoyo");
+		expectedOutput = "Invalid Range Specify";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test
+	//Testing for 0 range
+	public void cutSpecfiedCharactersUseDelimiterZeroRange() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("0", "%", "yo%yo%yo");
+		expectedOutput = "yo%yo%yo\n";
+		
+		assertEquals(actualOutput, expectedOutput);
+		
+	}
+	
+	@Test 
+	//Testing for Long Input
+	public void cutSpecfiedCharactersUseDelimiterLongInput() {
+		
+		cuttool = new CUTTool();
+		String longInput = "Long Input% Long Input% Nothing is Longer% Than This\n"+
+				   		   "Are You Long, I% am Long, very% very Long\n" +
+				   		   "Testing% for %Long %Input\n";
+		actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("1-3","%" , longInput);
+		expectedOutput = "Long Input% Long Input% Nothing is Longer\n"+
+						 "Are You Long, I% am Long, very% very Long\n"+
+						 "Testing% for %Long \n";
+		
+		assertEquals(actualOutput,expectedOutput);
+		
+	}
+	
+	//SECTION THREE: Testing Execute method
+	
+	@Test
+	//Testing for c Option with Long Input
+	public void testExecuteCOptionWithLongInput() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1,4,6-10 longFileC.txt");
+		expectedOutput ="LgInput\n" + "A ou Lo\n"+"Ttng fo";
+		
+		assertEquals(expectedOutput, actualOutput);
+	}
+	
+	@Test
+	//Testing for d and f option with Long Input
+	public void testExecuteDOptionWithLongInput() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -d % -f 1-3 longFileD.txt");
+		expectedOutput ="Long Input% Long Input% Nothing is Longer\n"+
+				 		"Are You Long, I% am Long, very% very Long\n"+
+				 		"Testing% for %Long ";
+		
+		assertEquals(expectedOutput, actualOutput);
+	}
+	
+	@Test
+	//Testing for all options with Long Input
+	public void testExecuteAllOptionWithLongInput() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1,4,6-10 -d % -f 1-3 longFileD.txt");
+		expectedOutput = "LgInput\n"+
+				 		 "A ou Lo\n"+
+				 		 "Ttng% f\n"+
+				 		 "Long Input% Long Input% Nothing is Longer\n"+
+						 "Are You Long, I% am Long, very% very Long\n" +
+						 "Testing% for %Long ";
+		
+		assertEquals(expectedOutput, actualOutput);
+	}
+	
+	//SECTION FOUR: Miscellaneous Testing
+	
+	@Test
+	//Test for invalid Option
+	public void invalidOptionTest() {
+		
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -g 1-2 - nothing");
+		expectedOutput = "Invalid Option";
+		assertEquals(actualOutput, expectedOutput);
+	}
+	
+	@Test
+	//Test for insufficient information command
+	public void commandNotComplete() {
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -f");
+		expectedOutput = "Invalid Option";
+		assertEquals(actualOutput, expectedOutput);
+	}
+	
+	@Test
+	//Testing Execute with Invalid file path
+	public void testExecuteWithInvalidFilePath(){
+		
+		cuttool = new CUTTool();
+		String filePath = "C:/test1.txt";
+			
+		String output = cuttool.execute(workingDirectory, "cut -c 1 "+filePath);
+		String expected = "File not found";
+			
+		assertEquals(output,expected);
+	}
 }
