@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,7 +19,7 @@ import org.junit.Test;
 public class DELETEToolTest {
 	private DELETETool delTool;
 	private File workingDir;
-	private File toDelete, toDelete2, toDelete3, toDelete4;
+	private File toDelete, toDelete2, toDelete3, toDelete4, tempFile;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -31,6 +33,7 @@ public class DELETEToolTest {
 		toDelete3.createNewFile();
 		toDelete4 = new File("tempdeletefile4.txt");
 		toDelete4.createNewFile();
+		tempFile = new File("tempFile");
 	}
 
 	@After
@@ -40,6 +43,7 @@ public class DELETEToolTest {
 		toDelete2.delete();
 		toDelete3.delete();
 		toDelete4.delete();
+		tempFile.delete();
 	}
 
 	/**
@@ -106,6 +110,35 @@ public class DELETEToolTest {
 		String actual = delTool.execute(workingDir, stdin);
 		assertEquals(expected, actual);
 		assertEquals(delTool.getStatusCode(), 1);
+	}
+	
+	/**
+	 * Test error handling for IOException
+	 * @throws IOException
+	 */
+	@Test
+	public void uniqTestForIOExceptionFile() throws IOException {
+		boolean expected = false;
+		final RandomAccessFile raFile = new RandomAccessFile(tempFile, "rw");
+		raFile.getChannel().lock();
+		boolean actual = delTool.delete(tempFile);
+		assertEquals(expected, actual);
+		raFile.close();
+	}
+	
+	/**
+	 * Test error handling for IOException
+	 * @throws IOException
+	 */
+	@Test
+	public void uniqExecuteTestForIOExceptionFile() throws IOException {
+		String expected = "Error: failed to delete file";
+		String stdin = "delete " +tempFile.getName();
+		final RandomAccessFile raFile = new RandomAccessFile(tempFile, "rw");
+		raFile.getChannel().lock();
+		String actual = delTool.execute(workingDir, stdin);
+		assertEquals(expected, actual);
+		raFile.close();
 	}
 
 }

@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +21,7 @@ public class UNIQToolTest {
 	String actualOutput, expectedOutput, helpOutput, stdin;
 	File workingDirectory;
 	File inputFile1, inputFile2, inputFile3, inputFile4, absFile1, absFile2,
-			relativeFile, emptyFile;
+			relativeFile, emptyFile, invalidFile, tempFile;
 
 	@Before
 	public void before() {
@@ -56,6 +57,9 @@ public class UNIQToolTest {
 
 		emptyFile = new File("Test_Output_7.txt");
 		writeToFile(emptyFile, "");
+		
+		invalidFile = new File("Invalid");
+		tempFile = new File("tempFile");
 	}
 
 	@After
@@ -77,6 +81,8 @@ public class UNIQToolTest {
 			relativeFile.delete();
 		if (emptyFile.exists())
 			emptyFile.delete();
+		invalidFile.delete();
+		tempFile.delete();
 	}
 
 	public void writeToFile(File file, String input) {
@@ -385,5 +391,33 @@ public class UNIQToolTest {
 		actualOutput = uniqtool.execute(workingDirectory, stdin);
 		assertEquals(expectedOutput, actualOutput);
 		assertEquals(uniqtool.getStatusCode(), 0);
+	}
+	
+	/**
+	 * Additional test case to test reading from null file
+	 */
+	@Test
+	public void uniqTestReadFromNullFile() {
+		String[] arguments = new String[] {""};
+		uniqtool = new UNIQTool(arguments);
+		expectedOutput = "File not found";
+		actualOutput = uniqtool.readFromFile(invalidFile);
+		assertEquals(expectedOutput, actualOutput);
+	}
+	
+	/**
+	 * Additional test case to test error handling for IOException
+	 * @throws IOException
+	 */
+	@Test
+	public void uniqTestForIOExceptionFile() throws IOException {
+		String[] arguments = new String[] {""};
+		uniqtool = new UNIQTool(arguments);
+		expectedOutput = "Unable to read file";
+		final RandomAccessFile raFile = new RandomAccessFile(tempFile, "rw");
+		raFile.getChannel().lock();
+		actualOutput = uniqtool.readFromFile(tempFile);
+		assertEquals(expectedOutput, actualOutput);
+		raFile.close();
 	}
 }

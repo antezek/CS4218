@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,31 +19,35 @@ import org.junit.Test;
 public class CATToolTest {
 	private CATTool catTool;
 	private File workingDir;
-	private File toRead, emptyFile;
+	private File toRead, emptyFile, tempFile;
 	private String contents = "Hello World \n"
 								+ "This is a CATToolTest";
 	
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() throws IOException {
 		workingDir = new File(System.getProperty("user.dir"));
 		catTool = new CATTool();
 		toRead = new File("./misc/tempreadfile.txt");
 		toRead.createNewFile();
 		emptyFile = new File("./misc/tempemptyfile.txt");
 		emptyFile.createNewFile();
+		tempFile = new File("tempCatFile");
 		
 		// Adding contents to read from file
 		FileWriter fstream = new FileWriter(toRead, true);
 		BufferedWriter out = new BufferedWriter(fstream);
 		out.write(contents);
 		out.close();
+		fstream.close();
 	}
 
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception{
+		System.gc();
 		catTool = null;
 		toRead.delete();
 		emptyFile.delete();
+		tempFile.delete();
 	}
 
 	/**
@@ -123,6 +129,20 @@ public class CATToolTest {
 		String result = catTool.execute(workingDir, stdin);
 		assertEquals(expected, result);
 		assertEquals(catTool.getStatusCode(), 0);
+	}
+	
+	/**
+	 * Test error handling for IOException
+	 * @throws IOException
+	 */
+	@Test
+	public void executeCatForIOExceptionFile() throws IOException {
+		String expected = "Unable to read file";
+		final RandomAccessFile raFile = new RandomAccessFile(tempFile, "rw");
+		raFile.getChannel().lock();
+		String actual = catTool.getStringForFile(tempFile);
+		assertEquals(expected, actual);
+		raFile.close();
 	}
 
 }
