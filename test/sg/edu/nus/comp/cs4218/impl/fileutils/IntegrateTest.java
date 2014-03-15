@@ -127,9 +127,6 @@ public class IntegrateTest {
 	private void writeToFile(File f, String fContent) {
 		BufferedWriter bw;
 		try {
-			if (!f.exists())
-				f.createNewFile();
-			
 			String[] lines = fContent.split("\n");
 			bw = new BufferedWriter(new FileWriter(f));
 
@@ -155,6 +152,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("echo abcde | cut -c 1-3");
 		assertEquals(expectedOutput, actualOutput);
 	}
+	
 	/*
 	 * Test " comm | grep "
 	 */
@@ -168,6 +166,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("comm w.txt x.txt | grep Banana");
 		assertEquals(expectedOutput, actualOutput);
 	}
+	
 	/*
 	 * Test " cut | paste | grep "
 	 */
@@ -178,6 +177,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("cut -c 1-2 w.txt | paste -d : | grep Ap");
 		assertEquals(expectedOutput, actualOutput);
 	}
+	
 	/*
 	 * Test " cut | wc "
 	 */
@@ -188,6 +188,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("cut -c 1-2 test1.txt | wc");
 		assertEquals(expectedOutput, actualOutput);
 	}
+	
 	/*
 	 * Test " grep | sort "
 	 */
@@ -242,7 +243,6 @@ public class IntegrateTest {
 	 * 	Test " ls | sort "
 	 */
 	@Test
-
 	public void componentIntegrateTest8() {
 //		String expectedOutput = "File1:\n.DS_Store\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\n"
 //				+ "PASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\n"
@@ -264,9 +264,7 @@ public class IntegrateTest {
 		String expectedOutput = "File1: chars= 27 words= 6 lines= 1";
 		String actualOutput = "";
 
-		actualOutput = sh
-				.runCmd("echo hello world, Programming is fun!! :D | wc");
-
+		actualOutput = sh.runCmd("echo hello world, Programming is fun!! :D | wc");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
 	
@@ -292,7 +290,7 @@ public class IntegrateTest {
 		String actualOutput = "";
 
 		actualOutput = sh.runCmd("cd | sort");
-		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(expectedOutput, actualOutput);
 	}
 	
 	/*
@@ -304,7 +302,7 @@ public class IntegrateTest {
 		String actualOutput = "";
 
 		actualOutput = sh.runCmd("delete | sort");
-		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(expectedOutput, actualOutput);
 	}
 	
 	/*
@@ -316,7 +314,7 @@ public class IntegrateTest {
 		String actualOutput = "";
 
 		actualOutput = sh.runCmd("ls | delete");
-		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(expectedOutput, actualOutput);
 	}
 	
 	/*
@@ -328,7 +326,7 @@ public class IntegrateTest {
 		String actualOutput = "";
 
 		actualOutput = sh.runCmd("delete | move | cd");
-		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(expectedOutput, actualOutput);
 	}
 
 	/*
@@ -340,7 +338,7 @@ public class IntegrateTest {
 		String actualOutput = "";
 
 		actualOutput = sh.runCmd("ls | delete");
-		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(expectedOutput, actualOutput);
 	}
 	
 	/*
@@ -352,7 +350,7 @@ public class IntegrateTest {
 		String actualOutput = "";
 
 		actualOutput = sh.runCmd(" | ");
-		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(expectedOutput, actualOutput);
 	}
 	
 	@Test
@@ -419,6 +417,9 @@ public class IntegrateTest {
 		expected = "Error: No files in working directory";
 		actual = sh.runCmd("ls");
 		assertEquals(expected, actual);
+		
+		// do not remove the following line; ensures proper file path execution for subsequent test cases
+		sh.runCmd("cd D:/MyRepo/CS4218");
 	}
 
 }
