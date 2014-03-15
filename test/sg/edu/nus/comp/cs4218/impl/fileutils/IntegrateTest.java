@@ -127,6 +127,9 @@ public class IntegrateTest {
 	private void writeToFile(File f, String fContent) {
 		BufferedWriter bw;
 		try {
+			if (!f.exists())
+				f.createNewFile();
+			
 			String[] lines = fContent.split("\n");
 			bw = new BufferedWriter(new FileWriter(f));
 
@@ -141,6 +144,7 @@ public class IntegrateTest {
 		}
 
 	}
+	
 	/*
 	 * Test " echo | cut "
 	 */
