@@ -12,23 +12,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import sg.edu.nus.comp.cs4218.ITool;
 import sg.edu.nus.comp.cs4218.impl.Shell;
 
 public class IntegrateTest {
+	private static final File homeDir = new File(System.getProperty("user.dir"));
+	private Shell sh;
+	private File workingDir;
 
-	Shell sh;
-	Runnable run = null;
-	ITool tool = null;
-	File workingDirectory;
-
-	File fileW, fileX, fileY, fileZ, inputFile1, inputFile2, inputFile3, fileS, fileT, tempFile, tempFile2, tempDir;
-	String fileContentW, fileContentX, fileContentY, fileContentZ, input1, input2, input3, passage, passage2;
+	private File fileW, fileX, fileY, fileZ, inputFile1, inputFile2, inputFile3, fileS, fileT, tempFile, tempFile2, tempDir;
+	private String fileContentW, fileContentX, fileContentY, fileContentZ, input1, input2, input3, passage, passage2;
 
 	@Before
 	public void before() throws IOException {
 		sh = new Shell();
-		workingDirectory = new File(System.getProperty("user.dir"));
+		workingDir = new File(System.getProperty("user.dir"));
 
 		fileW = new File("w.txt");
 		fileX = new File("x.txt");
@@ -103,6 +100,9 @@ public class IntegrateTest {
 		tempFile = new File("./misc/tempFile.txt");
 		tempFile.createNewFile();
 		
+		tempFile2 = new File("./misc/tempFile2.txt");
+		tempFile2.createNewFile();
+		
 		tempDir = new File("./misc/misc2");
 		tempDir.mkdir();
 	}
@@ -121,6 +121,7 @@ public class IntegrateTest {
 		fileT.delete();
 		
 		tempFile.delete();
+		tempFile2.delete();
 		tempDir.delete();
 	}
 
@@ -360,11 +361,11 @@ public class IntegrateTest {
 		
 		actual = sh.runCmd("cd misc");
 		String newDir = sh.runCmd("pwd");
-		
 		expected += newDir;
 		assertEquals(expected, actual);
 		
-		expected = "Moved file tempFile.txt to D:\\MyRepo\\CS4218\\misc\\misc2";
+		workingDir = new File(System.getProperty("user.dir"));
+		expected = "Moved file tempFile.txt to " +workingDir.getAbsolutePath() +"\\misc2";
 		actual = sh.runCmd("move tempFile.txt misc2");
 		assertEquals(expected, actual);
 		
@@ -372,10 +373,9 @@ public class IntegrateTest {
 		actual = sh.runCmd("cd misc2");
 		newDir = sh.runCmd("pwd");
 		expected += newDir;
-		
 		assertEquals(expected, actual);
 		
-		expected = "Deleted file D:\\MyRepo\\CS4218\\misc\\misc2\\tempFile.txt";
+		expected = "Deleted file " +workingDir.getAbsolutePath() + "\\misc2\\tempFile.txt";
 		actual = sh.runCmd("delete tempFile.txt");
 		assertEquals(expected, actual);
 		
@@ -388,38 +388,45 @@ public class IntegrateTest {
 	public void shellStateTest2() throws IOException {
 		String expected = "Working dir changed to: ";
 		String actual = "";
+		String cmd = "cd " +homeDir +"\\misc";
 		
-		actual = sh.runCmd("cd D:/MyRepo/CS4218/misc");
+		actual = sh.runCmd(cmd);
 		String newDir = sh.runCmd("pwd");
 		
 		expected += newDir;
 		assertEquals(expected, actual);
 		
-		expected = "Copied file tempFile.txt to D:\\MyRepo\\CS4218\\misc\\misc2";
-		actual = sh.runCmd("copy tempFile.txt misc2");
+		workingDir = new File(System.getProperty("user.dir"));
+		expected = "Copied file tempFile2.txt to " +workingDir.getAbsolutePath() + "\\misc2";
+		actual = sh.runCmd("copy tempFile2.txt misc2");
 		assertEquals(expected, actual);
 		
-		expected = "Deleted file D:\\MyRepo\\CS4218\\misc\\tempFile.txt";
-		actual = sh.runCmd("delete tempFile.txt");
+		expected = "Deleted file " +workingDir.getAbsolutePath() +"\\tempFile2.txt";
+		actual = sh.runCmd("delete tempFile2.txt");
 		assertEquals(expected, actual);
 		
 		expected = "Working dir changed to: ";
 		actual = sh.runCmd("cd misc2");
 		newDir = sh.runCmd("pwd");
 		expected += newDir;
-		
 		assertEquals(expected, actual);
 		
-		expected = "Deleted file D:\\MyRepo\\CS4218\\misc\\misc2\\tempFile.txt";
-		actual = sh.runCmd("delete tempFile.txt");
+		workingDir = new File(System.getProperty("user.dir"));
+		expected = "Deleted file " +workingDir.getAbsolutePath() +"\\tempFile2.txt";
+		actual = sh.runCmd("delete tempFile2.txt");
 		assertEquals(expected, actual);
 		
 		expected = "Error: No files in working directory";
 		actual = sh.runCmd("ls");
 		assertEquals(expected, actual);
 		
-		// do not remove the following line; ensures proper file path execution for subsequent test cases
-		sh.runCmd("cd D:/MyRepo/CS4218");
+		// ensures proper file path execution for subsequent test cases
+		expected = "Working dir changed to: ";
+		cmd = "cd " +homeDir;
+		actual = sh.runCmd(cmd);
+		newDir = sh.runCmd("pwd");
+		expected += newDir;
+		assertEquals(expected, actual);
 	}
 
 }

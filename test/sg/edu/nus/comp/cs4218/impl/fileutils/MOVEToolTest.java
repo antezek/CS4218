@@ -89,8 +89,8 @@ public class MOVEToolTest {
 	 * Test error handling: file already exists in dir
 	 */
 	@Test
-	public void executeCopyValidFileExistsTest() {
-		String stdin = "copy " + from4.getAbsolutePath() + " " + to.getAbsolutePath();
+	public void executeMoveValidFileExistsTest() {
+		String stdin = "move " + from4.getAbsolutePath() + " " + to.getAbsolutePath();
 		String expected = "Error: failed to move file";
 		String actual = moveTool.execute(workingDir, stdin);
 		assertEquals(expected, actual);
