@@ -13,7 +13,7 @@ import sg.edu.nus.comp.cs4218.impl.ATool;
  *
  */
 public class LSTool extends ATool implements ILsTool {
-	private static final String MESSAGE_NO_FILES_IN_DIR = "Error: No files in working directory";
+	private static final String MESSAGE_NO_FILES_IN_DIR = "No files in working directory";
 
 	public LSTool() {
 		super(null);

@@ -185,5 +185,27 @@ public class HelperTest {
 		assertEquals(expected, actual);
 		
 	}
+	
+	/**
+	 * Test error handling for slashes
+	 */
+	@Test
+	public void executeInvalidFileForSlash(){
+		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "\\/"));
+		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "\\"));
+		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "//"));
+		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "/"));
+	}
+	
+	/**
+	 * Test error handling for slashes
+	 */
+	@Test
+	public void executeInvalidDirectoryForSlash(){
+		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "\\/"));
+		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "\\"));
+		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "//"));
+		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "/"));
+	}
 
 }

@@ -13,5 +13,6 @@ As a result, "ctrl-z" of the THREAD is disabled for Grep and it is implemented l
 thus for single/multiple files input instead of standard input, "ctrl-z" of the thread will NOT be able to 
 stop the process.
 
-
-
+Important Note for CAT:
+In particular, the command cat - should either return an error or nothing or never return at all (interuptable only by Ctrl-Z).
+For our implementation, cat - returns nothing.
