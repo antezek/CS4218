@@ -15,10 +15,10 @@ import sg.edu.nus.comp.cs4218.impl.fileutils.Helper;
 public class COMMTool extends ATool implements ICommTool {
 	public COMMTool(String args[]) {
 		super(null);
-		list = new ArrayList();
-		listA = new ArrayList();
-		listB = new ArrayList();
-		listC = new ArrayList();
+		list = new ArrayList<ComObj>();
+		listA = new ArrayList<String>();
+		listB = new ArrayList<String>();
+		listC = new ArrayList<String>();
 		if (args.length == 4) {
 			stdin += "comm" + dash + args[0] + dash + args[1] + dash + args[2]
 					+ dash + args[3];
@@ -33,10 +33,10 @@ public class COMMTool extends ATool implements ICommTool {
 
 	public COMMTool() {
 		super(null);
-		list = new ArrayList();
-		listA = new ArrayList();
-		listB = new ArrayList();
-		listC = new ArrayList();
+		list = new ArrayList<ComObj>();
+		listA = new ArrayList<String>();
+		listB = new ArrayList<String>();
+		listC = new ArrayList<String>();
 	}
 
 	File workingDir;
@@ -45,12 +45,14 @@ public class COMMTool extends ATool implements ICommTool {
 	final String newLine = "\n";
 	final String dash = " ";
 	String[] cmd;
-	ArrayList listA, listB, listC, list;
+	ArrayList<String> listA, listB, listC;
+	ArrayList<ComObj> list;
 
-	public ArrayList returnArray(String input) {
-		ArrayList list = new ArrayList();
+	public ArrayList<String> returnArray(String input) {
+		ArrayList<String> list = new ArrayList<String>();
 		Scanner sc = new Scanner(input);
-
+		
+		sc.useDelimiter("\n");
 		while (sc.hasNext()) {
 			list.add(sc.next());
 		}
@@ -59,10 +61,6 @@ public class COMMTool extends ATool implements ICommTool {
 
 	public String compareFiles(String input1, String input2) {
 		String result = "";
-		String uniA = "";
-		String uniB = "";
-		String com = "";
-		String temp = "";
 		String temp1 = "";
 		String temp2 = "";
 		String temp3 = "";
@@ -71,22 +69,16 @@ public class COMMTool extends ATool implements ICommTool {
 		int countA = 0;
 		int countB = 0;
 		int countC = 0;
-		int tempCount = 0;
-		// Scanner sc1;
-		// Scanner sc2;
-		ArrayList inputA;
-		ArrayList inputB;
-		ComObj co;
-
-		inputA = new ArrayList();
-		inputB = new ArrayList();
+		ArrayList<String> inputA;
+		ArrayList<String> inputB;
+		ArrayList<ComObj> tempList;
+		
+		inputA = new ArrayList<String>();
+		inputB = new ArrayList<String>();
+		tempList = new ArrayList<ComObj>();
 		inputA = returnArray(input1);
 		inputB = returnArray(input2);
-		// sc1 = new Scanner(input1);
-		// sc2 = new Scanner(input2);
 		while (countA < inputA.size() || countB < inputB.size()) {
-			// String str1 = sc1.next();
-			// String str2 = sc2.next();
 			if (countA < inputA.size()) {
 				str1 = inputA.get(countA).toString();
 			}
@@ -98,7 +90,7 @@ public class COMMTool extends ATool implements ICommTool {
 			int foundB = inputA.indexOf(str2);
 			int foundBC = listC.indexOf(str2);
 
-			if (foundA < 0 && foundAC < 0) {
+			if (foundA < 0 && foundAC < 0) {		//If not found, meant enter into non-list C. Else enter into listC
 				listA.add(str1);
 			} else {
 				if (listC.indexOf(str1) < 0) {
@@ -112,18 +104,8 @@ public class COMMTool extends ATool implements ICommTool {
 					listC.add(str2);
 				}
 			}
-
-			/*
-			 * if (!str1.equals(str2)) { // uniA += str1 + tab + dash + tab +
-			 * dash + newLine + dash + // tab; // uniB += str2 + tab + dash +
-			 * newLine + dash + tab + dash + // tab; listA.add(str1);
-			 * listB.add(str2); // list.add(new ComObj(str1, "uniA")); //
-			 * list.add(new ComObj(str2, "uniB")); }
-			 * 
-			 * if (str1.equals(str2)) { // com += str1 + newLine + dash + tab +
-			 * dash + tab; listC.add(str1); // list.add(new ComObj(str1,
-			 * "com")); }
-			 */
+			str1 = "";
+			str2 = "";
 			countA++;
 			countB++;
 		}
@@ -145,8 +127,8 @@ public class COMMTool extends ATool implements ICommTool {
 							list.add(new ComObj(temp2, "uniB"));
 							countB++;
 						} else {
-//							list.add(new ComObj(temp3, "com"));
-//							countC++;
+							 list.add(new ComObj(temp3, "com"));
+							 countC++;
 						}
 					}
 					if (countB == listB.size()) {
@@ -156,11 +138,11 @@ public class COMMTool extends ATool implements ICommTool {
 							countC++;
 						}
 					} else if (countC == listC.size()) {
-//						while (countB < listB.size()) {
-//							temp2 = listB.get(countB).toString();
-//							list.add(new ComObj(temp2, "uniB"));
-//							countB++;
-//						}
+						 while (countB < listB.size()) {
+							 temp2 = listB.get(countB).toString();
+							 list.add(new ComObj(temp2, "uniB"));
+							 countB++;
+						 }
 					}
 
 					// when b slot is empty, fill up slot a and c
@@ -191,7 +173,8 @@ public class COMMTool extends ATool implements ICommTool {
 						}
 					}
 					// when c slot is empty, fill up slot a and b
-				} else if (countC == listC.size()) {							//Bugs: didn't increment the rest of list
+				} else if (countC == listC.size()) { // Bugs: didn't increment
+														// the rest of list
 					while (countA < listA.size() && countB < listB.size()) {
 						temp1 = listA.get(countA).toString();
 						temp2 = listB.get(countB).toString();
@@ -303,11 +286,6 @@ public class COMMTool extends ATool implements ICommTool {
 					}
 				}
 			}
-			/*
-			 * result += uniA.trim() + tab + dash + tab + dash + newLine + dash
-			 * + tab + uniB.trim() + tab + dash + newLine + dash + tab + dash +
-			 * tab + com.trim(); // TODO
-			 */
 			setStatusCode(0);
 		} else if (!listA.isEmpty() && listB.isEmpty() && !listC.isEmpty()) {
 			while ((countA < listA.size()) || (countC < listC.size())) {
@@ -342,11 +320,6 @@ public class COMMTool extends ATool implements ICommTool {
 					}
 				}
 			}
-			/*
-			 * result += uniA.trim() + tab + dash + tab + dash + newLine + dash
-			 * + tab + uniB.trim() + tab + dash + newLine + dash + tab + dash +
-			 * tab + com.trim(); // TODO
-			 */
 			setStatusCode(0);
 		} else if (listA.isEmpty() && !listB.isEmpty() && !listC.isEmpty()) {
 			while ((countB < listB.size()) || (countC < listC.size())) {
@@ -381,19 +354,30 @@ public class COMMTool extends ATool implements ICommTool {
 					}
 				}
 			}
-			/*
-			 * result += uniA.trim() + tab + dash + tab + dash + newLine + dash
-			 * + tab + uniB.trim() + tab + dash + newLine + dash + tab + dash +
-			 * tab + com.trim(); // TODO
-			 */
 			setStatusCode(0);
 		}
-
-		result = formatResult(list);
+		tempList = filterList(list);
+		result = formatResult(tempList);
 
 		return result;
 	}
-
+	
+	public ArrayList filterList(ArrayList list){
+		ArrayList tempList = new ArrayList();
+		String temp1="";
+		ComObj co = null;
+		
+		for(int i=0;i<list.size();i++){
+			co = (ComObj)list.get(i);
+			temp1 = co.getName();
+			if(!temp1.equals("")){
+				tempList.add(co);
+			}
+			temp1="";
+		}
+		return tempList;
+	}
+	
 	public String formatResult(ArrayList list) {
 		String result = "";
 		String temp, temp1, temp2;
@@ -405,13 +389,14 @@ public class COMMTool extends ATool implements ICommTool {
 			temp1 = co.getName();
 			temp2 = co.getSlot();
 			if (tempCount == 0 && temp2.equals("uniB")) {
-				result += tab + dash + tab + dash + newLine + dash + tab;
+				//result += tab + dash + tab + dash + newLine + dash + tab;
+				result += tab;
 			}
 			if (tempCount == 0 && temp2.equals("com")) {
 				result += dash + tab + dash + tab;
 			}
 
-			if ((tempCount + 1) < list.size()) {// TODO
+			if ((tempCount + 1) < list.size()) {
 				co = (ComObj) list.get(tempCount + 1); // Peek in the next
 				temp = co.getSlot();
 				if (temp2.equals("uniA") && temp.equals("uniA")) {
@@ -506,7 +491,9 @@ public class COMMTool extends ATool implements ICommTool {
 		String temp = "";
 		String[] tempCmd = new String[5];
 		String[] finalCmd = new String[5];
-		Scanner scan = new Scanner(stdin);
+		Scanner scan = null;
+		try{
+			scan = new Scanner(stdin);
 		while (scan.hasNext()) {
 			tempCmd[count] = scan.next();
 			count++;
@@ -526,15 +513,18 @@ public class COMMTool extends ATool implements ICommTool {
 		} else {
 			System.arraycopy(tempCmd, 0, finalCmd, 0, 5);
 		}
+		}catch(Exception e){
+			setStatusCode(1);
+		}
 		return finalCmd;
 	}
 
-	public String read(InputStream is) {
+	public String read(InputStream is) {	//TODO Find another delimiter sub
 		Scanner sc = new Scanner(is);
+		
 		String temp = "";
-
 		while (sc.hasNext()) {
-			temp += sc.next() + "\n";
+			temp += sc.nextLine() + "\n";
 		}
 		return temp;
 	}
@@ -552,57 +542,61 @@ public class COMMTool extends ATool implements ICommTool {
 		boolean isError = false;
 
 		cmd = getCmd(stdin);
-		if (!cmd[1].equals("-help") && !cmd[2].equals("-help")) {
-			file1 = Helper.isValidFile(workingDir, cmd[3]);
-			file2 = Helper.isValidFile(workingDir, cmd[4]);
-			try {
-				fi2 = new FileInputStream(file2);
-			} catch (Exception e) {
-				isError = true;
-				setStatusCode(1);
-				result = "File 2 doesn't exist!";
-			}
-			try {
-				fi1 = new FileInputStream(file1);
-			} catch (Exception e) {
-				isError = true;
-				setStatusCode(1);
-				result = "File 1 doesn't exist!";
-			}
-			if (!isError) {
-				di1 = new DataInputStream(fi1);
-				di2 = new DataInputStream(fi2);
-				if (cmd[1].equals("")) { // For "comm file1 file2"
-					result = compareFiles(read(di1), read(di2));
-					// For "comm -c -help file1 file2" ||
-					// "comm -d -help file1 file2" via versa but not
-					// "comm -c -d file1 file2"
-				} else if ((cmd[1].equals("-c") & !cmd[2].equals("-d"))
-						|| (cmd[1].equals("-d") & !cmd[2].equals("-c"))
-						|| cmd[1].equals("-help") || cmd[2].equals("-help")) {
-					// When -help args, -help take priority
-					if ((cmd[1].equals("-c") || cmd[2].equals("-c"))
-							&& (!cmd[1].equals("-help") & !cmd[2]
-									.equals("-help"))) {
-						this.workingDir = workingDir;
-						result = compareFilesCheckSortStatus(read(di1),
-								read(di2));
-						// When -help args, -help take priority
-					} else if ((cmd[1].equals("-d") || cmd[2].equals("-d"))
-							&& (!cmd[1].equals("-help") & !cmd[2]
-									.equals("-help"))) {
-						result = compareFilesDoNotCheckSortStatus(read(di1),
-								read(di2));
-					} else {
-						result = getHelp();
-					}
-				} else {
+		try {
+			if (!cmd[1].equals("-help") && !cmd[2].equals("-help") && !cmd[3].equals("-help") && !cmd[4].equals("-help")) {
+				file1 = Helper.isValidFile(workingDir, cmd[3]);
+				file2 = Helper.isValidFile(workingDir, cmd[4]);
+				try {
+					fi2 = new FileInputStream(file2);
+				} catch (Exception e) {
+					isError = true;
 					setStatusCode(1);
-					result = "Error: Invalid command";
+					result = "File 2 doesn't exist!";
 				}
+				try {
+					fi1 = new FileInputStream(file1);
+				} catch (Exception e) {
+					isError = true;
+					setStatusCode(1);
+					result = "File 1 doesn't exist!";
+				}
+				if (!isError) {
+					di1 = new DataInputStream(fi1);
+					di2 = new DataInputStream(fi2);
+					if (cmd[1].equals("")) { // For "comm file1 file2"
+						result = compareFiles(read(di1), read(di2));
+						// For "comm -c -help file1 file2" ||
+						// "comm -d -help file1 file2" via versa but not
+						// "comm -c -d file1 file2"
+					} else if ((cmd[1].equals("-c") & !cmd[2].equals("-d"))
+							|| (cmd[1].equals("-d") & !cmd[2].equals("-c"))
+							|| cmd[1].equals("-help") || cmd[2].equals("-help")) {
+						// When -help args, -help take priority
+						if ((cmd[1].equals("-c") || cmd[2].equals("-c"))
+								&& (!cmd[1].equals("-help") & !cmd[2]
+										.equals("-help"))) {
+							this.workingDir = workingDir;
+							result = compareFilesCheckSortStatus(read(di1),
+									read(di2));
+							// When -help args, -help take priority
+						} else if ((cmd[1].equals("-d") || cmd[2].equals("-d"))
+								&& (!cmd[1].equals("-help") & !cmd[2]
+										.equals("-help"))) {
+							result = compareFilesDoNotCheckSortStatus(
+									read(di1), read(di2));
+						} else if(cmd[1].equals("-help") || cmd[2].equals("-help") || cmd[3].equals("-help")) {
+							result = getHelp();
+						}
+					} else {
+						setStatusCode(1);
+						result = "Error: Invalid command";
+					}
+				}
+			} else {
+				result = getHelp();
 			}
-		} else {
-			result = getHelp();
+		} catch (Exception e) {
+			System.out.println("ERROR: Please enter again!");
 		}
 		return result; // Return error msg
 	}

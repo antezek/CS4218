@@ -16,6 +16,6 @@ public class COMMToolRunnable implements Runnable {
 	@Override
 	public void run() {
 		COMMTool commTool = new COMMTool();
-		Result.result = commTool.execute(workingDir, stdin);;
+		Result.result = commTool.execute(workingDir, stdin);
 	}
 }
