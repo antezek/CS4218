@@ -490,7 +490,7 @@ public class FailingTestCases {
         	String [] args = {"-d", "commTestCase3a.txt", "commTestCase3b.txt"};
         	commTool = new COMMTool(args);
     		String workingDir = System.getProperty("user.dir");
-    		String output = String output = "def"+testTab+testDash+testTab+testDash+testNewLine+
+    		String output = "def"+testTab+testDash+testTab+testDash+testNewLine+
 						"ddd"+testTab+testDash+testTab+testDash+testNewLine+testDash+testTab+testTab+
 						"eee"+testNewLine+testDash+testTab+testDash+testTab+"abc"+testTab+testDash+testTab+testDash+testNewLine+testTab+
 						"fff"+testTab+testDash+testNewLine+testDash+testTab+"ggg";
