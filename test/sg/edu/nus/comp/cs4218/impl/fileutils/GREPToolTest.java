@@ -917,4 +917,43 @@ public class GREPToolTest {
 		}
 	}
 	
+	//SECTION TWELVE: Hackathon Bug Fixed Test Cases:
+	
+	//GrepTool Bug 2
+	@Test
+	//Testing negative values for Option A
+	public void testGrepWithNegativeRangeValuesOptionA() {
+		
+		grepToolTest = new GREPTool();
+		String errorMessage = "Invalid Grep Command: Use grep -help for command format\n";
+		assertEquals(errorMessage, grepToolTest.getMatchingLinesWithTrailingContext(-1, "abc", "abc"));
+		assertEquals(1, grepToolTest.getStatusCode());
+	
+	}
+	
+	@Test
+	//Testing negative values for Option B
+	public void testGrepWithNegativeRangeValuesOptionB() {
+		
+		grepToolTest = new GREPTool();
+		String errorMessage = "Invalid Grep Command: Use grep -help for command format\n";
+		assertEquals(errorMessage, grepToolTest.getMatchingLinesWithLeadingContext(-1, "abc", "abc"));
+		assertEquals(1, grepToolTest.getStatusCode());
+	
+	}
+	
+	@Test
+	//Testing negative values for Option C
+	public void testGrepWithNegativeRangeValuesOptionC() {
+		
+		grepToolTest = new GREPTool();
+		String errorMessage = "Invalid Grep Command: Use grep -help for command format\n";
+		assertEquals(errorMessage, grepToolTest.getMatchingLinesWithOutputContext(-1, "abc", "abc"));
+		assertEquals(1, grepToolTest.getStatusCode());
+	
+	}
+		
+	
+	
+	
 }

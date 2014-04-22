@@ -21,6 +21,7 @@ public class GREPTool extends ATool implements IGrepTool {
 	private final String DASH = "-";
 	private final String COLON = ":";
 
+	private final String ERRORMSG = "Invalid Grep Command: Use grep -help for command format\n";
 	private final int STDINPUT = 1;
 	private final int FILEINPUT = 2;
 
@@ -35,6 +36,7 @@ public class GREPTool extends ATool implements IGrepTool {
 	private int contentStartIndex;
 	private int fileNameStartIndex;
 	private int statusCode;
+	private String currentResult;
 
 	public GREPTool() {
 		super(null);
@@ -51,7 +53,7 @@ public class GREPTool extends ATool implements IGrepTool {
 		command = stdin.split(SPACE);
 
 		if (isEmptyCommand(command)) {
-			errorMsg = "Invalid Grep Command: Use grep -help for command format\n";
+			errorMsg = ERRORMSG;
 			statusCode = 1;
 			return errorMsg;
 		}
@@ -60,7 +62,7 @@ public class GREPTool extends ATool implements IGrepTool {
 			return getHelp();
 
 		if (!isInvalidGrepCommand(command)) {
-			errorMsg = "Invalid Grep Command: Use grep -help for command format\n";
+			errorMsg = ERRORMSG;
 			statusCode = 1;
 			return errorMsg;
 		}
@@ -87,8 +89,14 @@ public class GREPTool extends ATool implements IGrepTool {
 
 		if (inputType == FILEINPUT) {
 			for (i = 0; i < fileContent.length; i++) {
-				if (!fileContent[i].contains("No such files or directory"))
-					result = result + processContents(fileContent[i]);
+				if (!fileContent[i].contains("No such files or directory")) {
+					currentResult = processContents(fileContent[i]);
+					
+					if(currentResult.equals(ERRORMSG))
+						return ERRORMSG;
+					else					
+						result = result + processContents(fileContent[i]);
+				}
 				else
 					result = result + fileContent[i];
 			}
@@ -242,6 +250,13 @@ public class GREPTool extends ATool implements IGrepTool {
 		int i, j;
 		String matchLine = EMPTY;
 
+		if(optionA<0)
+		{
+			statusCode = 1;
+			return ERRORMSG;
+		}
+			 
+			
 		for (i = 0; i < size; i++) {
 			if (inputLine[i].contains(pattern)) {
 				for (j = i; j <= i + optionA; j++) {
@@ -267,6 +282,12 @@ public class GREPTool extends ATool implements IGrepTool {
 		int i, j;
 		int linePtr = -1;
 		String matchLine = EMPTY;
+		
+		if(optionB<0)
+		{
+			statusCode = 1;
+			return ERRORMSG;
+		}
 
 		for (i = 0; i < size; i++) {
 			if (inputLine[i].contains(pattern)) {
@@ -293,6 +314,12 @@ public class GREPTool extends ATool implements IGrepTool {
 		int i, j;
 		int linePtr = -1;
 		String matchLine = EMPTY;
+		
+		if(optionC<0)
+		{
+			statusCode = 1;
+			return ERRORMSG;
+		}
 
 		for (i = 0; i < size; i++) {
 			if (inputLine[i].contains(pattern)) {
