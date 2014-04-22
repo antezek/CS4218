@@ -26,6 +26,7 @@ public class UNIQToolTest {
 	public void before() {
 		workingDirectory = new File(System.getProperty("user.dir"));
 		uniqTool = new UNIQTool();
+		String pathSep = "";
 		
 		helpOutput = "uniq : Writes the unique lines in the given input, with repetitions compares only in adjacent input lines.";
 		helpOutput += "\nCommand Format - uniq [OPTIONS] [FILE]\nFILE - Name of the file. Alternatively use \"-\" to enter standard input.";
@@ -46,7 +47,7 @@ public class UNIQToolTest {
 		writeToFile(inputFile3, input3);
 		writeToFile(inputFile4, input4);
 
-		absFile1 = new File(workingDirectory + "/" + "Test_Output_4.txt");
+		absFile1 = new File(workingDirectory + pathSep + "Test_Output_4.txt");
 		absFile2 = new File(System.getProperty("home.dir")
 				+ "Test_Output_5.txt");
 		relativeFile = new File("./../Test_Output_6.txt");
@@ -56,6 +57,7 @@ public class UNIQToolTest {
 
 		emptyFile = new File("Test_Output_7.txt");
 		writeToFile(emptyFile, "");
+		pathSep=java.nio.file.FileSystems.getDefault().getSeparator();
 	}
 
 	@After

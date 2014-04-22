@@ -24,11 +24,6 @@ public class PIPEToolTest {
 		pt = null;
 	}
 
-	/*
-	 * checkValidCommandTypeForPipeTest() Check command is valid for PIPE. 1st
-	 * args would be just "pwd","ls","cat","echo","grep" 2nd args would be
-	 * "grep" only
-	 */
 	@Test
 	public void checkValidCommandTypeForFirstInputTest() {
 		String[] cmdList1 = { "pwd", "ls", "cat", "echo", "grep" };
@@ -47,15 +42,6 @@ public class PIPEToolTest {
 			assertFalse(pt.checkValidCommandTypeForPipe(cmdList2[i], true));
 		}
 	}
-
-	/**
-	 * Test expected behaviour of valid subsequent inputs
-	 */
-	
-//	public void checkValidCommandTypeForSubsequentInputTest() {
-//		pt.checkValidCommandTypeForPipe("grep", false);
-//
-//	}
 
 	/**
 	 * Test error handling for invalid subsequent inputs

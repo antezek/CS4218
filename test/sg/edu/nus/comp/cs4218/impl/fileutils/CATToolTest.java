@@ -27,9 +27,9 @@ public class CATToolTest {
 	public void setUp() throws IOException {
 		workingDir = new File(System.getProperty("user.dir"));
 		catTool = new CATTool();
-		toRead = new File("./misc/tempreadfile.txt");
+		toRead = new File(".\\misc\\tempreadfile.txt");
 		toRead.createNewFile();
-		emptyFile = new File("./misc/tempemptyfile.txt");
+		emptyFile = new File(".\\misc\\tempemptyfile.txt");
 		emptyFile.createNewFile();
 		tempFile = new File("tempCatFile");
 		
@@ -41,7 +41,7 @@ public class CATToolTest {
 		fstream.close();
 	}
 
-	@After
+	//@After
 	public void tearDown() throws Exception{
 		System.gc();
 		catTool = null;
@@ -66,7 +66,7 @@ public class CATToolTest {
 	@Test
 	public void executeCatForValidFileTest() {
 		File workingDir = new File(System.getProperty("user.dir"));
-		String stdin = "cat " + workingDir + "/misc/tempreadfile.txt";
+		String stdin = "cat " + workingDir + "\\misc\\tempreadfile.txt";
 		String actual = catTool.execute(workingDir, stdin);
 		assertEquals(contents, actual);
 		assertEquals(catTool.getStatusCode(), 0);
@@ -88,7 +88,7 @@ public class CATToolTest {
 	 */
 	@Test
 	public void executeCatForEmptyFileTest() {
-		String stdin = "cat " + workingDir + "/misc/tempemptyfile.txt";
+		String stdin = "cat " + workingDir + "\\misc\\tempemptyfile.txt";
 		String expected = "File is empty";
 		String actual = catTool.execute(workingDir, stdin);
 		assertEquals(expected, actual);
@@ -101,7 +101,7 @@ public class CATToolTest {
 	@Test
 	public void executeCatForInvalidFileTest() {
 		String expected = "Error: file not found";
-		String stdin = "cat " + workingDir + "/misc/invalidFile.txt";
+		String stdin = "cat " + workingDir + "\\misc\\invalidFile.txt";
 		String result = catTool.execute(workingDir, stdin);
 		assertEquals(expected, result);
 		assertEquals(catTool.getStatusCode(), 1);

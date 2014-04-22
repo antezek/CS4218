@@ -41,7 +41,7 @@ public class MOVEToolTest {
 		newFile2 = new File("");
 	}
 
-	@After
+	//@After
 	public void tearDown() throws Exception {
 		moveTool = null;
 		from.delete();

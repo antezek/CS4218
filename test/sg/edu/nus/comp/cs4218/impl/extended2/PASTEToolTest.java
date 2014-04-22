@@ -23,6 +23,7 @@ public class PASTEToolTest {
 	private IPasteTool pasteTool;
 	String actualOutput,expectedOutput,helpOutput;
 	File workingDirectory;
+	String pathSep="";
 
 	File fileA,fileB,fileC,fileD,fileEM1,fileEM2, longFile1, longFile2;
 	String fileContentA,fileContentB,fileContentC,fileContentD,fileContentE,longInput1, longInput2;
@@ -73,6 +74,8 @@ public class PASTEToolTest {
 		writeToFile(fileD,fileContentD);
 		writeToFile(longFile1,longInput1);
 		writeToFile(longFile2,longInput2);
+		
+		pathSep=java.nio.file.FileSystems.getDefault().getSeparator();
 	}
 
 	private void writeToFile(File f, String fContent){
@@ -136,14 +139,13 @@ public class PASTEToolTest {
 	@Test
 	//Check for invalid files
 	public void pasteNoOptionsInvalidFilesTest(){
-		//String[] arguments = new String[]{"C:\\Users\\Dale\\a.txt","./b.txt"};
-		String fileName1 = "C:\\Users\\Dale\\a.txt";
+		String fileName1 = "C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"a.txt";
 		String fileName2 = "./b.txt";
 		ArrayList<String> fNames = new ArrayList<String>();
 		fNames.add(fileName1);fNames.add(fileName2);
 		//Changes: command stdin is shifted to execute method to cater to our project
 		pasteTool = new PASTETool();		
-		actualOutput = pasteTool.execute(workingDirectory, "paste C:\\Users\\Dale\\a.txt ./b.txt");
+		actualOutput = pasteTool.execute(workingDirectory, "paste C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"a.txt ./b.txt");
 
 		expectedOutput = "a.txt: No such file or directory!";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));	

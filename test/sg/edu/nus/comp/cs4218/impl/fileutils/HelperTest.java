@@ -13,27 +13,29 @@ import org.junit.Test;
 
 /**
  * HelperTest class to test the functionality of Helper
- *
+ * 
  */
 public class HelperTest {
 	private String dirName, fileName, expected, workingDir;
 	private File validFile, validDir, actual, workDir;
-	
+	private String pathSep = "";
+
 	@SuppressWarnings("unused")
 	private Helper helperTool;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		helperTool = new Helper();
 		workingDir = "misc";
 		dirName = "HelperTest";
-		validDir = new File("misc/" +dirName);
+		validDir = new File("misc/" + dirName);
 		validDir.mkdir();
-		
+
 		workDir = new File(workingDir);
 		fileName = "valid.txt";
-		validFile = new File("misc/" +fileName);
+		validFile = new File("misc/" + fileName);
 		validFile.createNewFile();
+		pathSep=java.nio.file.FileSystems.getDefault().getSeparator();
 	}
 
 	@After
@@ -57,20 +59,22 @@ public class HelperTest {
 		// Test valid file directory
 		File f = new File(workingDir);
 		assertTrue(Helper.isValidDirectory(f));
-		
+
 		// Test valid file directory 2
 		workDir = new File(workingDir);
 		expected = workDir.getAbsolutePath();
 		actual = Helper.isValidDirectory(workDir, "misc");
 		assertEquals(expected, actual.getAbsolutePath());
-		
+
 		// Test valid file directory 3
 		workDir = new File(workingDir);
-		expected = workDir.getAbsolutePath() + "\\" +dirName;			//Bugs: OS compatible \\ changed to /
+		expected = workDir.getAbsolutePath() + pathSep + dirName; // Bugs: OS
+																// compatible \\
+																// changed to /
 		actual = Helper.isValidDirectory(workDir, dirName);
 		assertEquals(expected, actual.getAbsolutePath());
 	}
-	
+
 	/**
 	 * Test error handling of checking invalid file directory
 	 */
@@ -80,38 +84,38 @@ public class HelperTest {
 		workingDir = "./misc/InvalidHelper";
 		File f = new File(workingDir);
 		assertFalse(Helper.isValidDirectory(f));
-		
+
 		// Test error handling: invalid file directory
 		dirName = "InvalidTest";
 		workDir = new File(workingDir);
 		actual = Helper.isValidDirectory(workDir, dirName);
 		assertNull(actual);
-		
+
 		// Test error handling: invalid directory name with numbers
 		dirName = "54321";
 		actual = Helper.isValidDirectory(workDir, dirName);
 		assertNull(actual);
-		
+
 		// Test error handling: invalid directory name with spaces
 		dirName = "not a directory";
 		actual = Helper.isValidDirectory(workDir, dirName);
 		assertNull(actual);
-		
+
 		// Test error handling: blank directory
 		dirName = "";
 		actual = Helper.isValidDirectory(workDir, dirName);
 		assertNull(actual);
-		
+
 		dirName = " ";
 		actual = Helper.isValidDirectory(workDir, dirName);
 		assertNull(actual);
-		
+
 		dirName = null;
 		actual = Helper.isValidDirectory(workDir, dirName);
 		assertNull(actual);
-		
+
 	}
-	
+
 	/**
 	 * Test expected behaviour of checking valid file
 	 */
@@ -122,13 +126,15 @@ public class HelperTest {
 		expected = validFile.getAbsolutePath();
 		actual = Helper.isValidFile(workDir, validFile.getAbsolutePath());
 		assertEquals(expected, actual.getAbsolutePath());
-		
+
 		// Test valid file with only file name
-		expected = workDir.getAbsolutePath() +"\\" +fileName;		//Bugs: OS compatible \\ changed to /
+		expected = workDir.getAbsolutePath() + pathSep + fileName; // Bugs: OS
+																// compatible \\
+																// changed to /
 		actual = Helper.isValidFile(workDir, fileName);
 		assertEquals(expected, actual.getAbsolutePath());
 	}
-	
+
 	/**
 	 * Test error handling checking of checking invalid file
 	 */
@@ -138,37 +144,37 @@ public class HelperTest {
 		fileName = "invalid.txt";
 		actual = Helper.isValidFile(workDir, fileName);
 		assertNull(actual);
-		
+
 		// Test error handling: invalid file
 		fileName = "./misc/secondinvalid.txt";
 		actual = Helper.isValidFile(workDir, fileName);
 		assertNull(actual);
-		
+
 		// Test error handling: invalid file name with numbers
 		fileName = "12345";
 		actual = Helper.isValidFile(workDir, fileName);
 		assertNull(actual);
-		
+
 		// Test error handling: invalid file name with spaces
 		fileName = "not a file";
 		actual = Helper.isValidFile(workDir, fileName);
 		assertNull(actual);
-		
+
 		// Test error handling: blank file
 		fileName = "";
 		actual = Helper.isValidFile(workDir, fileName);
 		assertNull(actual);
-		
+
 		fileName = " ";
 		actual = Helper.isValidFile(workDir, fileName);
 		assertNull(actual);
-		
+
 		fileName = null;
 		actual = Helper.isValidFile(workDir, fileName);
 		assertNull(actual);
-		
+
 	}
-	
+
 	/**
 	 * Test expected behaviour of getCommand method
 	 */
@@ -178,34 +184,42 @@ public class HelperTest {
 		String expected = "Hello";
 		String actual = Helper.getCommand(command);
 		assertEquals(expected, actual);
-		
+
 		command = "This is a line of commands";
 		expected = "This";
 		actual = Helper.getCommand(command);
 		assertEquals(expected, actual);
-		
+
 	}
-	
+
 	/**
 	 * Test error handling for slashes
 	 */
 	@Test
-	public void executeInvalidFileForSlash(){
-		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "\\/"));
-		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "\\"));
-		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "//"));
-		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "/"));
+	public void executeInvalidFileForSlash() {
+		assertEquals(null, Helper.isValidFile(
+				new File(System.getProperty("user.dir")), "\\/"));
+		assertEquals(null, Helper.isValidFile(
+				new File(System.getProperty("user.dir")), "\\"));
+		assertEquals(null, Helper.isValidFile(
+				new File(System.getProperty("user.dir")), "//"));
+		assertEquals(null, Helper.isValidFile(
+				new File(System.getProperty("user.dir")), "/"));
 	}
-	
+
 	/**
 	 * Test error handling for slashes
 	 */
 	@Test
-	public void executeInvalidDirectoryForSlash(){
-		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "\\/"));
-		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "\\"));
-		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "//"));
-		assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "/"));
+	public void executeInvalidDirectoryForSlash() {
+		assertEquals(null, Helper.isValidFile(
+				new File(System.getProperty("user.dir")), "\\/"));
+		assertEquals(null, Helper.isValidFile(
+				new File(System.getProperty("user.dir")), "\\"));
+		assertEquals(null, Helper.isValidFile(
+				new File(System.getProperty("user.dir")), "//"));
+		assertEquals(null, Helper.isValidFile(
+				new File(System.getProperty("user.dir")), "/"));
 	}
 
 }

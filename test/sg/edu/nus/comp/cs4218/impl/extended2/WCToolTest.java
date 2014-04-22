@@ -86,7 +86,6 @@ public class WCToolTest {
 	@Test
     public void helpPriorityTest()
     {String stdin1 = "wc -help input.txt";
-    	//String[] arguments = new String[]{"-m" , "-help" , "input.txt"} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput = helpOutput ;
@@ -98,7 +97,6 @@ public class WCToolTest {
     public void invalidStdinInputTest()
     {	
 		String stdin1 = "wc -m -w -l";
-    	//String[] arguments = new String[]{"-m", "-w" , "-l" , "-"} ;
     	wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput = "Error: file name null";
@@ -110,7 +108,6 @@ public class WCToolTest {
     public void invalidFilenameInputTest()
     {
 		String stdin1 ="wc -m san.txt";
-		//String[] arguments = new String[]{"-m", "-w", "-l", "idontexisthaha.txt"} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput =  "Error: file not found";
@@ -121,7 +118,6 @@ public class WCToolTest {
     public void noFilenameOrStdinInputTest()
     {
 		String stdin1 ="wc -m ";
-    	//String[] arguments = new String[]{"-m", "-w", "-l"} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput =  "Error: file name null";
@@ -133,7 +129,6 @@ public class WCToolTest {
     public void noFilenameOrStdinOrOptionsInputTest()
     {
 		String stdin1 ="wc";
-    	//String[] arguments = new String[]{} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput =  "Error: file name null";
@@ -144,7 +139,6 @@ public class WCToolTest {
     public void allOptionsInputTest()
     {
 		String stdin1 ="wc -m -w -l input1.txt";
-    	//String[] arguments = new String[]{"-m", "-w", "-l", "input1.txt"} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput = "File1: chars= 5 lines= 3 words= 3";
@@ -156,7 +150,6 @@ public class WCToolTest {
     public void fewOptionsInputTest()
     {
 		String stdin1 ="wc -m -w input1.txt";
-    	//String[] arguments = new String[]{"-w", "-m", "input1.txt"} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput = "File1: chars= 5 words= 3";
@@ -167,7 +160,6 @@ public class WCToolTest {
     public void capsOptionsInputTest()
     {
 		String stdin1 ="wc -M -W -L input1.txt";
-    	//String[] arguments = new String[]{"-W", "-M", "-L", "input1.txt"} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput = "File1: chars= 5 lines= 3 words= 3";
@@ -179,7 +171,6 @@ public class WCToolTest {
     public void emptyFileInputTest()
     {
 		String stdin1 ="wc -M -W -L input2.txt";
-    	//String[] arguments = new String[]{"-w", "-m", "-l", WorkingDirectory.workingDirectory + File.separator + "input2.txt"} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput = "File1: chars= 0 lines= 0 words= 0";
@@ -191,7 +182,6 @@ public class WCToolTest {
     public void multipleFilenamesInputTest()
     {
 		String stdin1 ="wc -w -m input1.txt input2.txt";
-	    //String[] arguments = new String[]{"-w", "-m", "input1.txt", "input2.txt"} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput =  "File1: chars= 5 words= 3\n"
@@ -207,7 +197,6 @@ public class WCToolTest {
     public void noOptionsStdinInputTest()
     {
 		String stdin1 ="wc input2.txt";
-	    //String[] arguments = new String[]{} ;
 		wctool = new WCTool();
 		actualOutput = wctool.execute(workingDirectory, stdin1);
 		expectedOutput = "File1: chars= 0 words= 0 lines= 0";

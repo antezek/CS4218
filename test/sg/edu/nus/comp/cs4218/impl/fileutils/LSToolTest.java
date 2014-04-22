@@ -75,7 +75,7 @@ public class LSToolTest {
 	public void getEmptyDirectoryListingTest() {
 		File f = emptyFile;
 		String stdin = "ls";
-		String expected = "Error: No files in working directory";
+		String expected = "No files in working directory";
 		String actual = lsTool.execute(f, stdin);
 		assertEquals(expected, actual);
 		assertEquals(lsTool.getStatusCode(), 0);

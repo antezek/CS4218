@@ -22,6 +22,7 @@ public class COMMToolTest {
 
 	private ICommTool commTool;
 	String actualOutput, expectedOutput, helpOutput;
+	String pathSep="";
 	File workingDirectory;
 
 	File fileA, fileB, fileC, fileD, fileF, fileG, fileH, fileI, fileJ, fileK,
@@ -92,7 +93,8 @@ public class COMMToolTest {
 		testTab = "\t";
 		testNewLine = "\n";
 		testDash = " ";
-
+		
+		pathSep=java.nio.file.FileSystems.getDefault().getSeparator();
 	}
 
 	private void writeToFile(File f, String fContent) {
@@ -157,12 +159,12 @@ public class COMMToolTest {
 	 */
 	@Test
 	public void compareFilesInvalidFileArgs1Test() {
-		String fileName1 = "C:\\Users\\Dale\\w.txt";
+		String fileName1 = "C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"w.txt";
 		String fileName2 = "./x.txt";
-		String[] arguments = new String[] { "C:\\Users\\Dale\\w.txt", "./x.txt" };
+		String[] arguments = new String[] { "C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"w.txt", "./x.txt" };
 		commTool = new COMMTool(arguments);
 		actualOutput = commTool.execute(workingDirectory,
-				"comm C:\\Users\\Dale\\w.txt ./x.txt");
+				"comm C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"w.txt ./x.txt");
 
 		expectedOutput = "File 1 doesn't exist!";
 		assertEquals(expectedOutput, actualOutput);
@@ -173,12 +175,12 @@ public class COMMToolTest {
 	 */
 	@Test
 	public void compareFilesInvalidFileArgs2Test() {
-		String fileName1 = "C:\\Users\\Dale\\w.txt";
+		String fileName1 = "C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"w.txt";
 		String fileName2 = "./x.txt";
-		String[] arguments = new String[] { "./x.txt", "C:\\Users\\Dale\\w.txt" };
+		String[] arguments = new String[] { "./x.txt", "C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"w.txt" };
 		commTool = new COMMTool(arguments);
 		actualOutput = commTool.execute(workingDirectory,
-				"comm ./x.txt C:\\Users\\Dale\\w.txt");
+				"comm ./x.txt C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"w.txt");
 
 		expectedOutput = "File 2 doesn't exist!";
 		assertEquals(expectedOutput, actualOutput);

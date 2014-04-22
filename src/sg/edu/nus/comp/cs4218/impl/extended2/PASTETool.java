@@ -36,6 +36,7 @@ public class PASTETool extends ATool implements IPasteTool {
 	private int statusCode;
 	private String output;
 	private String stditem;
+	private String pathSep;
 	
 	public PASTETool() {
 		super(null);
@@ -47,6 +48,7 @@ public class PASTETool extends ATool implements IPasteTool {
 		stdInput = INPUTABSENT;
 		statusCode = 0;
 		stditem = EMPTY;
+		pathSep=java.nio.file.FileSystems.getDefault().getSeparator();
 	}
 
 	//Get the command from StandardInput
