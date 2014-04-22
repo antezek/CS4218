@@ -23,6 +23,7 @@ public class CUTToolTest {
 	String actualOutput,expectedOutput,helpOutput;
 	File workingDirectory;
 	File inputFile1, inputFile2, inputFile3,inputFile4, longFileC, longFileD;
+	File inputFile5;
 	String absoluteFilePath;
 	
 	@Before
@@ -53,10 +54,13 @@ public class CUTToolTest {
 				   		    "Are You Long, I% am Long, very% very Long\n" +
 				   		    "Testing% for %Long %Input\n";
 		
+		String input5 = "one:two:three:four:five:six:seven";
+		
 		inputFile1 = new File("test1.txt");
 		inputFile2 = new File("test2.txt");
 		inputFile3 = new File("test3.txt");
 		inputFile4 = new File(absoluteFilePath);
+		inputFile5 = new File("test4.txt");
 		longFileC = new File("longFileC.txt");
 		longFileD = new File("longFileD.txt");
 		
@@ -66,6 +70,7 @@ public class CUTToolTest {
 		writeToFile(inputFile4, input1);
 		writeToFile(longFileC,longInputC);
 		writeToFile(longFileD,longInputD);
+		writeToFile(inputFile5, input5);
 	}
 
     @After
@@ -166,7 +171,7 @@ public class CUTToolTest {
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
-		assertEquals(cuttool.getStatusCode(), 0);
+		assertEquals(cuttool.getStatusCode(), -1);
     }
     
     @Test
@@ -389,12 +394,12 @@ public class CUTToolTest {
     }
 	
 	@Test 
-	//LIST with negative values as -2-3 as  1 till 2
+	//LIST with negative values as -2-3 as  1 till 3
 	public void cutSpecfiedCharactersTest3() throws IOException 
 	{
 		cuttool = new CUTTool();
 		actualOutput = cuttool.cutSpecfiedCharacters("-2-3", "abc");
-		expectedOutput = "ab";
+		expectedOutput = "abc";
 		actualOutput = actualOutput.replace("\n", "");
 		expectedOutput = expectedOutput.replace("\n", "");
 		assertEquals(actualOutput,expectedOutput);
@@ -675,4 +680,157 @@ public class CUTToolTest {
 			
 		assertEquals(output,expected);
 	}
+	
+	//SECTION FIVE: Hackathon Bug Fixed Test Cases
+	
+	//Fixed Bug 15: CutTool Bug 2 
+	@Test
+	//testing for empty lines after command
+	public void executeArgsIsInvalidCut(){
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut ");
+		assertEquals(-1, cuttool.getStatusCode());
+	}
+	
+	//Fixed Bug 17: CutTool Bug 4
+	@Test
+	//Testing for status Code for invalid Range Characters
+	public void executeCOptionInvalidRangeCharacterTest()
+	{
+		cuttool = new CUTTool();
+		cuttool.execute(workingDirectory, "cut -c ABC test1.txt");
+		assertEquals(-1, cuttool.getStatusCode());
+	}
+	
+	@Test
+	//Testing for status Code for StartRange > EndRange
+	public void executeCOptionInvalidRangeTest()
+	{
+		cuttool = new CUTTool();
+		cuttool.execute(workingDirectory, "cut -c 6-1 test1.txt");
+		assertEquals(-1, cuttool.getStatusCode());
+	}
+	
+	//Fixed Bug 18 & 19: CutTool Bug 5 & 6
+	@Test
+	//Testing for Null Pointer Exception Present in empty StdinTest, Option C;
+	public void executeCOptionEmptyStdinTestC()
+	{
+		cuttool = new CUTTool();
+		String results = cuttool.execute(workingDirectory, "cut -c 1 - ");
+		assertEquals("", results);
+	}
+	
+	@Test
+	//Testing for Null Pointer Exception Present in empty StdinTest, Option D
+	public void executeCOptionEmptyStdinTestD()
+	{
+		cuttool = new CUTTool();
+		String results = cuttool.execute(workingDirectory, "cut -d : -f 1-2 - ");
+		assertEquals("", results);
+	}
+	
+	//Fixed Bug 20: CutTool Bug 7
+	 @Test
+	 //Both std input precede file input are executed c option (std input first)
+	public void fileInputFollowedByStdInputTestCOption()
+	{
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory, "cut -c 1-2 - abcde test1.txt");
+		expectedOutput = "ab\nap\nba\nca\ndo\n";
+		actualOutput = actualOutput.replace("\n", "");
+		expectedOutput = expectedOutput.replace("\n", "");
+		assertEquals(expectedOutput,actualOutput);
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(cuttool.getStatusCode(), 0);
+	}
+	
+	 @Test
+	 //Both std input precede file input are executed df option (std input first)
+	public void fileInputFollowedByStdInputTestDFOption()
+	{
+		cuttool = new CUTTool();
+		actualOutput = cuttool.execute(workingDirectory,  "cut -d : -f 1-2 - one:two:three:four:five:six:seven test4.txt");
+		expectedOutput = "one:two\none:two\n";
+		actualOutput = actualOutput.replace("\n", "");
+		expectedOutput = expectedOutput.replace("\n", "");
+		assertEquals(expectedOutput,actualOutput);
+		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
+		assertEquals(cuttool.getStatusCode(), 0);
+	}
+	 
+	 //Fixed Bug 22: CutTool Bug 9
+	 @Test
+	 //Testing to omit duplicate range for delimiter test
+	 public void cutSpecifiedCharactersUseDelimiterTestRepeatRange() throws IOException
+	 {
+		 cuttool = new CUTTool();
+		 actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("1-3,1-3", "\"" ,"12\"3\"4");
+		 expectedOutput = "12\"3\"4";
+		 actualOutput = actualOutput.replace("\n", "");
+		 expectedOutput = expectedOutput.replace("\n", "");
+		 assertEquals(expectedOutput, actualOutput);
+	 }
+	 
+	 @Test
+	 //Testing to omit duplicate range for option c test
+	 public void cutSpecifiedCharactersUseOptionCTestRepeatRange() throws IOException
+	 {
+		 cuttool = new CUTTool();
+		 actualOutput = cuttool.cutSpecfiedCharacters("1-3,1-3", "123456");
+		 expectedOutput = "123";
+		 actualOutput = actualOutput.replace("\n", "");
+		 expectedOutput = expectedOutput.replace("\n", "");
+		 assertEquals(expectedOutput, actualOutput);
+	 }
+
+	 //Fixed Bug 23: CutTool Bug 10
+	 @Test
+	 //Testing for Zero Range for d Option
+	 public void cutSpecifiedCharactersUseDelimiterTestZeroRange() throws IOException
+	 {
+		 cuttool = new CUTTool();
+		 actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("0-3", "\"" ,"12\"3\"4");
+		 expectedOutput = "12\"3\"4";
+		 actualOutput = actualOutput.replace("\n", "");
+		 expectedOutput = expectedOutput.replace("\n", "");
+		 assertEquals(expectedOutput, actualOutput);
+	 }
+	 
+	 @Test
+	 //Testing for Zero Range for C Option
+	 public void cutSpecifiedCharactersTestZeroRange() throws IOException
+	 {
+		 cuttool = new CUTTool();
+		 actualOutput = cuttool.cutSpecfiedCharacters("0-3", "abcdefg");
+		 expectedOutput = "abc";
+		 actualOutput = actualOutput.replace("\n", "");
+		 expectedOutput = expectedOutput.replace("\n", "");
+		 assertEquals(expectedOutput, actualOutput);
+	 }
+
+	 //Fixed Bug 24 & 25: CutTool Bug 11 & 12
+	 @Test
+	 //Testing for end range valid values if character is specify d option
+	 public void cutSpecifiedCharactersUseDelimiterTestInvalidEndRange() throws IOException
+	 {
+		 cuttool = new CUTTool();
+		 actualOutput = cuttool.cutSpecifiedCharactersUseDelimiter("-1-==", "\"" ,"12\"3\"4");
+		 expectedOutput = "Invalid Range Specify";
+		 actualOutput = actualOutput.replace("\n", "");
+		 expectedOutput = expectedOutput.replace("\n", "");
+		 assertEquals(expectedOutput, actualOutput);
+	 }
+	 
+	 @Test
+	 //Testing for end range valid values if character is specify c option
+	 public void cutSpecifiedCharactersTest1() throws IOException
+	 {
+		 cuttool = new CUTTool();
+		 actualOutput = cuttool.cutSpecfiedCharacters("-1-==", "1234");
+		 expectedOutput = "Invalid Range Specify";
+		 actualOutput = actualOutput.replace("\n", "");
+		 expectedOutput = expectedOutput.replace("\n", "");
+		 assertEquals(expectedOutput, actualOutput);
+	 }
 }

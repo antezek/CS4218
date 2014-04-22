@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -109,6 +110,7 @@ public class CUTTool extends ATool implements ICutTool {
 			if (temp[i].equals("-") && i == (temp.length - 2)) {
 				arg[count] = temp[i];
 				stditem = temp[temp.length - 1];
+				//stditem = temp[i+1];
 				break;
 			} else {
 				if(isRepeat && count==1){
@@ -156,6 +158,9 @@ public class CUTTool extends ATool implements ICutTool {
 
 	//Check the first input, add in the relevant data and move the input start index to the correct position
 	private boolean checkFirstInput() {
+		
+		if(arg.length<1)
+			return false;
 		
 		if(arg[0].equals("-c")||arg[0].equals("-d")||arg[0].equals("-f"))
 		{
@@ -220,8 +225,12 @@ public class CUTTool extends ATool implements ICutTool {
 	private void checkForInputType(File workdir) {
 
 		for (int i = inputStartIndex; i < arg.length; i++) {
-			if (arg[i].startsWith(DASH))
+			if (arg[i].startsWith(DASH)) {
 				stdInput = INPUTPRESENT;
+				if(stditem == null && arg.length > i+1)
+					stditem = arg[i+1];
+				i = i + 1;
+			}
 			else {
 				try {
 					input = getFileContents(workdir, arg[i]);
@@ -372,14 +381,20 @@ public class CUTTool extends ATool implements ICutTool {
 		String results = EMPTY;
 		String[] splitList = list.split(COMMA);
 		String[] splitRange;
-		String[] lines = input.split(EOL);
 		int start, end;
+		ArrayList<Integer> indexRangeList = new ArrayList<Integer>();
 
+		if(input == null)
+			return EMPTY;
+		
 		if (input.equals(EMPTY))
 			return EMPTY;
 
+		String[] lines = input.split(EOL);
+		
 		try {
 			for (int h = 0; h < lines.length; h++) {
+				indexRangeList = new ArrayList<Integer>();
 				for (int i = 0; i < splitList.length; i++) {
 					if (splitList[i].contains(DASH)) {
 
@@ -391,18 +406,26 @@ public class CUTTool extends ATool implements ICutTool {
 
 						} else {
 							if (splitList[i].startsWith(DASH)) {
-								//negative start range specify
-								start = 1;
-								end = Integer.parseInt(splitRange[1]);
+								if(splitRange.length == 2) {
+									start = 1;
+									end = Integer.parseInt(splitRange[1]);
+								}
+								else {
+									start = 1;
+									end = Integer.parseInt(splitRange[2]);
+								}
 							} else {
 								//Normal case
 								start = Integer.parseInt(splitRange[0]);
+								if(start == 0)
+									start = 1;
 								end = Integer.parseInt(splitRange[1]);
 							}
 						}
 
 						if (end < start) {
 							//Invalid range: end<start
+							statusCode = -1;
 							results = ERROR4;
 							return results;
 						}
@@ -412,15 +435,20 @@ public class CUTTool extends ATool implements ICutTool {
 
 						//get the characters using start and end
 						for (int j = start; j <= end; j++) {
-
-							if (lines[i].charAt(j - 1) != '\n')
-								results = results + lines[h].charAt(j - 1);
+							if(repeatIndex(j,indexRangeList)) {
+								if (lines[i].charAt(j - 1) != '\n')
+									results = results + lines[h].charAt(j - 1);
+								indexRangeList.add(j);
+							}
 						}
 
 					} else {
 
 						int character = Integer.parseInt(splitList[i]);
-						results = results + lines[h].charAt(character - 1);
+						if(repeatIndex(character,indexRangeList)) {
+							results = results + lines[h].charAt(character - 1);
+							indexRangeList.add(character);
+						}
 					}
 				}
 
@@ -428,6 +456,7 @@ public class CUTTool extends ATool implements ICutTool {
 			}
 
 		} catch (Exception e) {
+			statusCode = -1;
 			results = ERROR4;
 		}
 		return results;
@@ -438,20 +467,27 @@ public class CUTTool extends ATool implements ICutTool {
 	public String cutSpecifiedCharactersUseDelimiter(String list, String delim,
 			String input) {
 
-		String[] lines = input.split(EOL);
 		String results = EMPTY;
 		String[] splitList = list.split(COMMA);
 		String[] splitRange;
 		String[] splitByDelim;
+		ArrayList<Integer> indexRangeList = new ArrayList<Integer>();
+		
 		int start, end;
 
+		if(input == null)
+			return EMPTY;
+		
 		if (input.equals(EMPTY))
 			return EMPTY+EOL;
 
+		String[] lines = input.split(EOL);
+		
 		try {
 			for (int k = 0; k < lines.length; k++) {
 				splitByDelim = lines[k].split(delim);
-
+				indexRangeList = new ArrayList<Integer>();
+				
 				for (int i = 0; i < splitList.length; i++) {
 					if (splitList[i].contains(DASH)) {
 						splitRange = splitList[i].split(DASH);
@@ -463,17 +499,27 @@ public class CUTTool extends ATool implements ICutTool {
 						} else {
 							if (splitList[i].startsWith(DASH)) {
 								//negative start range specify
-								start = 1;
-								end = Integer.parseInt(splitRange[1]);
+								if(splitRange.length == 2) {
+									start = 1;
+									end = Integer.parseInt(splitRange[1]);
+								}
+								else {
+									start = 1;
+									end = Integer.parseInt(splitRange[2]);
+								}
+									
 							} else {
 								//Normal case
 								start = Integer.parseInt(splitRange[0]);
+								if(start == 0)
+									start = 1;
 								end = Integer.parseInt(splitRange[1]);
 							}
 						}
 
 						if (end < start) {
 							//Invalid range: end <start
+							statusCode = -1;
 							results = ERROR4;
 							return results;
 						}
@@ -482,21 +528,29 @@ public class CUTTool extends ATool implements ICutTool {
 							end = splitByDelim.length;
 
 						for (int j = start; j <= end; j++) {
-							results = results + splitByDelim[j - 1];
-							if (j != end)
-								results = results + delim;
+							if(repeatIndex(j,indexRangeList)) {
+								results = results + splitByDelim[j - 1];
+								indexRangeList.add(j);
+								if (j != end)
+									results = results + delim;
+							}
 						}
 
 					} else {
 
 						int character = Integer.parseInt(splitList[i]);
-						if (splitByDelim.length == 1)
-							results = results + lines[k];
-						else {
-							if (character == 0)
+						
+						if(repeatIndex(character,indexRangeList)) {
+						
+							if (splitByDelim.length == 1)
 								results = results + lines[k];
-							else
-								results = results + splitByDelim[character - 1];
+							else {
+								if (character == 0)
+									results = results + lines[k];
+								else
+									results = results + splitByDelim[character - 1];
+							}
+							indexRangeList.add(character);
 						}
 					}
 
@@ -504,6 +558,7 @@ public class CUTTool extends ATool implements ICutTool {
 				}
 			}
 		} catch (Exception e) {
+			statusCode = -1;
 			results = ERROR4;
 		}
 		return results;
@@ -528,6 +583,17 @@ public class CUTTool extends ATool implements ICutTool {
 				+ "-help : Brief information about supported options";
 
 		return helpString;
+	}
+	
+	private boolean repeatIndex(int index, ArrayList<Integer>indexRange) {
+		int i;
+		
+		for(i = 0; i < indexRange.size(); i++) {
+			if(index == indexRange.get(i))
+				return false;
+		}
+		
+		return true;
 	}
 
 }
