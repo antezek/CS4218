@@ -48,8 +48,8 @@ public class FailingTestCases {
 	File inputFileUniq, inputFileCut;
     String helpOutputCut, helpOutputComm;
     
-    File file1, file2, file3, file4, fileA, fileB, fileC, fileD;
-	String file1Content, file2Content, file3Content, file4Content, fileContentA, fileContentB, fileContentC, fileContentD;
+    File file1, file2, file3, file4, fileA, fileB, fileC, fileD, fileE, fileF;
+	String file1Content, file2Content, file3Content, file4Content, fileContentA, fileContentB, fileContentC, fileContentD, fileComm1, fileComm2;
 	String testTab, testNewLine, testDash;
 
     
@@ -111,6 +111,8 @@ public class FailingTestCases {
 		fileB = new File("x.txt");
 		fileC = new File("y.txt");
 		fileD = new File("z.txt");
+		fileE = new File("commTestCase3a.txt");
+		fileF = new File("commTestCase3b.txt");
 		
 		file1Content = "ddd\nbbb\nccc";
 		file2Content = "ddd\nbbb";
@@ -120,7 +122,8 @@ public class FailingTestCases {
 		fileContentB = "Banana\nMelon\nOrange";
 		fileContentC = "Batman\nSpiderman\nSuperman";
 		fileContentD = "Cat\nBat";
-
+		fileComm1 = "def\nddd\neee\nabc";
+		fileComm2 = "eee\nfff\nggg\nabc";
 
 		writeToFile(file1, file1Content);
 		writeToFile(file2, file2Content);
@@ -130,26 +133,38 @@ public class FailingTestCases {
 		writeToFile(fileB, fileContentB);
 		writeToFile(fileC, fileContentC);
 		writeToFile(fileD, fileContentD);
+		writeToFile(fileE, fileComm1);
+		writeToFile(fileF, fileComm2);
 
-		
 		testTab = "\t";
 		testNewLine = "\n";
 		testDash = " ";
 		
     }
     
-    //@After
+    @After
     public void after(){
         lsTool = null;
 		uniqTool = null;
 		cutTool = null;
     	actualOutput ="";
     	expectedOutput = "";
-    	
+    	System.gc();
 		if(inputFileUniq.exists())
 			inputFileUniq.delete();
 		if (inputFileCut.exists())
 			inputFileCut.delete();
+		file1.delete();
+		file2.delete();
+		file3.delete();
+		file4.delete();
+		fileA.delete();
+		fileB.delete();
+		fileC.delete();
+		fileD.delete();
+		fileE.delete();
+		fileF.delete();
+		
     }
     
     @Before

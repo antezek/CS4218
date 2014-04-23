@@ -139,8 +139,6 @@ public class COMMToolTest {
 	 */
 	@Test
 	public void overallTest() {
-		// String[] arguments = new String[]{"w.txt","x.txt"};
-		// commTool = new COMMTool(arguments);
 		commTool = new COMMTool();
 		actualOutput = commTool.execute(workingDirectory, "comm w.txt x.txt");
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash
@@ -148,8 +146,6 @@ public class COMMToolTest {
 				+ testDash + testNewLine + testDash + testTab + testDash
 				+ testTab + "Melon" + testNewLine + testDash + testTab
 				+ testDash + testTab + "Orange";
-		//System.out.println("actualOutput:\n"+actualOutput);
-		//System.out.println("expectedOutput:\n"+expectedOutput);
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 0);
 	}
@@ -243,27 +239,13 @@ public class COMMToolTest {
 		String input1 = "em1.txt";
 		String input2 = "em2.txt";
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
 		actualOutput = commTool.execute(workingDirectory,
 				"comm em1.txt em2.txt");
-		// actualOutput = commTool.compareFiles(input1, input2);
 		expectedOutput = "";
 
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 0);
 	}
-
-	/*
-	 * @Changed expectedOutput = "Apple" + testTab + testDash + testTab +
-	 * testDash + testNewLine + testDash + testTab + "Batman" + testTab
-	 * +testDash + testNewLine + "Melon" + testTab + testDash + testTab +
-	 * testDash + testNewLine + "Orange" + testTab + testDash + testTab +
-	 * testDash + testNewLine + testDash + testTab + "Spiderman" + testTab
-	 * +testDash + testNewLine + testDash + testTab + "Superman" + testTab
-	 * +testDash;
-	 * 
-	 * "testTab + testDash" after "Superman" is removed to be more precise.
-	 */
 
 	/*
 	 * Test for all lines in both files are unique. Result - Column 3 should be
@@ -278,9 +260,7 @@ public class COMMToolTest {
 		String input1 = "w.txt";
 		String input2 = "y.txt";
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
 		actualOutput = commTool.execute(workingDirectory, "comm w.txt y.txt");
-		// actualOutput = commTool.compareFiles(input1, input2);
 
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash
 				+ testNewLine + testDash + testTab + "Batman" + testTab
@@ -305,9 +285,7 @@ public class COMMToolTest {
 		String input1 = "w.txt";
 		String input2 = "x.txt";
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
 		actualOutput = commTool.execute(workingDirectory, "comm w.txt x.txt");
-		// actualOutput = commTool.compareFiles(input1, input2);
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash
 				+ testNewLine + testDash + testTab + "Banana" + testTab
 				+ testDash + testNewLine + testDash + testTab + testDash
@@ -327,8 +305,6 @@ public class COMMToolTest {
 		String input1 = "w.txt";
 		String input2 = "w.txt";
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles actualOutput =
-		// commTool.compareFiles(input1, input2);
 		actualOutput = commTool.execute(workingDirectory, "comm w.txt w.txt");
 		expectedOutput = testDash + testTab + testDash + testTab + "Apple"
 				+ testNewLine + testDash + testTab + testDash + testTab
@@ -377,13 +353,7 @@ public class COMMToolTest {
 		actualOutput = commTool.execute(workingDirectory,
 				"comm -e w.txt x.txt y.txt");
 		expectedOutput = "Error: Invalid command";
-		/*
-		 * System.out.println("actualOutput:\n"+actualOutput);
-		 * System.out.println("expectedOutput:\n"+expectedOutput);
-		 * System.out.println
-		 * ("bool: "+expectedOutput.equalsIgnoreCase(actualOutput));
-		 * System.out.println("statusCode: "+commTool.getStatusCode());
-		 */
+		
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 1);
 	}
@@ -397,10 +367,7 @@ public class COMMToolTest {
 		String input1 = "w.txt";
 		String input2 = "x.txt";
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
-		actualOutput = commTool
-				.execute(workingDirectory, "comm -c w.txt x.txt");
-		// actualOutput = commTool.compareFilesCheckSortStatus(input1, input2);
+		actualOutput = commTool.execute(workingDirectory, "comm -c w.txt x.txt");
 
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash
 				+ testNewLine + testDash + testTab + "Banana" + testTab
@@ -421,15 +388,10 @@ public class COMMToolTest {
 		String input1 = "w.txt";
 		String input2 = "z.txt";
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
 		actualOutput = commTool.execute(workingDirectory,
 				"comm -c w.txt unsort.txt");
 		expectedOutput = "File 2 not sorted!";
-		// actualOutput = commTool.compareFilesCheckSortStatus(input1, input2);
 
-		// Changes: modify the result from "File 2 not sorted!\n" to
-		// "File 2 not sorted!" to be more concise
-		// expectedOutput = "File 2 not sorted!\n";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 0);
 	}
@@ -444,10 +406,7 @@ public class COMMToolTest {
 		testDash = " ";
 		String[] arguments = new String[] { "ant1.txt", "ant2.txt" };
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
-		actualOutput = commTool.execute(workingDirectory,
-				"comm ant1.txt ant2.txt");
-		// actualOutput = commTool.compareFiles(input1, input2);
+		actualOutput = commTool.execute(workingDirectory,"comm ant1.txt ant2.txt");
 
 		expectedOutput = testDash + testTab + testDash + testTab + "Jackfruit"
 				+ testNewLine + testDash + testTab + testDash + testTab
@@ -468,7 +427,6 @@ public class COMMToolTest {
 		testDash = " ";
 		String[] arguments = new String[] { "ant2.txt", "ant1.txt" };
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
 		actualOutput = commTool.execute(workingDirectory,
 				"comm ant2.txt ant1.txt");
 		expectedOutput = testDash + testTab + testDash + testTab + "Jackfruit"
@@ -490,7 +448,6 @@ public class COMMToolTest {
 		testDash = " ";
 		String[] arguments = new String[] { "ant5.txt", "ant6.txt" };
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
 		actualOutput = commTool.execute(workingDirectory,
 				"comm ant5.txt ant6.txt");
 		expectedOutput = testTab + "Lychee" + testTab + testDash
@@ -511,7 +468,6 @@ public class COMMToolTest {
 		testDash = " ";
 		String[] arguments = new String[] { "ant3.txt", "ant4.txt" };
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
 		actualOutput = commTool.execute(workingDirectory,
 				"comm ant3.txt ant4.txt");
 		expectedOutput = "Apple" + testTab + testDash + testTab + testDash
@@ -534,7 +490,6 @@ public class COMMToolTest {
 		testDash = " ";
 		String[] arguments = new String[] { "ant4.txt", "ant3.txt" };
 		commTool = new COMMTool(arguments);
-		// Changes: use execute instead of compareFiles
 		actualOutput = commTool.execute(workingDirectory,
 				"comm ant4.txt ant3.txt");
 		expectedOutput = testTab + "Apple" + testTab + testDash

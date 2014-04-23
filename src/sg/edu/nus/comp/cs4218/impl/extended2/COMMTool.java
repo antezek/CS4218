@@ -47,11 +47,14 @@ public class COMMTool extends ATool implements ICommTool {
 	String[] cmd;
 	ArrayList<String> listA, listB, listC;
 	ArrayList<ComObj> list;
+	int countA = 0;
+	int countB = 0;
+	int countC = 0;
 
 	public ArrayList<String> returnArray(String input) {
 		ArrayList<String> list = new ArrayList<String>();
 		Scanner sc = new Scanner(input);
-		
+
 		sc.useDelimiter("\n");
 		while (sc.hasNext()) {
 			list.add(sc.next());
@@ -59,22 +62,263 @@ public class COMMTool extends ATool implements ICommTool {
 		return list;
 	}
 
-	public String compareFiles(String input1, String input2) {
-		String result = "";
-		String temp1 = "";
+	public void compareWhenCountAEqualsListA() {
 		String temp2 = "";
 		String temp3 = "";
+		while (countB < listB.size() && countC < listC.size()) {
+			temp2 = listB.get(countB).toString();
+			temp3 = listC.get(countC).toString();
+			if (temp2.compareTo(temp3) <= 0) {
+				list.add(new ComObj(temp2, "uniB"));
+				countB++;
+			} else {
+				list.add(new ComObj(temp3, "com"));
+				countC++;
+			}
+		}
+		if (countB == listB.size()) {
+			while (countC < listC.size()) {
+				temp3 = listC.get(countC).toString();
+				list.add(new ComObj(temp3, "com"));
+				countC++;
+			}
+		} else if (countC == listC.size()) {
+			while (countB < listB.size()) {
+				temp2 = listB.get(countB).toString();
+				list.add(new ComObj(temp2, "uniB"));
+				countB++;
+			}
+		}
+	}
+
+	public void compareWhenCountBEqualsListB() {
+		String temp1 = "";
+		String temp3 = "";
+
+		while (countA < listA.size() && countC < listC.size()) {
+			temp1 = listA.get(countA).toString();
+			temp3 = listC.get(countC).toString();
+			if (temp1.compareTo(temp3) <= 0) {
+				list.add(new ComObj(temp1, "uniA"));
+				countA++;
+			} else {
+				list.add(new ComObj(temp3, "com"));
+				countC++;
+			}
+		}
+		if (countA == listA.size()) {
+			while (countC < listC.size()) {
+				temp3 = listC.get(countC).toString();
+				list.add(new ComObj(temp3, "com"));
+				countC++;
+			}
+		}
+		if (countC == listC.size()) {
+			while (countA < listA.size()) {
+				temp1 = listA.get(countA).toString();
+				list.add(new ComObj(temp1, "uniA"));
+				countA++;
+			}
+		}
+	}
+
+	public void compareWhenCountCEqualsListC() {
+		String temp1 = "";
+		String temp2 = "";
+		while (countA < listA.size() && countB < listB.size()) {
+			temp1 = listA.get(countA).toString();
+			temp2 = listB.get(countB).toString();
+			if (temp1.compareTo(temp2) <= 0) {
+				list.add(new ComObj(temp1, "uniA"));
+				countA++;
+			} else {
+				list.add(new ComObj(temp2, "uniB"));
+				countB++;
+			}
+		}
+		if (countA == listA.size()) {
+			while (countB < listB.size()) {
+				temp2 = listB.get(countB).toString();
+				list.add(new ComObj(temp2, "uniB"));
+				countB++;
+			}
+		}
+		if (countB == listB.size()) {
+			while (countA < listA.size()) {
+				temp1 = listA.get(countA).toString();
+				list.add(new ComObj(temp1, "uniA"));
+				countA++;
+			}
+		}
+	}
+
+	public void compareNorm() {
+		String temp1 = listA.get(countA).toString();
+		String temp2 = listB.get(countB).toString();
+		String temp3 = listC.get(countC).toString();
+
+		if (temp1.compareTo(temp2) <= 0) {
+			if (temp1.compareTo(temp3) <= 0) {
+				// For A<=B,A<=C
+				list.add(new ComObj(temp1, "uniA"));
+				if (countA < listA.size()) {
+					countA++;
+				}
+			} else {
+				// For A<=B,A>C
+				list.add(new ComObj(temp3, "com"));
+				if (countC < listC.size()) {
+					countC++;
+				}
+			}
+		} else {
+			// For A>B,B>C
+			if (temp2.compareTo(temp3) > 0) {
+				list.add(new ComObj(temp3, "com"));
+				if (countC < listC.size()) {
+					countC++;
+				}
+			} else {
+				// For A>B,B<C
+				list.add(new ComObj(temp2, "uniB"));
+				if (countB < listB.size()) {
+					countB++;
+				}
+			}
+		}
+	}
+
+	public void compareOnlyABNotEmpty() {
+		// When colA and colB is empty
+		// result += dash + tab + dash + tab + com.trim();
+		for (int i = 0; i < listC.size(); i++) {
+			// result += listC.get(i) + newLine + dash + tab + dash + tab;
+			list.add(new ComObj(listC.get(i).toString(), "com"));
+		}
+		setStatusCode(0);
+	}
+
+	public void compareOnlyCEmpty() {
+		String temp1 = "";
+		String temp2 = "";
+
+		// When only colC is empty
+		while ((countA < listA.size()) || (countB < listB.size())) {
+			if (countA == listA.size()) {
+				while (countB < listB.size()) { // When colA are used up,
+												// dump in everything else
+												// in colB. vice versa
+					temp2 = listB.get(countB).toString();
+					list.add(new ComObj(temp2, "uniB"));
+					countB++;
+				}
+			} else if (countB == listB.size()) {
+				while (countA < listA.size()) {
+					temp1 = listA.get(countA).toString();
+					list.add(new ComObj(temp1, "uniA"));
+					countA++;
+				}
+			} else {
+				temp1 = listA.get(countA).toString();
+				temp2 = listB.get(countB).toString();
+				if (temp1.compareTo(temp2) <= 0) {
+					list.add(new ComObj(temp1, "uniA"));
+					if (countA < listA.size()) {
+						countA++;
+					}
+
+				} else {
+					list.add(new ComObj(temp2, "uniB"));
+					if (countB < listB.size()) {
+						countB++;
+					}
+				}
+			}
+		}
+		setStatusCode(0);
+	}
+
+	public void compareOnlyBEmpty() {
+		String temp1 = "";
+		String temp3 = "";
+		while ((countA < listA.size()) || (countC < listC.size())) {
+			if (countA == listA.size()) {
+				while (countC < listC.size()) { // When colA are used up,
+												// dump in everything else
+												// in colC. vice versa
+					temp3 = listC.get(countC).toString();
+					list.add(new ComObj(temp3, "com"));
+					countC++;
+				}
+			} else if (countC == listC.size()) {
+				while (countA < listA.size()) {
+					temp1 = listA.get(countA).toString();
+					list.add(new ComObj(temp1, "uniA"));
+					countA++;
+				}
+			} else {
+				temp1 = listA.get(countA).toString();
+				temp3 = listC.get(countC).toString();
+				if (temp1.compareTo(temp3) <= 0) {
+					list.add(new ComObj(temp1, "uniA"));
+					if (countA < listA.size()) {
+						countA++;
+					}
+
+				} else {
+					list.add(new ComObj(temp3, "com"));
+					if (countC < listC.size()) {
+						countC++;
+					}
+				}
+			}
+		}
+		setStatusCode(0);
+	}
+
+	public void compareOnlyAEmpty() {
+		String temp2 = "";
+		String temp3 = "";
+		while ((countB < listB.size()) || (countC < listC.size())) {
+			if (countB == listB.size()) {
+				while (countC < listC.size()) { // When colB are used up, dump in everything else in colC. vice versa
+					temp3 = listC.get(countC).toString();
+					list.add(new ComObj(temp3, "com"));
+					countC++;
+				}
+			} else if (countC == listC.size()) {
+				while (countB < listB.size()) {
+					temp2 = listB.get(countB).toString();
+					list.add(new ComObj(temp2, "uniB"));
+					countB++;
+				}
+			} else {
+				temp2 = listB.get(countB).toString();
+				temp3 = listC.get(countC).toString();
+				if (temp2.compareTo(temp3) <= 0) {
+					list.add(new ComObj(temp2, "uniB"));
+					if (countB < listB.size()) {
+						countB++;
+					}
+
+				} else {
+					list.add(new ComObj(temp3, "com"));
+					if (countC < listC.size()) {
+						countC++;
+					}
+				}
+			}
+		}
+		setStatusCode(0);
+	}
+
+	public String compareFiles(String input1, String input2) {
+		String result = "";
 		String str1 = "";
 		String str2 = "";
-		int countA = 0;
-		int countB = 0;
-		int countC = 0;
-		ArrayList<String> inputA;
-		ArrayList<String> inputB;
+		ArrayList<String> inputA = new ArrayList<String>();
+		ArrayList<String> inputB = new ArrayList<String>();
 		ArrayList<ComObj> tempList;
-		
-		inputA = new ArrayList<String>();
-		inputB = new ArrayList<String>();
 		tempList = new ArrayList<ComObj>();
 		inputA = returnArray(input1);
 		inputB = returnArray(input2);
@@ -90,7 +334,7 @@ public class COMMTool extends ATool implements ICommTool {
 			int foundB = inputA.indexOf(str2);
 			int foundBC = listC.indexOf(str2);
 
-			if (foundA < 0 && foundAC < 0) {		//If not found, meant enter into non-list C. Else enter into listC
+			if (foundA < 0 && foundAC < 0) { // If not found, meant enter into non-list C. Else enter into listC
 				listA.add(str1);
 			} else {
 				if (listC.indexOf(str1) < 0) {
@@ -109,275 +353,54 @@ public class COMMTool extends ATool implements ICommTool {
 			countA++;
 			countB++;
 		}
-		// Reset counter
-		countA = 0;
+		countA = 0;	// Reset counter
 		countB = 0;
 		countC = 0;
-		// When all 3 cols contain something
-		if (!listA.isEmpty() && !listB.isEmpty() && !listC.isEmpty()) {
-
-			while ((countA < listA.size()) || (countB < listB.size())
-					|| (countC < listC.size())) {
-				// when A slot is empty, fill up slot b and c
-				if (countA == listA.size()) {
-					while (countB < listB.size() && countC < listC.size()) {
-						temp2 = listB.get(countB).toString();
-						temp3 = listC.get(countC).toString();
-						if (temp2.compareTo(temp3) <= 0) {
-							list.add(new ComObj(temp2, "uniB"));
-							countB++;
-						} else {
-							 list.add(new ComObj(temp3, "com"));
-							 countC++;
-						}
-					}
-					if (countB == listB.size()) {
-						while (countC < listC.size()) {
-							temp3 = listC.get(countC).toString();
-							list.add(new ComObj(temp3, "com"));
-							countC++;
-						}
-					} else if (countC == listC.size()) {
-						 while (countB < listB.size()) {
-							 temp2 = listB.get(countB).toString();
-							 list.add(new ComObj(temp2, "uniB"));
-							 countB++;
-						 }
-					}
-
-					// when b slot is empty, fill up slot a and c
-				} else if (countB == listB.size()) { // Check Coverage
-					while (countA < listA.size() && countC < listC.size()) {
-						temp1 = listA.get(countA).toString();
-						temp3 = listC.get(countC).toString();
-						if (temp1.compareTo(temp3) <= 0) {
-							list.add(new ComObj(temp1, "uniA"));
-							countA++;
-						} else {
-							list.add(new ComObj(temp3, "com"));
-							countC++;
-						}
-					}
-					if (countA == listA.size()) {
-						while (countC < listC.size()) {
-							temp3 = listC.get(countC).toString();
-							list.add(new ComObj(temp3, "com"));
-							countC++;
-						}
-					}
-					if (countC == listC.size()) {
-						while (countA < listA.size()) {
-							temp1 = listA.get(countA).toString();
-							list.add(new ComObj(temp1, "uniA"));
-							countA++;
-						}
-					}
-					// when c slot is empty, fill up slot a and b
-				} else if (countC == listC.size()) { // Bugs: didn't increment
-														// the rest of list
-					while (countA < listA.size() && countB < listB.size()) {
-						temp1 = listA.get(countA).toString();
-						temp2 = listB.get(countB).toString();
-						if (temp1.compareTo(temp2) <= 0) {
-							list.add(new ComObj(temp1, "uniA"));
-							countA++;
-						} else {
-							list.add(new ComObj(temp2, "uniB"));
-							countB++;
-						}
-					}
-					if (countA == listA.size()) {
-						while (countB < listB.size()) {
-							temp2 = listB.get(countB).toString();
-							list.add(new ComObj(temp2, "uniB"));
-							countB++;
-						}
-					}
-					if (countB == listB.size()) {
-						while (countA < listA.size()) {
-							temp1 = listA.get(countA).toString();
-							list.add(new ComObj(temp1, "uniA"));
-							countA++;
-						}
-					}
-					// Fill up as normal
+		if (!listA.isEmpty() && !listB.isEmpty() && !listC.isEmpty()) {		// When all 3 cols contain something
+			while ((countA < listA.size()) || (countB < listB.size()) || (countC < listC.size())) {
+				if (countA == listA.size()) {			// when A slot is empty, fill up slot b and c
+					compareWhenCountAEqualsListA();
+				} else if (countB == listB.size()) {	// when b slot is empty, fill up slot a and c
+					compareWhenCountBEqualsListB();
+				} else if (countC == listC.size()) {	// when c slot is empty, fill up slot a and b
+					compareWhenCountCEqualsListC();
 				} else {
-					temp1 = listA.get(countA).toString();
-					temp2 = listB.get(countB).toString();
-					temp3 = listC.get(countC).toString();
-					if (temp1.compareTo(temp2) <= 0) {
-						if (temp1.compareTo(temp3) <= 0) {
-							// For A<=B,A<=C
-							list.add(new ComObj(temp1, "uniA"));
-							if (countA < listA.size()) {
-								countA++;
-							}
-						} else {
-							// For A<=B,A>C
-							list.add(new ComObj(temp3, "com"));
-							if (countC < listC.size()) {
-								countC++;
-							}
-						}
-					} else {
-						// For A>B,B>C
-						if (temp2.compareTo(temp3) > 0) {
-							list.add(new ComObj(temp3, "com"));
-							if (countC < listC.size()) {
-								countC++;
-							}
-						} else {
-							// For A>B,B<C
-							list.add(new ComObj(temp2, "uniB"));
-							if (countB < listB.size()) {
-								countB++;
-							}
-						}
-					}
+					compareNorm();						// Fill up as normal
 				}
-
 			}
-
-			// When all 3 cols contain nothing
-		} else if (listA.isEmpty() && listB.isEmpty() && listC.isEmpty()) {
+		} else if (listA.isEmpty() && listB.isEmpty() && listC.isEmpty()) {		// When all 3 cols contain nothing
 			result = "";
 			setStatusCode(0);
 		} else if (listA.isEmpty() && listB.isEmpty()) {
-			// When colA and colB is empty
-			// result += dash + tab + dash + tab + com.trim();
-			for (int i = 0; i < listC.size(); i++) {
-				// result += listC.get(i) + newLine + dash + tab + dash + tab;
-				list.add(new ComObj(listC.get(i).toString(), "com"));
-			}
-
-			setStatusCode(0);
+			compareOnlyABNotEmpty();
 		} else if (!listA.isEmpty() && !listB.isEmpty() && listC.isEmpty()) {
-			// When only colC is empty
-
-			while ((countA < listA.size()) || (countB < listB.size())) {
-				if (countA == listA.size()) {
-					while (countB < listB.size()) { // When colA are used up,
-													// dump in everything else
-													// in colB. vice versa
-						temp2 = listB.get(countB).toString();
-						list.add(new ComObj(temp2, "uniB"));
-						countB++;
-					}
-				} else if (countB == listB.size()) {
-					while (countA < listA.size()) {
-						temp1 = listA.get(countA).toString();
-						list.add(new ComObj(temp1, "uniA"));
-						countA++;
-					}
-				} else {
-					temp1 = listA.get(countA).toString();
-					temp2 = listB.get(countB).toString();
-					if (temp1.compareTo(temp2) <= 0) {
-						list.add(new ComObj(temp1, "uniA"));
-						if (countA < listA.size()) {
-							countA++;
-						}
-
-					} else {
-						list.add(new ComObj(temp2, "uniB"));
-						if (countB < listB.size()) {
-							countB++;
-						}
-					}
-				}
-			}
-			setStatusCode(0);
+			compareOnlyCEmpty();
 		} else if (!listA.isEmpty() && listB.isEmpty() && !listC.isEmpty()) {
-			while ((countA < listA.size()) || (countC < listC.size())) {
-				if (countA == listA.size()) {
-					while (countC < listC.size()) { // When colA are used up,
-													// dump in everything else
-													// in colC. vice versa
-						temp3 = listC.get(countC).toString();
-						list.add(new ComObj(temp3, "com"));
-						countC++;
-					}
-				} else if (countC == listC.size()) {
-					while (countA < listA.size()) {
-						temp1 = listA.get(countA).toString();
-						list.add(new ComObj(temp1, "uniA"));
-						countA++;
-					}
-				} else {
-					temp1 = listA.get(countA).toString();
-					temp3 = listC.get(countC).toString();
-					if (temp1.compareTo(temp3) <= 0) {
-						list.add(new ComObj(temp1, "uniA"));
-						if (countA < listA.size()) {
-							countA++;
-						}
-
-					} else {
-						list.add(new ComObj(temp3, "com"));
-						if (countC < listC.size()) {
-							countC++;
-						}
-					}
-				}
-			}
-			setStatusCode(0);
+			compareOnlyBEmpty();
 		} else if (listA.isEmpty() && !listB.isEmpty() && !listC.isEmpty()) {
-			while ((countB < listB.size()) || (countC < listC.size())) {
-				if (countB == listB.size()) {
-					while (countC < listC.size()) { // When colB are used up,
-													// dump in everything else
-													// in colC. vice versa
-						temp3 = listC.get(countC).toString();
-						list.add(new ComObj(temp3, "com"));
-						countC++;
-					}
-				} else if (countC == listC.size()) {
-					while (countB < listB.size()) {
-						temp2 = listB.get(countB).toString();
-						list.add(new ComObj(temp2, "uniB"));
-						countB++;
-					}
-				} else {
-					temp2 = listB.get(countB).toString();
-					temp3 = listC.get(countC).toString();
-					if (temp2.compareTo(temp3) <= 0) {
-						list.add(new ComObj(temp2, "uniB"));
-						if (countB < listB.size()) {
-							countB++;
-						}
-
-					} else {
-						list.add(new ComObj(temp3, "com"));
-						if (countC < listC.size()) {
-							countC++;
-						}
-					}
-				}
-			}
-			setStatusCode(0);
+			compareOnlyAEmpty();
 		}
 		tempList = filterList(list);
 		result = formatResult(tempList);
-
 		return result;
 	}
-	
-	public ArrayList filterList(ArrayList list){
+
+	public ArrayList filterList(ArrayList list) {
 		ArrayList tempList = new ArrayList();
-		String temp1="";
+		String temp1 = "";
 		ComObj co = null;
-		
-		for(int i=0;i<list.size();i++){
-			co = (ComObj)list.get(i);
+
+		for (int i = 0; i < list.size(); i++) {
+			co = (ComObj) list.get(i);
 			temp1 = co.getName();
-			if(!temp1.equals("")){
+			if (!temp1.equals("")) {
 				tempList.add(co);
 			}
-			temp1="";
+			temp1 = "";
 		}
 		return tempList;
 	}
-	
+
 	public String formatResult(ArrayList list) {
 		String result = "";
 		String temp, temp1, temp2;
@@ -389,7 +412,7 @@ public class COMMTool extends ATool implements ICommTool {
 			temp1 = co.getName();
 			temp2 = co.getSlot();
 			if (tempCount == 0 && temp2.equals("uniB")) {
-				//result += tab + dash + tab + dash + newLine + dash + tab;
+				// result += tab + dash + tab + dash + newLine + dash + tab;
 				result += tab;
 			}
 			if (tempCount == 0 && temp2.equals("com")) {
@@ -492,36 +515,36 @@ public class COMMTool extends ATool implements ICommTool {
 		String[] tempCmd = new String[5];
 		String[] finalCmd = new String[5];
 		Scanner scan = null;
-		try{
+		try {
 			scan = new Scanner(stdin);
-		while (scan.hasNext()) {
-			tempCmd[count] = scan.next();
-			count++;
-		}
-		if (count == 3) { // For "comm file1 file2" w/o args
-			finalCmd[0] = tempCmd[0];
-			finalCmd[1] = "";
-			finalCmd[2] = "";
-			finalCmd[3] = tempCmd[1];
-			finalCmd[4] = tempCmd[2];
-		} else if (count == 4) { // for "comm -s -help file1 file2"
-			finalCmd[0] = tempCmd[0];
-			finalCmd[1] = tempCmd[1];
-			finalCmd[2] = "";
-			finalCmd[3] = tempCmd[2];
-			finalCmd[4] = tempCmd[3];
-		} else {
-			System.arraycopy(tempCmd, 0, finalCmd, 0, 5);
-		}
-		}catch(Exception e){
+			while (scan.hasNext()) {
+				tempCmd[count] = scan.next();
+				count++;
+			}
+			if (count == 3) { // For "comm file1 file2" w/o args
+				finalCmd[0] = tempCmd[0];
+				finalCmd[1] = "";
+				finalCmd[2] = "";
+				finalCmd[3] = tempCmd[1];
+				finalCmd[4] = tempCmd[2];
+			} else if (count == 4) { // for "comm -s -help file1 file2"
+				finalCmd[0] = tempCmd[0];
+				finalCmd[1] = tempCmd[1];
+				finalCmd[2] = "";
+				finalCmd[3] = tempCmd[2];
+				finalCmd[4] = tempCmd[3];
+			} else {
+				System.arraycopy(tempCmd, 0, finalCmd, 0, 5);
+			}
+		} catch (Exception e) {
 			setStatusCode(1);
 		}
 		return finalCmd;
 	}
 
-	public String read(InputStream is) {	//TODO Find another delimiter sub
+	public String read(InputStream is) { // TODO Find another delimiter sub
 		Scanner sc = new Scanner(is);
-		
+
 		String temp = "";
 		while (sc.hasNext()) {
 			temp += sc.nextLine() + "\n";
@@ -543,7 +566,8 @@ public class COMMTool extends ATool implements ICommTool {
 
 		cmd = getCmd(stdin);
 		try {
-			if (!cmd[1].equals("-help") && !cmd[2].equals("-help") && !cmd[3].equals("-help") && !cmd[4].equals("-help")) {
+			if (!cmd[1].equals("-help") && !cmd[2].equals("-help")
+					&& !cmd[3].equals("-help") && !cmd[4].equals("-help")) {
 				file1 = Helper.isValidFile(workingDir, cmd[3]);
 				file2 = Helper.isValidFile(workingDir, cmd[4]);
 				try {
@@ -565,9 +589,7 @@ public class COMMTool extends ATool implements ICommTool {
 					di2 = new DataInputStream(fi2);
 					if (cmd[1].equals("")) { // For "comm file1 file2"
 						result = compareFiles(read(di1), read(di2));
-						// For "comm -c -help file1 file2" ||
-						// "comm -d -help file1 file2" via versa but not
-						// "comm -c -d file1 file2"
+						// For "comm -c -help file1 file2" || "comm -d -help file1 file2" via versa but not "comm -c -d file1 file2"
 					} else if ((cmd[1].equals("-c") & !cmd[2].equals("-d"))
 							|| (cmd[1].equals("-d") & !cmd[2].equals("-c"))
 							|| cmd[1].equals("-help") || cmd[2].equals("-help")) {
@@ -584,7 +606,9 @@ public class COMMTool extends ATool implements ICommTool {
 										.equals("-help"))) {
 							result = compareFilesDoNotCheckSortStatus(
 									read(di1), read(di2));
-						} else if(cmd[1].equals("-help") || cmd[2].equals("-help") || cmd[3].equals("-help")) {
+						} else if (cmd[1].equals("-help")
+								|| cmd[2].equals("-help")
+								|| cmd[3].equals("-help")) {
 							result = getHelp();
 						}
 					} else {
