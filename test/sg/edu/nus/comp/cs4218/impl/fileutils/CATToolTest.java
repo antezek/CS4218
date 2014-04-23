@@ -22,14 +22,17 @@ public class CATToolTest {
 	private File toRead, emptyFile, tempFile;
 	private String contents = "Hello World \n"
 								+ "This is a CATToolTest";
+	String pathSep="";
+
 	
 	@Before
 	public void setUp() throws IOException {
+		pathSep=java.nio.file.FileSystems.getDefault().getSeparator();
 		workingDir = new File(System.getProperty("user.dir"));
 		catTool = new CATTool();
-		toRead = new File(".\\misc\\tempreadfile.txt");
+		toRead = new File("."+pathSep+"misc"+pathSep+"tempreadfile.txt");
 		toRead.createNewFile();
-		emptyFile = new File(".\\misc\\tempemptyfile.txt");
+		emptyFile = new File("."+pathSep+"misc"+pathSep+"tempemptyfile.txt");
 		emptyFile.createNewFile();
 		tempFile = new File("tempCatFile");
 		
@@ -39,9 +42,10 @@ public class CATToolTest {
 		out.write(contents);
 		out.close();
 		fstream.close();
+		
 	}
 
-	//@After
+	@After
 	public void tearDown() throws Exception{
 		System.gc();
 		catTool = null;
@@ -66,7 +70,7 @@ public class CATToolTest {
 	@Test
 	public void executeCatForValidFileTest() {
 		File workingDir = new File(System.getProperty("user.dir"));
-		String stdin = "cat " + workingDir + "\\misc\\tempreadfile.txt";
+		String stdin = "cat " + workingDir +pathSep+"misc"+pathSep+"tempreadfile.txt";
 		String actual = catTool.execute(workingDir, stdin);
 		assertEquals(contents, actual);
 		assertEquals(catTool.getStatusCode(), 0);
@@ -88,7 +92,7 @@ public class CATToolTest {
 	 */
 	@Test
 	public void executeCatForEmptyFileTest() {
-		String stdin = "cat " + workingDir + "\\misc\\tempemptyfile.txt";
+		String stdin = "cat " + workingDir +pathSep+"misc"+pathSep+"tempemptyfile.txt";
 		String expected = "File is empty";
 		String actual = catTool.execute(workingDir, stdin);
 		assertEquals(expected, actual);
@@ -101,7 +105,7 @@ public class CATToolTest {
 	@Test
 	public void executeCatForInvalidFileTest() {
 		String expected = "Error: file not found";
-		String stdin = "cat " + workingDir + "\\misc\\invalidFile.txt";
+		String stdin = "cat " + workingDir +pathSep+"misc"+pathSep+"invalidFile.txt";
 		String result = catTool.execute(workingDir, stdin);
 		assertEquals(expected, result);
 		assertEquals(catTool.getStatusCode(), 1);

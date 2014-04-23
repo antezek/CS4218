@@ -92,7 +92,6 @@ public class PASTEToolTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	@After
@@ -146,8 +145,7 @@ public class PASTEToolTest {
 		//Changes: command stdin is shifted to execute method to cater to our project
 		pasteTool = new PASTETool();		
 		actualOutput = pasteTool.execute(workingDirectory, "paste C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"a.txt ./b.txt");
-
-		expectedOutput = "a.txt: No such file or directory!";
+		expectedOutput = "C:"+pathSep+"Users"+pathSep+"Dale"+pathSep+"a.txt: No such file or directory!";
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));	
 
 	}

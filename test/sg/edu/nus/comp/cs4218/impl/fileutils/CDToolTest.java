@@ -16,6 +16,7 @@ import org.junit.Test;
 public class CDToolTest {
 	private CDTool cdTool;
 	private File workingDir, tempcdfile;
+	private String pathSep = "";
 
 	@Before
 	public void setUp() throws Exception {
@@ -23,6 +24,7 @@ public class CDToolTest {
 		workingDir = new File(System.getProperty("user.dir"));
 		tempcdfile = new File("./misc/tempcdfile.txt");
 		tempcdfile.createNewFile();
+		pathSep=java.nio.file.FileSystems.getDefault().getSeparator();
 	}
 
 	@After
@@ -49,7 +51,7 @@ public class CDToolTest {
 	@Test
 	public void executeChangeValidDirectoryTest() {
 		String stdin = "cd misc";
-		String expected = "Working dir changed to: " +workingDir +"\\misc";		//Bugs: OS compatible \\misc changed to /misc
+		String expected = "Working dir changed to: " +workingDir +pathSep+"misc";		//Bugs: OS compatible \\misc changed to /misc
 		String actual = cdTool.execute(workingDir, stdin);
 		assertEquals(expected, actual);
 		assertEquals(cdTool.getStatusCode(), 0);

@@ -107,7 +107,7 @@ public class IntegrateTest {
 		tempDir.mkdir();
 	}
 
-	@After
+	//@After
 	public void after() throws Exception {
 		System.gc();
 		fileW.delete();

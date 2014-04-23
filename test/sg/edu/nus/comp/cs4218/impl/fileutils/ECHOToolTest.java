@@ -204,7 +204,7 @@ public class ECHOToolTest {
 	/**
 	 * Test expected behaviour of echoing valid system variable (only works on window OS)
 	 */
-	@Test
+	//@Test
 	public void echoValidSystemVariableTest() {
 		String toEcho = "homepath";
 		String expected = System.getenv(toEcho);
@@ -216,7 +216,7 @@ public class ECHOToolTest {
 	/**
 	 * Test expected behaviour of echoing valid system variable	(only works on window OS)
 	 */
-	@Test
+	//@Test
 	public void executeEchoValidSystemVariableTest() {
 		String stdin = "echo homepath";
 		String expected = System.getenv("homepath");
