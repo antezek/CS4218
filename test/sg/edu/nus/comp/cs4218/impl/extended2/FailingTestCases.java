@@ -21,9 +21,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import sg.edu.nus.comp.cs4218.ITool;
 import sg.edu.nus.comp.cs4218.extended1.IGrepTool;
 import sg.edu.nus.comp.cs4218.fileutils.ICatTool;
 import sg.edu.nus.comp.cs4218.fileutils.ILsTool;
+import sg.edu.nus.comp.cs4218.impl.Shell;
 import sg.edu.nus.comp.cs4218.impl.extended2.COMMTool;
 import sg.edu.nus.comp.cs4218.impl.extended2.PASTETool;
 import sg.edu.nus.comp.cs4218.impl.extended2.SORTTool;
@@ -52,7 +54,6 @@ public class FailingTestCases {
 	String file1Content, file2Content, file3Content, file4Content, fileContentA, fileContentB, fileContentC, fileContentD, fileComm1, fileComm2;
 	String testTab, testNewLine, testDash;
 
-    
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
     
@@ -177,501 +178,6 @@ public class FailingTestCases {
         grepTool = null;
     }
     
-    
-    
-    @Test
-    public void getStatusCodeForNullWorkingDir() throws IOException {
-        //Test error-handling 7
-        CATTool = new sg.edu.nus.comp.cs4218.impl.fileutils.CATTool();
-        CATTool.execute(null, "nonexist nonexist");
-        assertEquals(0, CATTool.getStatusCode());
-    }
-    
-    @Test
-    public void testCatWithMultipleFiles(){
-        File currentDir = new File(System.getProperty("user.dir"));
-        CATTool = new sg.edu.nus.comp.cs4218.impl.fileutils.CATTool();
-        assertEquals("a\nb\nc\n\nd\ne\nf\ng\nzzzzz\nddddddd\nggggggg\nhhhhhh\nluklu", CATTool.execute(currentDir, new String("Test/file.txt ../file.txt")));
-        assertEquals(CATTool.getStatusCode(), 0);
-    }
-    
-    @Test
-    public void testCatWithDoubleQuotes(){
-        File currentDir = new File(System.getProperty("user.dir"));
-        CATTool = new sg.edu.nus.comp.cs4218.impl.fileutils.CATTool();
-        assertEquals("a\nb\nc\n\nd\ne\nf\ng\nzzzzz\nddddddd\nggggggg\nhhhhhh\nluklu", CATTool.execute(currentDir, new String("\"Test/test file.txt\" ../file.txt")));
-        assertEquals(CATTool.getStatusCode(), 1);
-    }
-    
-    @Test //CATTool returns error message stating that file is null when it is actually an empty string. (The expected value is irrelevant, just that the error message is wrong and misleading)
-    public void executeZeroArgs(){
-        File currentDir = new File(System.getProperty("user.dir"));
-        CATTool = new sg.edu.nus.comp.cs4218.impl.fileutils.CATTool();
-        assertEquals("Invalid cat command", CATTool.execute(currentDir, new String("")));
-        assertEquals(1, CATTool.getStatusCode());
-    }
-    
-    @Test
-    public void getStringForDirectoryContentsTestExecute() throws IOException {
-        //Test expected behavior
-        //Create a temporary directory and get directory contents
-        List<File> files = lsTool.getFiles(testFolder.getRoot());
-        String fileString = null;
-        for (File file : files) {
-            if (fileString == null) {
-                fileString = file.getName() + "\n";
-            }
-            else {
-                fileString = fileString + file.getName() + "\n";
-            }
-        }
-        fileString = fileString + files.size() + " item(s) in directory";
-        assertEquals(fileString, lsTool.execute(testFolder.getRoot(), null));
-        assertEquals(lsTool.getStatusCode(), 0);
-    }
-
-    
-    @Test
-    public void getMatchingLinesWithLeadingContextNullPatternAndNullInput() {
-        assertEquals("Invalid grep command", grepTool.getMatchingLinesWithLeadingContext(0, null, null));
-        assertEquals(1, grepTool.getStatusCode());
-    }
-    
-    @Test //Boundary test case (will be stuck in infinite loop)
-    public void getMatchingLinesWithTrailingContextNegativeNumber() {
-        assertEquals("Invalid grep command", grepTool.getMatchingLinesWithTrailingContext(-1, "abc", "abc"));
-        assertEquals(1, grepTool.getStatusCode());
-    }
-    
-    @Test
-    public void lsGrepMove() throws IOException {
-        File toMove = testFolder.newFile("toMove.txt");
-        File folder = testFolder.newFolder("Test");    
-        File destination = getFile(folder, toMove.getName());
-        
-        PIPETool pipeTool = new PIPETool();
-        pipeTool.execute(testFolder.getRoot(), "ls | grep toMove - | move - " + destination.getAbsolutePath());
-
-        List<File> fromFolder = getFiles(testFolder.getRoot());    
-        List<File> toFolder = getFiles(folder);
-        
-        assertFalse(fromFolder.contains(toMove));        
-        assertTrue(toFolder.contains(destination));        
-        assertEquals(0, pipeTool.getStatusCode());
-    }
-    
-    // UniqTool
-    // execute with stdin as null
- 	@Test
- 	public void executeStdinIsNull() {
- 		actualOutput = uniqTool.execute(workingDirectory, null);
- 		assertEquals(-1, uniqTool.getStatusCode());
- 	}
-
- 	// replace uniq with test
-     @Test
-     public void executeInvalidCommandUniq(){
- 		uniqTool.execute(workingDirectory, "test Test_Output.txt");
- 		assertEquals(-1,uniqTool.getStatusCode());
-     }
-     
-     // field is negative value
-     @Test
-     public void getUniqueSkipNumNegativeFieldNumber(){
- 		actualOutput = uniqTool.getUniqueSkipNum(-1, false ,"1235");
- 		assertEquals(-1, uniqTool.getStatusCode());
-     }
-
-     
-     // cut tool
-  // priority should be given to help when there are multiple options
-     @Test
- 	public void executeHelpPriorityTest()
- 	{
- 		cutTool = new CUTTool();
- 		actualOutput = cutTool.execute(workingDirectory, "cut -c 1-2 -help - abcde");
- 		expectedOutput = helpOutputCut;
- 		actualOutput = actualOutput.replace("\n", "");
- 		expectedOutput = expectedOutput.replace("\n", "");
- 		assertEquals(expectedOutput ,actualOutput);
- 	}
-     // type in rubbish with correct length
-     @Test
-     public void executeArgsIsInvalidCut(){
-     	cutTool = new CUTTool();
- 		actualOutput = cutTool.execute(workingDirectory, "cut    ");
-
- 		assertEquals(-1, cutTool.getStatusCode());
-     }
-     
-     // replace cut with test
-     @Test
-     public void executeInvalidCommandCut(){
-     	File workingDirectory = new File(System.getProperty("user.dir"));
-
- 		actualOutput = cutTool.execute(workingDirectory, "test -c 1-2 testCut.txt");
- 		assertEquals(-1, cutTool.getStatusCode());
-     }
-     
-     // c option with invalid range
-     @Test
-    	public void executeCOptionInvalidRangeTest()
-    	{
-    		cutTool = new CUTTool();
-    		cutTool.execute(workingDirectory, "cut -c ABC testCut.txt");
-
-    		assertEquals(-1, cutTool.getStatusCode());
-    	}
-     
-
-     // c option with empty stdin
-     @Test
-    	public void executeCOptionEmptyStdinTest()
-    	{
-    		cutTool = new CUTTool();
-    		cutTool.execute(workingDirectory, "cut -c 1 - ");
-    		assertEquals(-1, cutTool.getStatusCode());
-    	}
-     // d option with empty stdin 
-     @Test
-    	public void executeDOptionEmptyStdinTest()
-    	{
-    		cutTool = new CUTTool();
-    		cutTool.execute(workingDirectory, "cut -d : -f 1 - ");
-    		assertEquals(-1, cutTool.getStatusCode());
-    	}
-     
-     //Both std input and file input should be executed (std input first)
-     @Test   
- 	public void fileInputAndStdInputTest()
- 	{
-     	// swap position of stdin and file
-     	cutTool = new CUTTool();
- 		actualOutput = cutTool.execute(workingDirectory, "cut -c 1-2 - abcde testCut.txt");
- 		expectedOutput = "ab\nap\nba\nca\ndo\n";
- 		actualOutput = actualOutput.replace("\n", "");
- 		expectedOutput = expectedOutput.replace("\n", "");
- 		assertEquals(expectedOutput, actualOutput);
- 	}
-     
-     // stdin is null
-     @Test
- 	public void executeArgsNullFailTest() throws IOException {
- 		// test execute method 
-     	cutTool = new CUTTool();
-     	
- 		assertEquals("Invalid command", cutTool.execute(workingDirectory, null));
-     }
-     
-     
-     // duplicated range
-     @Test
- 	public void cutSpecifiedCharactersUseDelimiterTest1() throws IOException 
- 	{
-     	cutTool = new CUTTool();	
- 		actualOutput = cutTool.cutSpecifiedCharactersUseDelimiter("1-3,1-3", "\"" ,"12\"3\"4");
- 		expectedOutput = "12\"3\"4";
- 		actualOutput = actualOutput.replace("\n", "");
- 		expectedOutput = expectedOutput.replace("\n", "");
- 		assertEquals(expectedOutput, actualOutput);
- 	}
-     // 0 is valid, 1-3 is valid but 0-3 is invalid? why?
-     @Test
- 	public void cutSpecifiedCharactersUseDelimiterTest2() throws IOException 
- 	{
-     	cutTool = new CUTTool();	
- 		actualOutput = cutTool.cutSpecifiedCharactersUseDelimiter("0-3", "\"" ,"12\"3\"4");
- 		expectedOutput = "12\"3\"4";
- 		actualOutput = actualOutput.replace("\n", "");
- 		expectedOutput = expectedOutput.replace("\n", "");
- 		assertEquals(expectedOutput, actualOutput);
- 	}
-     // invalid range
-     @Test
- 	public void cutSpecifiedCharactersUseDelimiterTest3() throws IOException 
- 	{
-     	cutTool = new CUTTool();	
- 		actualOutput = cutTool.cutSpecifiedCharactersUseDelimiter("-1-==", "\"" ,"12\"3\"4");
- 		expectedOutput = "Invalid Range Specify";
- 		actualOutput = actualOutput.replace("\n", "");
- 		expectedOutput = expectedOutput.replace("\n", "");
- 		assertEquals(expectedOutput, actualOutput);
- 	}
-
-     // invalid range
-     @Test
- 	public void cutSpecifiedCharactersTest1() throws IOException 
- 	{
-     	cutTool = new CUTTool();	
- 		actualOutput = cutTool.cutSpecfiedCharacters("-1-==", "1234");
- 		expectedOutput = "Invalid Range Specify";
- 		actualOutput = actualOutput.replace("\n", "");
- 		expectedOutput = expectedOutput.replace("\n", "");
- 		assertEquals(expectedOutput, actualOutput);
- 	}
-     
-     
-    // Comm Tool
- //  COMMTool(String args[]) is used to check whether the command is valid using args.length
-     // but it is not specified in assumptions
-     @Test
-     public void executeArgsIsNull(){
-     	File workingDirectory = new File(System.getProperty("user.dir"));
-     	
- 		commTool = new COMMTool(null);
- 		actualOutput = commTool.execute(workingDirectory, "comm x.txt w.txt");
-
- 		assertEquals(1, commTool.getStatusCode());
-     }
-     // type in rubbish with correct length
-     @Test
-     public void executeArgsIsInvalidComm(){
-     	File workingDirectory = new File(System.getProperty("user.dir"));
-
-     	
-     	String[] arguments = new String[] {" ", " "};
- 		commTool = new COMMTool(arguments);
- 		actualOutput = commTool.execute(workingDirectory, "comm    ");
-
- 		assertEquals(1, commTool.getStatusCode());
-     }
-     
-     
-
-     // stdin is null
-     @Test
-     public void executeWithNull(){
-     	File workingDirectory = new File(System.getProperty("user.dir"));
-
- 		commTool = new COMMTool();
- 		actualOutput = commTool.execute(workingDirectory, null);
- 		assertEquals(1, commTool.getStatusCode());
-     }
-
-
-     // replace comm with test
-     @Test
-     public void executeInvalidCommand1(){
-     	File workingDirectory = new File(System.getProperty("user.dir"));
-
-     	String[] arguments = new String[] { "w.txt", "x.txt"};
- 		commTool = new COMMTool(arguments);
- 		actualOutput = commTool.execute(workingDirectory, "test w.txt x.txt");
- 		assertEquals(1, commTool.getStatusCode());
-     }
-     
-     // Helper isValidFile put in directory as filename
-     @Test
-     public void executeInvalidFile(){
-     	assertEquals(null, Helper.isValidFile(new File(System.getProperty("user.dir")), "\\/"));//System.getProperty("user.dir")));
-     }
-
-     // Helper isValidDirectory 
-     @Test
-     public void executeInvalidDirectory(){
-     	assertEquals(null, Helper.isValidDirectory(new File(System.getProperty("user.dir")), "  "));
-     	
-     }
-
-     
- 	// ffff should be only appear once 
-     @Test
- 	public void executeNoOptionTest() {
-     	// test execute method
-     	// both files have same length
-     	String [] args = {"commTestCase1a.txt", "commTestCase1b.txt"};
-     	commTool = new COMMTool(args);
- 		String workingDir = System.getProperty("user.dir");
- 		String output = testDash + testTab  + testDash + testTab + "aaa" + testDash + testTab
- 						+ testNewLine + testTab + testDash +"bbb"
- 						+ testNewLine + "ccc" + testDash + testTab
- 						+ testNewLine + "eee" + testDash + testTab
- 						+ testNewLine + testTab + testDash + "ffff" + testDash + testTab
- 						+ testNewLine + "gggggg";
- 		File f = new File(workingDir);
- 		assertEquals(output, commTool.execute(f, "comm commTestCase1a.txt commTestCase1b.txt"));
-     }
-    
-     
-     
-     
-     // will get stuck at infinite loop in CompareFiles
-     
-     @Test
-    	public void executeDoNotCheckSortTest() {
-     	// test execute method
-     	// -d option, both files same length with ONLY 1 common line "abc"
-     	// "eee" is not considered common line since it exists at different line numbers of the 2 files
-        	String [] args = {"-d", "commTestCase3a.txt", "commTestCase3b.txt"};
-        	commTool = new COMMTool(args);
-    		String workingDir = System.getProperty("user.dir");
-    		String output = "def"+testTab+testDash+testTab+testDash+testNewLine+
-						"ddd"+testTab+testDash+testTab+testDash+testNewLine+testDash+testTab+testTab+
-						"eee"+testNewLine+testDash+testTab+testDash+testTab+"abc"+testTab+testDash+testTab+testDash+testNewLine+testTab+
-						"fff"+testTab+testDash+testNewLine+testDash+testTab+"ggg";
-    		File f = new File(workingDir);
-    		assertEquals(output, commTool.execute(f, "comm -d commTestCase3a.txt commTestCase3b.txt"));
-
-     }
-     
-
-
-     // print extra lines (empty lines)
-     @Test
-   	public void executeEmptyFileTest() throws IOException {
-     	// test execute method
-     	// -c option, sorted, file1 is empty
-   		String [] args = {"-c","commEmptyTestCase.txt", "commTestCase1a.txt"};
-   		commTool = new COMMTool(args);
-   		String workingDir = System.getProperty("user.dir");
-   		String output = testDash + testTab + "aaa" + testDash + testDash
- 					+ testNewLine + testDash + testTab +"ccc" + testDash + testDash
- 					+ testNewLine + testDash + testTab +"eee" + testDash + testDash
- 					+ testNewLine + testDash + testTab +"gggggg";
-   		
-   		File f = new File(workingDir);
-   		assertEquals(commTool.execute(f, "comm -c commEmptyTestCase.txt commTestCase1a.txt"), output);
-     }
-   
-     
-     // 1 newline file and 1 empty file
-     @Test
-   	public void executeNewLineFileTest1() throws IOException {
-     	// test execute method
-     	// -c option, file1 contains 1 new line, file2 is empty
-   		String [] args = {"-c","commNewLineTestCase.txt", "commEmptyTestCase.txt"};
-   		commTool = new COMMTool(args);
-   		String workingDir = System.getProperty("user.dir");
-   		String output = testNewLine;
-   		
-   		File f = new File(workingDir);
-   		assertEquals(output, commTool.execute(f, "comm -c commNewLineTestCase.txt commEmptyTestCase.txt"));
-     }
-     
-
-     // constructor validation for args works but execute method does not check for status code before proceeding
-     @Test
-   	public void executeInvalidOptionFailTest() throws IOException {
-     	// test execute method
-     	// with invalid option (args' length is 1)
-   		String [] args = {"-"};
-   		commTool = new COMMTool(args);
-   		String workingDir = System.getProperty("user.dir");
-   		
-   		File f = new File(workingDir);
-   		assertEquals("Error: Invalid command", commTool.execute(f, "comm -"));
-     }
-    
-     // output is sorted wrongly
- 	// only second and third column has value
-     // second 2 are in third column, last is in second column
- 	@Test
- 	public void compareFileBAndCNoA() {
- 		String workingDir = System.getProperty("user.dir");
-    		
-    		File workingDirectory = new File(workingDir);
- 		String[] arguments = new String[] { "test2.txt", "test1.txt" };
- 		commTool = new COMMTool(arguments);
- 		
- 		actualOutput = commTool.execute(workingDirectory,
- 				"comm test2.txt test1.txt");
- 		expectedOutput = testNewLine + testTab + testDash + testTab + testDash+ "bbb"
- 					    + testNewLine + testTab + testDash + "ccc"
- 						+ testNewLine + testTab + testDash + testTab + testDash + "ddd";
-
- 		assertEquals(expectedOutput, actualOutput);
-    	}
-     
- 	// output line 2 has extra space behind bbb
- 	// only first and third column has value
-     // first 2 are in third column, last is in first column
- 	@Test
- 	public void compareFileAAndCNoB() {
- 		String workingDir = System.getProperty("user.dir");
-    		
-    		File workingDirectory = new File(workingDir);
- 		String[] arguments = new String[] { "test3.txt", "test4.txt" };
- 		commTool = new COMMTool(arguments);
- 		
- 		actualOutput = commTool.execute(workingDirectory,
- 				"comm test3.txt test4.txt");
- 		expectedOutput = testTab + testDash + testTab + testDash+ "aaa" 
- 					    + testNewLine + testTab + testDash + testTab + testDash + "bbb"
- 						+ testNewLine + "ccc";
-
- 		assertEquals(expectedOutput, actualOutput);
-    	}
- 	
- 	 // cannot handle whitespace in a line
-     @Test
-    	public void compareFilesDifferentInputTest(){
-     	// test compareFiles method
-     	commTool = new COMMTool();
-     	String input1 = "abc aed";
-    		String input2 = "acdef fe";
-    		String output = "abc aed" + testDash + testTab + testDash + testTab
-    						+ testNewLine + testDash + testTab + testDash + testTab + "acdef fe" + testDash + testTab;
-    		assertEquals(output, commTool.compareFiles(input1, input2));
-     }
-     
-     // help should be given priority
-     @Test
-     public void executeHelpCommand(){
-     	File workingDirectory = new File(System.getProperty("user.dir"));
-     	
-     	String[] arguments = new String[] {"x.txt", "w.txt", "-help"};
-     	
- 		commTool = new COMMTool(arguments);
- 		actualOutput = commTool.execute(workingDirectory, "comm x.txt w.txt -help ");
- 		assertEquals(helpOutputComm,actualOutput);
-     }
-     
-    
-
- 	
- 	@Test
- 	public void stdinTest(){
- 		WCTool wctool = new WCTool();
- 		assertEquals(wctool.execute(null, null), "42", "42");
- 	}
-
- 	
- 	
- 	@Test
- 	public void validationTest1() {
- 		SORTTool sorttool = new SORTTool();
- 		assertEquals(sorttool.execute(null, null), "No argument.");
- 	}
-
- 	
- 	
- 	@Test
- 	public void NullTest() {
- 	
- 		PASTETool pasteTool = new PASTETool();
- 		assertEquals(
- 				pasteTool.execute(null, null),
- 				"-s : paste one file at a time instead of in parallel\t"
- 						+ " -d DELIM: Use characters from the DELIM instead of TAB character\t"
- 						+ " -help : Brief information about supported options");
- 	} 
-     
-     
-    private List<File> getFiles(File directory) {
-        return new ArrayList<File>(Arrays.asList(directory.listFiles()));
-    }
-    
-    private static File getFile(File workingDir, String path) {
-        File toReturn;
-
-        if (path.contains(":")) {
-            toReturn = new File(path);
-        } else {
-            toReturn = new File(workingDir, path);
-        }
-
-        return toReturn;
-    }
     public void writeToFile(File file, String input) {
 		try {
 			if (!file.exists())
@@ -694,38 +200,110 @@ public class FailingTestCases {
 		} catch (IOException e) {
 		}
 	}
+    
+    /*
+     * Bug_#15 CutTool Bug 2
+     * Description: Type in rubbish with correct length
+     * ======Fix=======
+     * Class Name: CUTTool.java
+     * Line No: 162 of 599
+     * 
+     */
+     @Test
+     public void executeArgsIsInvalidCut(){											
+     	cutTool = new CUTTool();
+ 		actualOutput = cutTool.execute(workingDirectory, "cut    ");
 
-	public String readFromFile(File inputFile) {
-		String output = "";
-		FileReader fr = null;
-		try {
-			fr = new FileReader(inputFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return "File not found";
-		}
-		BufferedReader br = new BufferedReader(fr);
-		try {
-			String line = br.readLine();
-			while (line != null) {
-				if (line.equalsIgnoreCase("\n") || line.equalsIgnoreCase(""))
-					output += "\n";
-				else
-					output += line + "\n";
-				line = br.readLine();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "Unable to read file";
-		} finally {
-			try {
-				br.close();
-				fr.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return output;
-	}
+ 		assertEquals(-1, cutTool.getStatusCode());
+     }
+     
+     /*
+      * Bug_#17 CutTool Bug 4
+      * Description: c option with invalid range.Testing for status Code for StartRange > EndRange
+      * ======Fix=======
+      * Class Name: CUTTool.java
+      * Line No: 
+      * 
+      */
+     @Test
+    	public void executeCOptionInvalidRangeTest()										
+    	{
+    		cutTool = new CUTTool();
+    		cutTool.execute(workingDirectory, "cut -c ABC testCut.txt");
 
+    		assertEquals(-1, cutTool.getStatusCode());
+    	}
+     
+     /*
+      * Bug_#20 CutTool Bug 7
+      * Description: Both std input and file input should be executed (std input first)
+      * ======Fix=======
+      * Class Name: CUTTool.java
+      * Line No:
+      * 
+      */
+     @Test   
+ 	public void fileInputAndStdInputTest()														
+ 	{
+     	// swap position of stdin and file
+     	cutTool = new CUTTool();
+ 		actualOutput = cutTool.execute(workingDirectory, "cut -c 1-2 - abcde testCut.txt");
+ 		expectedOutput = "ab\nap\nba\nca\ndo\n";
+ 		actualOutput = actualOutput.replace("\n", "");
+ 		expectedOutput = expectedOutput.replace("\n", "");
+ 		assertEquals(expectedOutput, actualOutput);
+ 	}
+     
+     /* 
+      * Bug_#3 CommTool Bug 3
+      * Description: stdin is null
+      * ======Fix=======
+      * Class Name: COMMTool.java
+      * Line No: 539 of 628 
+      * 
+      */
+     @Test
+     public void executeWithNull(){															
+     	File workingDirectory = new File(System.getProperty("user.dir"));
+
+ 		commTool = new COMMTool();
+ 		actualOutput = commTool.execute(workingDirectory, null);
+ 		assertEquals(1, commTool.getStatusCode());
+     }
+
+     /*
+      * Bug_#6 CommTool Bug 6
+      * Description: will get stuck at infinite loop in CompareFiles. Test expected result has been tested with terminal "comm" command.
+      * ======Fix=======
+      * Class Name: 
+      * Line No: 75 of 628
+      * 
+      */
+     @Test
+    	public void executeDoNotCheckSortTest() {																
+        	String [] args = {"-d", "commTestCase3a.txt", "commTestCase3b.txt"};
+        	commTool = new COMMTool(args);
+    		String workingDir = System.getProperty("user.dir");
+    		String output = "def"+testTab+testDash+testTab+testDash+testNewLine+
+						"ddd"+testTab+testDash+testTab+testDash+testNewLine+testDash+testTab+testTab+
+						"eee"+testNewLine+testDash+testTab+testDash+testTab+"abc"+testTab+testDash+testTab+testDash+testNewLine+testTab+
+						"fff"+testTab+testDash+testNewLine+testDash+testTab+"ggg";
+    		File f = new File(workingDir);
+    		assertEquals(output, commTool.execute(f, "comm -d commTestCase3a.txt commTestCase3b.txt"));
+
+     }
+     
+     /*
+      * Bug_#39 GREPTool Bug 2
+      * Description: Boundary test case (will be stuck in infinite loop)
+      * ======Fix=======
+      * Class Name: GREPTool.java
+      * LOC: 253 of 523
+      * 
+      */
+     @Test 
+     public void getMatchingLinesWithTrailingContextNegativeNumber() {
+         assertEquals("Invalid Grep Command: Use grep -help for command format\n", grepTool.getMatchingLinesWithTrailingContext(-1, "abc", "abc"));
+         assertEquals(1, grepTool.getStatusCode());
+     }
 }
