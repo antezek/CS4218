@@ -500,4 +500,34 @@ public class COMMToolTest {
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 		assertEquals(commTool.getStatusCode(), 0);
 	}
+	
+	/*
+	 * Bugs Solved from Hackathon
+	 * 
+	 */
+    // help should be given priority
+    @Test
+    public void executeHelpCommand(){
+    	File workingDirectory = new File(System.getProperty("user.dir"));
+    	
+    	String[] arguments = new String[] {"x.txt", "w.txt", "-help"};
+    	String helpOutputComm = " /*\n"
+				+ "\n*"
+				+ "\n* comm : Compares two sorted files line by line. With no options, produce three-column output."
+				+ "\n* 		 Column one contains lines unique to FILE1, column two contains lines unique to FILE2,"
+				+ "\n 		 and column three contains lines common to both files."
+				+ "\n*"
+				+ "\n*	Command Format - comm [OPTIONS] FILE1 FILE2"
+				+ "\n*	FILE1 - Name of the file 1"
+				+ "\n*	FILE2 - Name of the file 2"
+				+ "\n*		-c : check that the input is correctly sorted"
+				+ "\n*      -d : do not check that the input is correctly sorted"
+				+ "\n*      -help : Brief information about supported options"
+				+ "\n*/";
+		commTool = new COMMTool(arguments);
+		actualOutput = commTool.execute(workingDirectory, "comm x.txt w.txt -help ");
+		assertEquals(helpOutputComm,actualOutput);
+    }
+    
+    
 }
