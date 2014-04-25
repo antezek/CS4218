@@ -18,15 +18,21 @@ public class IntegrateTest {
 	private static final File homeDir = new File(System.getProperty("user.dir"));
 	private Shell sh;
 	private File workingDir;
+	private int os = 1;	// 0 for windows, 1 for mac
+	
 
-	private File fileW, fileX, fileY, fileZ, inputFile1, inputFile2, inputFile3, fileS, fileT, tempFile, tempFile2, tempDir;
-	private String fileContentW, fileContentX, fileContentY, fileContentZ, input1, input2, input3, passage, passage2;
+	private File fileW, fileX, fileY, fileZ, inputFile1, inputFile2,
+			inputFile3, fileS, fileT, tempFile, tempFile2, tempDir;
+	private String fileContentW, fileContentX, fileContentY, fileContentZ,
+			input1, input2, input3, passage, passage2;
+	String pathSep = "";
 
 	@Before
 	public void before() throws IOException {
 		sh = new Shell();
 		workingDir = new File(System.getProperty("user.dir"));
-
+		pathSep=java.nio.file.FileSystems.getDefault().getSeparator();
+		
 		fileW = new File("w.txt");
 		fileX = new File("x.txt");
 		fileY = new File("y.txt");
@@ -96,18 +102,18 @@ public class IntegrateTest {
 		writeToFile(inputFile3, input3);
 		writeToFile(fileS, passage);
 		writeToFile(fileT, passage2);
-		
+
 		tempFile = new File("./misc/tempFile.txt");
 		tempFile.createNewFile();
-		
+
 		tempFile2 = new File("./misc/tempFile2.txt");
 		tempFile2.createNewFile();
-		
+
 		tempDir = new File("./misc/misc2");
 		tempDir.mkdir();
 	}
 
-	//@After
+	// @After
 	public void after() throws Exception {
 		System.gc();
 		fileW.delete();
@@ -119,7 +125,7 @@ public class IntegrateTest {
 		inputFile3.delete();
 		fileS.delete();
 		fileT.delete();
-		
+
 		tempFile.delete();
 		tempFile2.delete();
 		tempDir.delete();
@@ -142,7 +148,7 @@ public class IntegrateTest {
 		}
 
 	}
-	
+
 	/*
 	 * Test " echo | cut "
 	 */
@@ -153,7 +159,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("echo abcde | cut -c 1-3");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * Test " comm | grep "
 	 */
@@ -167,7 +173,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("comm w.txt x.txt | grep Banana");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * Test " cut | paste | grep "
 	 */
@@ -178,7 +184,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("cut -c 1-2 w.txt | paste -d : | grep Ap");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * Test " cut | wc "
 	 */
@@ -189,11 +195,11 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("cut -c 1-2 test1.txt | wc");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * Test " grep | sort "
 	 */
-	@Test 
+	@Test
 	public void componentIntegrateTest5() {
 		String expectedOutput = "File1:\nAnd I your willing victim\n"
 				+ "And we can haha learn to love again\n"
@@ -213,7 +219,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("grep -C 2 haha PASSAGE2.txt LOST.txt | sort");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * Test " cat | grep | sort "
 	 */
@@ -227,7 +233,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("cat PASSAGE2.txt | grep haha | sort");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * Test grep | wc
 	 */
@@ -239,24 +245,25 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("grep -B 1 Fashion PASSAGE.txt | wc");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
-	 * 	Test " ls | sort "
+	 * Test " ls | sort "
 	 */
 	@Test
 	public void componentIntegrateTest8() {
-//		String expectedOutput = "File1:\n.DS_Store\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\n"
-//				+ "PASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\n"
-//				+ "test2.txt\ntest3.txt\nw.txt\nx.txt\ny.txt\nz.txt";
-		String expectedOutput = "File1:\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\n"
-				+ "PASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\n"
-				+ "test2.txt\ntest3.txt\nw.txt\nx.txt\ny.txt\nz.txt";
+		String expectedOutput;
+		if(os==1){	//For Mac
+			expectedOutput = "File1:\n.DS_Store\n.\\misc\\tempemptyfile.txt\n.\\misc\\tempreadfile.txt\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\ntest4.txt\nw.txt\nx.txt\ny.txt\nz.txt";
+		}else{		//For Window
+			expectedOutput =  "File1:\n.\\misc\\tempemptyfile.txt\n.\\misc\\tempreadfile.txt\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\ntest4.txt\nw.txt\nx.txt\ny.txt\nz.txt";
+		}
+		
 		String actualOutput = "";
-
 		actualOutput = sh.runCmd("ls | sort");
+		System.out.println("actualOutput: " + actualOutput);
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * Test " echo | wc "
 	 */
@@ -265,10 +272,11 @@ public class IntegrateTest {
 		String expectedOutput = "File1: chars= 27 words= 6 lines= 1";
 		String actualOutput = "";
 
-		actualOutput = sh.runCmd("echo hello world, Programming is fun!! :D | wc");
+		actualOutput = sh
+				.runCmd("echo hello world, Programming is fun!! :D | wc");
 		assertTrue(expectedOutput.equalsIgnoreCase(actualOutput));
 	}
-	
+
 	/*
 	 * Test " echo | cut | paste | grep | wc  "
 	 */
@@ -281,7 +289,7 @@ public class IntegrateTest {
 				.runCmd("echo hello world, Programming is fun!! | cut -c 1-24 | paste -d : | grep Program | wc");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * negative Test case " cd | sort "
 	 */
@@ -293,11 +301,11 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("cd | sort");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * negative Test case " delete | sort "
 	 */
-	@Test 
+	@Test
 	public void componentIntegrateTest12() {
 		String expectedOutput = "invalid input";
 		String actualOutput = "";
@@ -305,7 +313,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("delete | sort");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * negative Test case " ls | delete "
 	 */
@@ -317,7 +325,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("ls | delete");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * negative Test case " delete | move | cd "
 	 */
@@ -341,7 +349,7 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd("ls | delete");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	/*
 	 * negative Test case " | "
 	 */
@@ -353,76 +361,89 @@ public class IntegrateTest {
 		actualOutput = sh.runCmd(" | ");
 		assertEquals(expectedOutput, actualOutput);
 	}
-	
+
 	@Test
 	public void shellStateTest1() throws IOException {
 		String expected = "Working dir changed to: ";
 		String actual = "";
-		
+
 		actual = sh.runCmd("cd misc");
 		String newDir = sh.runCmd("pwd");
 		expected += newDir;
 		assertEquals(expected, actual);
-		
+
 		workingDir = new File(System.getProperty("user.dir"));
-		expected = "Moved file tempFile.txt to " +workingDir.getAbsolutePath() +"\\misc2";
+		expected = "Moved file tempFile.txt to " + workingDir.getAbsolutePath()
+				+ pathSep+ "misc2";
 		actual = sh.runCmd("move tempFile.txt misc2");
 		assertEquals(expected, actual);
-		
+
 		expected = "Working dir changed to: ";
 		actual = sh.runCmd("cd misc2");
 		newDir = sh.runCmd("pwd");
 		expected += newDir;
 		assertEquals(expected, actual);
-		
-		expected = "Deleted file " +workingDir.getAbsolutePath() + "\\misc2\\tempFile.txt";
+
+		expected = "Deleted file " + workingDir.getAbsolutePath()
+				+ pathSep +"misc2"+ pathSep + "tempFile.txt";
 		actual = sh.runCmd("delete tempFile.txt");
 		assertEquals(expected, actual);
 		
-		expected = "Error: No files in working directory";
+		if(os==1){	//For Mac
+			expected =  ".DS_Store";		
+		}else{		//For Window
+			expected =  "Error: No files in working directory";
+		}
 		actual = sh.runCmd("ls");
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	public void shellStateTest2() throws IOException {
 		String expected = "Working dir changed to: ";
 		String actual = "";
-		String cmd = "cd " +homeDir +"\\misc";
-		
+		String cmd = "cd " + homeDir + pathSep+ "misc";
+
 		actual = sh.runCmd(cmd);
 		String newDir = sh.runCmd("pwd");
-		
+
 		expected += newDir;
 		assertEquals(expected, actual);
-		
+
 		workingDir = new File(System.getProperty("user.dir"));
-		expected = "Copied file tempFile2.txt to " +workingDir.getAbsolutePath() + "\\misc2";
+		expected = "Copied file tempFile2.txt to "
+				+ workingDir.getAbsolutePath() + pathSep +"misc2";
 		actual = sh.runCmd("copy tempFile2.txt misc2");
 		assertEquals(expected, actual);
-		
-		expected = "Deleted file " +workingDir.getAbsolutePath() +"\\tempFile2.txt";
+
+		expected = "Deleted file " + workingDir.getAbsolutePath()
+				+ pathSep +"tempFile2.txt";
 		actual = sh.runCmd("delete tempFile2.txt");
 		assertEquals(expected, actual);
-		
+
 		expected = "Working dir changed to: ";
 		actual = sh.runCmd("cd misc2");
 		newDir = sh.runCmd("pwd");
 		expected += newDir;
 		assertEquals(expected, actual);
-		
+
 		workingDir = new File(System.getProperty("user.dir"));
-		expected = "Deleted file " +workingDir.getAbsolutePath() +"\\tempFile2.txt";
+		expected = "Deleted file " + workingDir.getAbsolutePath()
+				+ pathSep +"tempFile2.txt";
 		actual = sh.runCmd("delete tempFile2.txt");
 		assertEquals(expected, actual);
 		
-		expected = "Error: No files in working directory";
+		if(os==1){	//For Mac
+			expected =  ".DS_Store";		
+		}else{		//For Window
+			expected =  "Error: No files in working directory";
+		}
 		actual = sh.runCmd("ls");
 		assertEquals(expected, actual);
-		
+
 		// ensures proper file path execution for subsequent test cases
 		expected = "Working dir changed to: ";
-		cmd = "cd " +homeDir;
+		cmd = "cd " + homeDir;
 		actual = sh.runCmd(cmd);
 		newDir = sh.runCmd("pwd");
 		expected += newDir;

@@ -14,6 +14,6 @@ public class MOVEToolRunnable implements Runnable{
 	@Override
 	public void run() {
 		MOVETool moveTool = new MOVETool();
-		Result.result = moveTool.execute(workingDir, stdin);;
+		Result.result = moveTool.execute(workingDir, stdin);
 	}
 }
