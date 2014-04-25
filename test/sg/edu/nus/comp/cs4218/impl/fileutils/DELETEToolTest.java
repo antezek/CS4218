@@ -20,6 +20,7 @@ public class DELETEToolTest {
 	private DELETETool delTool;
 	private File workingDir;
 	private File toDelete, toDelete2, toDelete3, toDelete4, tempFile;
+	private RandomAccessFile raFile;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -34,6 +35,8 @@ public class DELETEToolTest {
 		toDelete4 = new File("tempdeletefile4.txt");
 		toDelete4.createNewFile();
 		tempFile = new File("tempFile");
+		raFile = new RandomAccessFile(tempFile, "rw");
+		raFile.getChannel().lock();
 	}
 
 	@After
@@ -43,6 +46,7 @@ public class DELETEToolTest {
 		toDelete2.delete();
 		toDelete3.delete();
 		toDelete4.delete();
+		raFile.close();
 		tempFile.delete();
 	}
 
@@ -117,13 +121,10 @@ public class DELETEToolTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void uniqTestForIOExceptionFile() throws IOException {
+	public void uniqTestForIOExceptionFile() {
 		boolean expected = false;
-		final RandomAccessFile raFile = new RandomAccessFile(tempFile, "rw");
-		raFile.getChannel().lock();
 		boolean actual = delTool.delete(tempFile);
 		assertEquals(expected, actual);
-		raFile.close();
 	}
 	
 	/**
@@ -131,14 +132,11 @@ public class DELETEToolTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void uniqExecuteTestForIOExceptionFile() throws IOException {
+	public void uniqExecuteTestForIOExceptionFile() {
 		String expected = "Error: failed to delete file";
 		String stdin = "delete " +tempFile.getName();
-		final RandomAccessFile raFile = new RandomAccessFile(tempFile, "rw");
-		raFile.getChannel().lock();
 		String actual = delTool.execute(workingDir, stdin);
 		assertEquals(expected, actual);
-		raFile.close();
 	}
 
 }

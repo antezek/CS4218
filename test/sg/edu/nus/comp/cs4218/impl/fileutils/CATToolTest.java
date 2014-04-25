@@ -20,21 +20,24 @@ public class CATToolTest {
 	private CATTool catTool;
 	private File workingDir;
 	private File toRead, emptyFile, tempFile;
+	private RandomAccessFile raFile;
+	private String pathSep;
 	private String contents = "Hello World \n"
 								+ "This is a CATToolTest";
-	String pathSep="";
 
 	
 	@Before
 	public void setUp() throws IOException {
-		pathSep=java.nio.file.FileSystems.getDefault().getSeparator();
+		pathSep = java.nio.file.FileSystems.getDefault().getSeparator();
 		workingDir = new File(System.getProperty("user.dir"));
 		catTool = new CATTool();
-		toRead = new File("."+pathSep+"misc"+pathSep+"tempreadfile.txt");
+		toRead = new File("." +pathSep +"misc" +pathSep +"tempreadfile.txt");
 		toRead.createNewFile();
-		emptyFile = new File("."+pathSep+"misc"+pathSep+"tempemptyfile.txt");
+		emptyFile = new File("."+pathSep +"misc" +pathSep +"tempemptyfile.txt");
 		emptyFile.createNewFile();
 		tempFile = new File("tempCatFile");
+		raFile = new RandomAccessFile(tempFile, "rw");
+		raFile.getChannel().lock();
 		
 		// Adding contents to read from file
 		FileWriter fstream = new FileWriter(toRead, true);
@@ -51,6 +54,7 @@ public class CATToolTest {
 		catTool = null;
 		toRead.delete();
 		emptyFile.delete();
+		raFile.close();
 		tempFile.delete();
 	}
 
@@ -105,7 +109,7 @@ public class CATToolTest {
 	@Test
 	public void executeCatForInvalidFileTest() {
 		String expected = "Error: file not found";
-		String stdin = "cat " + workingDir +pathSep+"misc"+pathSep+"invalidFile.txt";
+		String stdin = "cat " +workingDir +pathSep +"misc" +pathSep +"invalidFile.txt";
 		String result = catTool.execute(workingDir, stdin);
 		assertEquals(expected, result);
 		assertEquals(catTool.getStatusCode(), 1);
@@ -140,13 +144,10 @@ public class CATToolTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void executeCatForIOExceptionFile() throws IOException {
+	public void executeCatForIOExceptionFile() {
 		String expected = "Unable to read file";
-		final RandomAccessFile raFile = new RandomAccessFile(tempFile, "rw");
-		raFile.getChannel().lock();
 		String actual = catTool.getStringForFile(tempFile);
 		assertEquals(expected, actual);
-		raFile.close();
 	}
 
 }
