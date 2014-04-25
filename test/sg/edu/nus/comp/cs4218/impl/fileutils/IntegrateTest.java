@@ -251,9 +251,9 @@ public class IntegrateTest {
 	public void componentIntegrateTest8() {
 		String expectedOutput;
 		if (os == 1) { // For Mac
-			expectedOutput = "File1:\n.DS_Store\n.\\misc\\tempemptyfile.txt\n.\\misc\\tempreadfile.txt\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\ntest4.txt\nw.txt\nx.txt\ny.txt\nz.txt";
+			expectedOutput = "File1:\n.DS_Store\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\ntest4.txt\nw.txt\nx.txt\ny.txt\nz.txt";
 		} else { // For Window
-			expectedOutput = "File1:\n.\\misc\\tempemptyfile.txt\n.\\misc\\tempreadfile.txt\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\ntest4.txt\nw.txt\nx.txt\ny.txt\nz.txt";
+			expectedOutput = "File1:\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\ntest4.txt\nw.txt\nx.txt\ny.txt\nz.txt";
 		}
 
 		String actualOutput = "";
