@@ -18,7 +18,6 @@ public class IntegrateTest {
 	private static final File homeDir = new File(System.getProperty("user.dir"));
 	private Shell sh;
 	private File workingDir;
-	private int os = 1; // 0 for Windows, 1 for Mac
 
 	private File fileW, fileX, fileY, fileZ, inputFile1, inputFile2,
 			inputFile3, fileS, fileT, tempFile, tempFile2, tempDir;
@@ -251,15 +250,9 @@ public class IntegrateTest {
 	@Test
 	public void componentIntegrateTest8() {
 		String expectedOutput;
-		if (os == 1) { // For Mac
-			expectedOutput = "File1:\n.DS_Store\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\nw.txt\nx.txt\ny.txt\nz.txt";
-		} else { // For Window
-			expectedOutput = "File1:\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\nw.txt\nx.txt\ny.txt\nz.txt";
-		}
-
+		expectedOutput = "File1:\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\nw.txt\nx.txt\ny.txt\nz.txt";
 		String actualOutput = "";
 		actualOutput = sh.runCmd("ls | sort");
-		System.out.println("actualOutput: " + actualOutput);
 		assertEquals(expectedOutput, actualOutput);
 	}
 

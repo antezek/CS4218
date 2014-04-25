@@ -85,6 +85,8 @@ public class CUTToolTest {
 			inputFile3.delete();
 		if(inputFile4.exists())
 			inputFile4.delete();
+		if(inputFile5.exists())
+			inputFile5.delete();
 		if(longFileC.exists())
 			longFileC.delete();
 		if(longFileD.exists())

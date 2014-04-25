@@ -20,7 +20,7 @@ import sg.edu.nus.comp.cs4218.impl.extended2.WCToolTest;
 		ECHOToolTest.class, CATToolTest.class, PIPEToolTest.class,
 		WCToolTest.class, CDToolTest.class, ShellTest.class })
 */
-@Suite.SuiteClasses({RunnableTest.class,
+@Suite.SuiteClasses({IntegrateTest.class, RunnableTest.class,
 	UNIQToolTest.class, HelperTest.class, DELETEToolTest.class,
 	MOVEToolTest.class, COMMToolTest.class, COPYToolTest.class,
 	CUTToolTest.class, PASTEToolTest.class, SORTToolTest.class,

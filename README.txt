@@ -17,9 +17,6 @@ Important Note for CAT:
 In particular, the command cat - should either return an error or nothing or never return at all (interuptable only by Ctrl-Z).
 For our implementation, cat - returns nothing.
 
-Important Note for IntegrateTest:
-There is a var “os” which need to be set first before running the test because there is extra files in the mac os like “.DS_Store”. Therefore will product different result. Please specify os=0 if you’re running window and os=1 if you are running mac
-
 Important note for ECHOToolTest:
 echoValidSystemVariableTest(), executeEchoValidSystemVariableTest() can be only runs in windows
 

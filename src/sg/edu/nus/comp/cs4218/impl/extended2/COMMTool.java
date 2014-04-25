@@ -61,7 +61,10 @@ public class COMMTool extends ATool implements ICommTool {
 		}
 		return list;
 	}
-
+/*
+ * compare when count for A list equals list A
+ * 
+ */
 	public void compareWhenCountAEqualsListA() {
 		String temp2 = "";
 		String temp3 = "";
@@ -90,7 +93,10 @@ public class COMMTool extends ATool implements ICommTool {
 			}
 		}
 	}
-
+	/*
+	 * compare when count for B list equals list B
+	 * 
+	 */
 	public void compareWhenCountBEqualsListB() {
 		String temp1 = "";
 		String temp3 = "";
@@ -121,7 +127,10 @@ public class COMMTool extends ATool implements ICommTool {
 			}
 		}
 	}
-
+	/*
+	 * compare when count for C list equals list C
+	 * 
+	 */
 	public void compareWhenCountCEqualsListC() {
 		String temp1 = "";
 		String temp2 = "";
@@ -151,7 +160,10 @@ public class COMMTool extends ATool implements ICommTool {
 			}
 		}
 	}
-
+	/*
+	 * compare normal flow when all 3 cols has something
+	 * 
+	 */
 	public void compareNorm() {
 		String temp1 = listA.get(countA).toString();
 		String temp2 = listB.get(countB).toString();
@@ -187,7 +199,10 @@ public class COMMTool extends ATool implements ICommTool {
 			}
 		}
 	}
-
+	/*
+	 * compare only when A and B cols not empty
+	 * 
+	 */
 	public void compareOnlyABNotEmpty() {
 		// When colA and colB is empty
 		// result += dash + tab + dash + tab + com.trim();
@@ -197,7 +212,11 @@ public class COMMTool extends ATool implements ICommTool {
 		}
 		setStatusCode(0);
 	}
-
+	
+	/*
+	 * compare only when C col is empty
+	 * 
+	 */
 	public void compareOnlyCEmpty() {
 		String temp1 = "";
 		String temp2 = "";
@@ -237,7 +256,10 @@ public class COMMTool extends ATool implements ICommTool {
 		}
 		setStatusCode(0);
 	}
-
+	/*
+	 * compare only when B col is empty
+	 * 
+	 */
 	public void compareOnlyBEmpty() {
 		String temp1 = "";
 		String temp3 = "";
@@ -275,7 +297,10 @@ public class COMMTool extends ATool implements ICommTool {
 		}
 		setStatusCode(0);
 	}
-
+	/*
+	 * compare only when A col is empty
+	 * 
+	 */
 	public void compareOnlyAEmpty() {
 		String temp2 = "";
 		String temp3 = "";
@@ -311,7 +336,10 @@ public class COMMTool extends ATool implements ICommTool {
 		}
 		setStatusCode(0);
 	}
-
+	/*
+	 * compare files
+	 * 
+	 */
 	public String compareFiles(String input1, String input2) {
 		String result = "";
 		String str1 = "";
@@ -384,7 +412,10 @@ public class COMMTool extends ATool implements ICommTool {
 		result = formatResult(tempList);
 		return result;
 	}
-
+	/*
+	 * Filter the list
+	 * 
+	 */
 	public ArrayList filterList(ArrayList list) {
 		ArrayList tempList = new ArrayList();
 		String temp1 = "";
@@ -400,7 +431,10 @@ public class COMMTool extends ATool implements ICommTool {
 		}
 		return tempList;
 	}
-
+	/*
+	 * Format Result for display
+	 * 
+	 */
 	public String formatResult(ArrayList list) {
 		String result = "";
 		String temp, temp1, temp2;
@@ -449,7 +483,10 @@ public class COMMTool extends ATool implements ICommTool {
 
 		return result;
 	}
-
+	/*
+	 * compare files with sort attribute 
+	 * 
+	 */
 	public String compareFilesCheckSortStatus(String input1, String input2) {
 		String result = "";
 		boolean isFile1Sorted = false;
@@ -479,7 +516,10 @@ public class COMMTool extends ATool implements ICommTool {
 		setStatusCode(0);
 		return result;
 	}
-
+	/*
+	 * compare files with do not sort attribute 
+	 * 
+	 */
 	public String compareFilesDoNotCheckSortStatus(String input1, String input2) {
 		String result;
 
@@ -487,7 +527,10 @@ public class COMMTool extends ATool implements ICommTool {
 		setStatusCode(0);
 		return result;
 	}
-
+	/*
+	 * get help 
+	 * 
+	 */
 	public String getHelp() {
 		String helpOutput;
 
@@ -508,7 +551,10 @@ public class COMMTool extends ATool implements ICommTool {
 		setStatusCode(0);
 		return helpOutput;
 	}
-
+	/*
+	 * Execute the command input
+	 * 
+	 */
 	public String[] getCmd(String stdin) {
 		int count = 0;
 		String temp = "";
