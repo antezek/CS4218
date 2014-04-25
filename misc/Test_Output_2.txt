@@ -1,4 +1,0 @@
-n hi
-f hi
-hi
-abc fgh hihi

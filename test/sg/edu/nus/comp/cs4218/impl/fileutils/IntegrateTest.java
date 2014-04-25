@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -111,7 +112,7 @@ public class IntegrateTest {
 		tempDir.mkdir();
 	}
 
-	// @After
+	@After
 	public void after() throws Exception {
 		System.gc();
 		fileW.delete();
@@ -251,9 +252,9 @@ public class IntegrateTest {
 	public void componentIntegrateTest8() {
 		String expectedOutput;
 		if (os == 1) { // For Mac
-			expectedOutput = "File1:\n.DS_Store\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\ntest4.txt\nw.txt\nx.txt\ny.txt\nz.txt";
+			expectedOutput = "File1:\n.DS_Store\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\nw.txt\nx.txt\ny.txt\nz.txt";
 		} else { // For Window
-			expectedOutput = "File1:\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\ntest4.txt\nw.txt\nx.txt\ny.txt\nz.txt";
+			expectedOutput = "File1:\n.classpath\n.git\n.project\n.settings\nPASSAGE.txt\nPASSAGE2.txt\nREADME.txt\nbin\nmisc\nsrc\ntest\ntest1.txt\ntest2.txt\ntest3.txt\nw.txt\nx.txt\ny.txt\nz.txt";
 		}
 
 		String actualOutput = "";
@@ -387,13 +388,7 @@ public class IntegrateTest {
 		actual = sh.runCmd("delete tempFile.txt");
 		assertEquals(expected, actual);
 
-		if (os == 1) {
-			// For Mac
-			expected = ".DS_Store";
-		} else {
-			// For Windows
-			expected = "No files in working directory";
-		}
+		expected = "No files in working directory";
 		actual = sh.runCmd("ls");
 		assertEquals(expected, actual);
 	}
@@ -432,14 +427,8 @@ public class IntegrateTest {
 				+ "tempFile2.txt";
 		actual = sh.runCmd("delete tempFile2.txt");
 		assertEquals(expected, actual);
-
-		if (os == 1) {
-			// For Mac
-			expected = ".DS_Store";
-		} else {
-			// For Windows
-			expected = "No files in working directory";
-		}
+		
+		expected = "No files in working directory";
 		actual = sh.runCmd("ls");
 		assertEquals(expected, actual);
 
