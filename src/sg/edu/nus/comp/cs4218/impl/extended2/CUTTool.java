@@ -73,6 +73,9 @@ public class CUTTool extends ATool implements ICutTool {
 			tempCmd[count] = scan.next();
 			count++;
 		}
+		counter.close();
+		scan.close();
+		
 		return tempCmd;
 	}
 
